@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: base-vatusa
+resources:
+  - MyVATUSA/certificate.yaml
+  - MyVATUSA/deployment.yaml
+  - MyVATUSA/service.yaml
+  - MyVATUSA/ingress.yaml
+  - primary-api/deployment.yaml
+  - primary-api/service.yaml

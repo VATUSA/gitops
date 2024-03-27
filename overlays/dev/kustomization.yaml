@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - ../../base
+images:
+- name: vatusa/primary-api
+  newName: vatusa/primary-api
+  newTag: latest

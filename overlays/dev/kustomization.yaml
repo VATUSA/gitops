@@ -5,5 +5,5 @@ resources:
 - ../../base
 images:
 - name: vatusa/primary-api
-  newName: vatusa6tech/primary-api
-  newTag: 44a951e46673304fc2eefc181b924266a3c3e7ab
+  newName: vatusa/primary-api
+  newTag: 29f248f71c3c34828895108ad49861708d098846

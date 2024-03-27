@@ -6,7 +6,7 @@ mysql:
   primary:
     resources:
       requests:
-        memory: 50Mi
+        memory: 256Mi
         cpu: 100m
       limits:
         memory: 512Mi

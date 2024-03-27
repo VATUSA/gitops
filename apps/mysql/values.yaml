@@ -1,0 +1,13 @@
+mysql:
+  auth:
+    username: usa
+    database: usa
+    existingSecret: passwords
+  primary:
+    resources:
+      requests:
+        memory: 50Mi
+        cpu: 100m
+      limits:
+        memory: 128Mi
+        cpu: 250m

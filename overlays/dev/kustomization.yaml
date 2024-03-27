@@ -6,4 +6,4 @@ resources:
 images:
 - name: vatusa/primary-api
   newName: vatusa/primary-api
-  newTag: 29f248f71c3c34828895108ad49861708d098846
+  newTag: 13a99c2eb0af386e803178159cfc9a4974135cb8

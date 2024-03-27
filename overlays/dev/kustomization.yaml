@@ -7,6 +7,3 @@ images:
 - name: vatusa/primary-api
   newName: vatusa/primary-api
   newTag: latest
-- name: vatusa6tech/primary-api
-  newName: vatusa6tech/primary-api
-  newTag: 42cc7caf87300f5b321a67d0b577ff0998619f5e

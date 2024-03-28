@@ -4,6 +4,9 @@ resources:
 - namespace.yaml
 - ../../base
 images:
+- name: vatusa/myvatusa
+  newName: vatusa/myvatusa
+  newTag: cb8c417542ec7b416c62746095f4cceeb593aed4
 - name: vatusa/primary-api
   newName: vatusa/primary-api
   newTag: bbdee21ef4b0529354ca7c8ebaa114488d367645

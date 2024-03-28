@@ -6,7 +6,7 @@ resources:
 images:
 - name: vatusa/auth-proxy
   newName: vatusa/auth-proxy
-  newTag: e54f6c49fe34fe7cb1cb2e856985dc8789bf20b1
+  newTag: 4582373c813860a70cb4ca1b83d3293e4ecfb9cb
 - name: vatusa/myvatusa
   newName: vatusa/myvatusa
   newTag: cb8c417542ec7b416c62746095f4cceeb593aed4

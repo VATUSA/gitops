@@ -1,0 +1,4 @@
+namespace: zkc
+resources:
+  - ../deny-egress.yaml
+  - ../allow-db.yaml

@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 metadata:
   name: allow-db
-  namespace: {{ .Values.namespace }}
+  namespace: zkc
 spec:
   podSelector: {}
   policyTypes:

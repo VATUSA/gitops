@@ -1,5 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - ../../base
+- namespace.yaml
+- ../../base
+images:
+- name: vatusa/auth-proxy
+  newName: vatusa/auth-proxy
+  newTag: eab1609abe6a8128c5edcbc8ce00b7bc8cd0e0c7
+- name: vatusa/myvatusa
+  newName: vatusa/myvatusa
+  newTag: cb8c417542ec7b416c62746095f4cceeb593aed4
+- name: vatusa/primary-api
+  newName: vatusa/primary-api
+  newTag: 488514faa7c479a62083f1fe559817ed6cd80c92

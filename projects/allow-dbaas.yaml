@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-db
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+      - ipBlock:
+          cidr: 1.1.1.1
+      ports:
+        - protocol: TCP
+          port: 3306

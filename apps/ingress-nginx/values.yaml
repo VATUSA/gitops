@@ -8,5 +8,5 @@ ingress-nginx:
       externalTrafficPolicy: Local
       ipFamilyPolicy: RequireDualStack
       ipFamilies:
-        - IPv4
-        - IPv6
+      - IPv4
+      - IPv6

@@ -8,4 +8,4 @@ spec:
     - '*'
   destinations:
     - namespace: zkc
-      server: https://kubernetes.default.svc
+      server: '*'

@@ -9,7 +9,3 @@ spec:
   destinations:
     - namespace: zkc
       server: https://kubernetes.default.svc
-  syncPolicy:
-    automated: {}
-    syncOptions:
-      - CreateNamespace=true

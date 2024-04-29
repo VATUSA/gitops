@@ -6,3 +6,4 @@ resources:
   - zkc/Project.yaml
   - zkc/deny-egress.yaml
   - zkc/allow-db.yaml
+  - zkc/allow-dns.yaml

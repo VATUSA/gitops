@@ -9,3 +9,6 @@ spec:
   destinations:
     - namespace: zkc
       server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

@@ -14,3 +14,9 @@ spec:
       ports:
         - protocol: TCP
           port: 25060
+    - to:
+        - ipBlock:
+            cidr: 159.203.82.194/32
+      ports:
+        - protocol: TCP
+          port: 25060

@@ -6,5 +6,7 @@ ingress-nginx:
       use-forwarded-headers: "true"
     service:
       externalTrafficPolicy: Local
+      ipFamilyPolicy: RequireDualStack
       ipFamilies:
         - IPv4
+        - IPv6

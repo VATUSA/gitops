@@ -9,8 +9,12 @@ spec:
     - Egress
   egress:
     - to:
-      - ipBlock:
-          cidr: 0.0.0.0/0
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/cluster-service: "true"
+      - podSelector:
+          matchLabels:
+            k8s-app: kube-dns
       ports:
         - protocol: TCP
           port: 53

@@ -12,6 +12,3 @@ spec:
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
-  clusterResourceBlacklist:
-    - group: 'networking.k8s.io'
-      kind: 'NetworkPolicy'

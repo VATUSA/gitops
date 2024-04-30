@@ -10,7 +10,7 @@ spec:
   egress:
     - to:
       - ipBlock:
-          cidr: 172.67.68.102/32 # data.vatsim.net
+          cidr: 104.26.12.187/32 # data.vatsim.net
       ports:
         - protocol: TCP
           port: 443
@@ -22,7 +22,7 @@ spec:
           port: 443
     - to:
         - ipBlock:
-            cidr: 13.107.213.57/32 # aviationweather.gov
+            cidr: 13.107.213.40/32 # aviationweather.gov
       ports:
         - protocol: TCP
           port: 443

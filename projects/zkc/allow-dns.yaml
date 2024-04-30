@@ -11,8 +11,8 @@ spec:
     - to:
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/cluster-service: "true"
-      - podSelector:
+            kubernetes.io/metadata.name: kube-system
+        podSelector:
           matchLabels:
             k8s-app: kube-dns
       ports:

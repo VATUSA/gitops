@@ -26,3 +26,9 @@ spec:
       ports:
         - protocol: TCP
           port: 443
+    - to:
+        - ipBlock:
+            cidr: 143.244.220.248/32 # cluster
+      ports:
+        - protocol: TCP
+          port: 443

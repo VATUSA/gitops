@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-proxy
+  name: auth
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: auth-proxy
+      app: auth
   template:
     metadata:
       labels:
-        app: auth-proxy
+        app: auth
     spec:
       containers:
-        - name: auth-proxy
-          image: vatusa/auth-proxy:latest
+        - name: auth
+          image: vatusa/auth:latest
           ports:
             - containerPort: 3000
               protocol: TCP
@@ -49,4 +49,4 @@ spec:
               memory: 75Mi
           envFrom:
             - secretRef:
-                name: auth-proxy-secrets
+                name: auth-secrets

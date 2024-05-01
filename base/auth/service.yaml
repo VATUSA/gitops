@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-proxy-service
+  name: auth-service
   labels:
-    app: auth-proxy
+    app: auth
 spec:
   ports:
     - port: 3000
       targetPort: 3000
   selector:
-    app: auth-proxy
+    app: auth

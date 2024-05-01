@@ -4,8 +4,8 @@ resources:
 - namespace.yaml
 - ../../base
 images:
-- name: vatusa/auth-proxy
-  newName: vatusa/auth-proxy
+- name: vatusa/auth
+  newName: vatusa/auth
   newTag: ce54af97bf7057e62529cbcf5c877ff6902ca284
 - name: vatusa/myvatusa
   newName: vatusa/myvatusa

@@ -1,12 +1,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: proxy-vatusa-dev-tls
+  name: auth-vatusa-net-tls
 spec:
   dnsNames:
-    - api.vatusa.dev
-    - sso.vatusa.dev
+    - auth.vatusa.net
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt
-  secretName: proxy-vatusa-dev-tls
+  secretName: auth-vatusa-net-tls

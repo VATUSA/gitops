@@ -8,8 +8,4 @@ resources:
   - zkc/allow-apis.yaml
   - zkc/allow-db.yaml
   - zkc/allow-dns.yaml
-  - ngws/Project.yaml
-  - ngws/deny-egress.yaml
-  - ngws/allow-apis.yaml
-  - ngws/allow-db.yaml
-  - ngws/allow-dns.yaml
+  - ngws/kustomization.yaml

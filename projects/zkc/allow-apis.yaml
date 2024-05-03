@@ -38,4 +38,9 @@ spec:
       ports:
         - protocol: TCP
           port: 443
-          
+    - to:
+        - ipBlock:
+            cidr: 162.159.138.232/32 # discord.com
+      ports:
+        - protocol: TCP
+          port: 443

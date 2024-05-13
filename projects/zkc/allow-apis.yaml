@@ -44,3 +44,9 @@ spec:
       ports:
         - protocol: TCP
           port: 443
+    - to:
+        - ipBlock:
+            cidr: 18.188.75.34/32 # AWS SES
+      ports:
+        - protocol: TCP
+          port: 587

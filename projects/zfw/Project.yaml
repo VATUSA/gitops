@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: zfw
+  namespace: argocd
+spec:
+  sourceRepos:
+    - 'https://github.com/kzfw/gitops'
+  destinations:
+    - namespace: zfw
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  clusterResourceBlacklist:
+    - group: 'networking.k8s.io'
+      kind: 'NetworkPolicy'

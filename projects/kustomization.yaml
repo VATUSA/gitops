@@ -13,3 +13,8 @@ resources:
   - ngws/allow-apis.yaml
   - ngws/allow-db.yaml
   - ngws/allow-dns.yaml
+  - zfw/Project.yaml
+  - zfw/deny-egress.yaml
+  - zfw/allow-apis.yaml
+  - zfw/allow-db.yaml
+  - zfw/allow-dns.yaml

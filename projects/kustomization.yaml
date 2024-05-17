@@ -23,3 +23,8 @@ resources:
   - zdv/allow-apis.yaml
   - zdv/allow-db.yaml
   - zdv/allow-dns.yaml
+  - zlc/Project.yaml
+  - zlc/deny-egress.yaml
+  - zlc/allow-apis.yaml
+  - zlc/allow-db.yaml
+  - zlc/allow-dns.yaml

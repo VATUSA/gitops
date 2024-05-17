@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: zlc
+  namespace: argocd
+spec:
+  sourceRepos:
+    - 'https://github.com/kzlc/gitops'
+  destinations:
+    - namespace: zlc
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  clusterResourceBlacklist:
+    - group: 'networking.k8s.io'
+      kind: 'NetworkPolicy'

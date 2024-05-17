@@ -18,3 +18,8 @@ resources:
   - zfw/allow-apis.yaml
   - zfw/allow-db.yaml
   - zfw/allow-dns.yaml
+  - zdv/Project.yaml
+  - zdv/deny-egress.yaml
+  - zdv/allow-apis.yaml
+  - zdv/allow-db.yaml
+  - zdv/allow-dns.yaml

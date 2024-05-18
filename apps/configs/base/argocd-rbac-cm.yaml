@@ -10,6 +10,8 @@ data:
     p, role:org-admin, logs, get, *, allow
     p, role:org-admin, exec, create, */*, allow
 
+    g, VATUSA:argo-admin, role:org-admin
+
     p, role:zdv-admin, projects, get, zdv, allow
     p, role:zdv-admin, applications, *, zdv/*, allow
     p, role:zdv-admin, repositories, get, zdv/*, allow
@@ -42,7 +44,13 @@ data:
     
     g, VATUSA:zkc, role:zkc-admin
 
+    p, role:ngws-admin, projects, get, ngws, allow
+    p, role:ngws-admin, applications, *, ngws/*, allow
+    p, role:ngws-admin, repositories, get, ngws/*, allow
+    p, role:ngws-admin, logs, get, ngws/*, allow
+    p, role:ngws-admin, exec, create, ngws/*, allow
     
+    g, VATUSA:ngws, role:ngws-admin
     
 kind: ConfigMap
 metadata:

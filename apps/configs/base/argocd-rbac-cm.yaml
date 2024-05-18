@@ -9,13 +9,6 @@ data:
     p, role:org-admin, repositories, delete, *, allow
     p, role:org-admin, logs, get, *, allow
     p, role:org-admin, exec, create, */*, allow
-
-    g, VATUSA:admin, role:ngws
-
-    p, role:no-access, applications, *, */*, deny
-    p, role:no-access, projects, get, *, deny
-
-    g, VATUSA:zdv, role:no-access
     
     p, role:zdv-admin, projects, get, zdv, allow
     p, role:zdv-admin, applications, *, zdv/*, allow

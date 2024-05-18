@@ -12,21 +12,18 @@ data:
 
     g, VATUSA:admin, role:ngws
 
-    p, VATUSA:zdv, projects, get, zdv, allow
-    p, VATUSA:zdv, applications, *, zdv/*, allow
-    p, VATUSA:zdv, repositories, get, zdv/*, allow
-    p, VATUSA:zdv, logs, get, zdv/*, allow
-    p, VATUSA:zdv, exec, create, zdv/*, allow
-    p, VATUSA:zdv, projects, get, *, deny
-    p, VATUSA:zdv, applications, *, */*, deny
+    p, role:no-access, applications, *, */*, deny
+    p, role:no-access, projects, get, *, deny
 
-    p, VATUSA:zlc, projects, get, zlc, allow
-    p, VATUSA:zlc, applications, *, zlc/*, allow
-    p, VATUSA:zlc, repositories, get, zlc/*, allow
-    p, VATUSA:zlc, logs, get, zlc/*, allow
-    p, VATUSA:zlc, exec, create, zlc/*, allow
-    p, VATUSA:zlc, projects, get, *, deny
-    p, VATUSA:zlc, applications, *, */*, deny
+    g, VATUSA:zdv, role:no-access
+    
+    p, role:zdv-admin, projects, get, zdv, allow
+    p, role:zdv-admin, applications, *, zdv/*, allow
+    p, role:zdv-admin, repositories, get, zdv/*, allow
+    p, role:zdv-admin, logs, get, zdv/*, allow
+    p, role:zdv-admin, exec, create, zdv/*, allow
+    
+    g, VATUSA:zdv, role:zdv-admin
     
 kind: ConfigMap
 metadata:

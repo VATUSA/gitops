@@ -9,6 +9,7 @@ resources:
   - ngws/allow-db.yaml
   - ngws/allow-dns.yaml
   - current/Project.yaml
+  - current/allow-db.yaml
   - current/allow-apis.yaml
   - current/allow-dns.yaml
   - current/deny-egress.yaml

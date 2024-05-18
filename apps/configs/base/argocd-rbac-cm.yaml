@@ -9,7 +9,7 @@ data:
     p, role:org-admin, repositories, delete, *, allow
     p, role:org-admin, logs, get, *, allow
     p, role:org-admin, exec, create, */*, allow
-    
+
     p, role:zdv-admin, projects, get, zdv, allow
     p, role:zdv-admin, applications, *, zdv/*, allow
     p, role:zdv-admin, repositories, get, zdv/*, allow
@@ -17,6 +17,32 @@ data:
     p, role:zdv-admin, exec, create, zdv/*, allow
     
     g, VATUSA:zdv, role:zdv-admin
+
+    p, role:zlc-admin, projects, get, zlc, allow
+    p, role:zlc-admin, applications, *, zlc/*, allow
+    p, role:zlc-admin, repositories, get, zlc/*, allow
+    p, role:zlc-admin, logs, get, zlc/*, allow
+    p, role:zlc-admin, exec, create, zlc/*, allow
+    
+    g, VATUSA:zlc, role:zlc-admin
+
+    p, role:zfw-admin, projects, get, zfw, allow
+    p, role:zfw-admin, applications, *, zfw/*, allow
+    p, role:zfw-admin, repositories, get, zfw/*, allow
+    p, role:zfw-admin, logs, get, zfw/*, allow
+    p, role:zfw-admin, exec, create, zfw/*, allow
+    
+    g, VATUSA:zfw, role:zfw-admin
+
+    p, role:zkc-admin, projects, get, zkc, allow
+    p, role:zkc-admin, applications, *, zkc/*, allow
+    p, role:zkc-admin, repositories, get, zkc/*, allow
+    p, role:zkc-admin, logs, get, zkc/*, allow
+    p, role:zkc-admin, exec, create, zkc/*, allow
+    
+    g, VATUSA:zkc, role:zkc-admin
+
+    
     
 kind: ConfigMap
 metadata:

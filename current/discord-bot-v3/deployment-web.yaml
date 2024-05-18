@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot-v3-web-shim
+  labels:
+    app: discord-bot-v3-web-shim
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: discord-bot-v3-web-shim
+  template:
+    metadata:
+      name: discord-bot-v3-web-shim
+      labels:
+        app: discord-bot-v3-web-shim
+    spec:
+      containers:
+        - name: discord-bot-v3-web-shim
+          image: vatusa/discord-bot-v3
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              cpu: 25m
+              memory: 50Mi
+          command: ["/app/web"]
+          envFrom:
+            - secretRef:
+                name: discord-bot-secrets
+      restartPolicy: Always

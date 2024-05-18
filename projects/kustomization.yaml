@@ -3,16 +3,20 @@ kind: Kustomization
 metadata:
   name: base-projects-adhp
 resources:
-  - zkc/Project.yaml
-  - zkc/deny-egress.yaml
-  - zkc/allow-apis.yaml
-  - zkc/allow-db.yaml
-  - zkc/allow-dns.yaml
   - ngws/Project.yaml
   - ngws/deny-egress.yaml
   - ngws/allow-apis.yaml
   - ngws/allow-db.yaml
   - ngws/allow-dns.yaml
+  - current/Project.yaml
+  - current/allow-apis.yaml
+  - current/allow-dns.yaml
+  - current/deny-egress.yaml
+  - zkc/Project.yaml
+  - zkc/deny-egress.yaml
+  - zkc/allow-apis.yaml
+  - zkc/allow-db.yaml
+  - zkc/allow-dns.yaml
   - zfw/Project.yaml
   - zfw/deny-egress.yaml
   - zfw/allow-apis.yaml

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot-v3
+  labels:
+    app: discord-bot-v3
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: discord-bot-v3
+  template:
+    metadata:
+      name: discord-bot-v3
+      labels:
+        app: discord-bot-v3
+    spec:
+      containers:
+        - name: discord-bot-v3
+          image: vatusa/discord-bot-v3
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 25m
+              memory: 50Mi
+            limits:
+              cpu: 50m
+              memory: 100Mi
+          command: ["/app/bot"]
+          env:
+            - name: CONFIG_PATH
+              value: "/mnt/config/..data/"
+          envFrom:
+            - secretRef:
+                name: discord-bot-secrets
+          volumeMounts:
+            - mountPath: "/mnt/config"
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: discord-bot-v3-config
+      restartPolicy: Always

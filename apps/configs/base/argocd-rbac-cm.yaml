@@ -11,6 +11,23 @@ data:
     p, role:org-admin, exec, create, */*, allow
 
     g, vatusa:admin, role:ngws
+
+    p, vatusa:zdv, projects, get, zdv, allow
+    p, vatusa:zdv, applications, *, zdv/*, allow
+    p, vatusa:zdv, repositories, get, zdv/*, allow
+    p, vatusa:zdv, logs, get, zdv/*, allow
+    p, vatusa:zdv, exec, create, zdv/*, allow
+    p, vatusa:zdv, projects, get, *, deny
+    p, vatusa:zdv, applications, *, */*, deny
+
+    p, vatusa:zlc, projects, get, zlc, allow
+    p, vatusa:zlc, applications, *, zlc/*, allow
+    p, vatusa:zlc, repositories, get, zlc/*, allow
+    p, vatusa:zlc, logs, get, zlc/*, allow
+    p, vatusa:zlc, exec, create, zlc/*, allow
+    p, vatusa:zlc, projects, get, *, deny
+    p, vatusa:zlc, applications, *, */*, deny
+    
 kind: ConfigMap
 metadata:
   labels:

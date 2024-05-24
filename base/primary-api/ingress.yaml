@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: primary-api-ingress
+  labels:
+    app: primary-api
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: api.vatusa.net
+    http:
+      paths:
+      - backend:
+          service:
+            name: primary-api-service
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - api.vatusa.dev
+    secretName: api-vatusa-dev-tls

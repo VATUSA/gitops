@@ -9,6 +9,8 @@ resources:
   - MyVATUSA/ingress.yaml
   - primary-api/deployment.yaml
   - primary-api/service.yaml
+  - primary-api/ingress.yaml
+  - primary-api/certificate.yaml
   - auth/certificate.yaml
   - auth/deployment.yaml
   - auth/service.yaml

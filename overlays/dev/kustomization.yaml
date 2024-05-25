@@ -6,7 +6,7 @@ resources:
 images:
 - name: vatusa/auth
   newName: vatusa/auth
-  newTag: 3c3b440684d0cb289b1e203df91ee8bd7b0e21cf
+  newTag: fb8b9d7db6b2d6a317613824c0af621d809bdfe0
 - name: vatusa/myvatusa
   newName: vatusa/myvatusa
   newTag: cb8c417542ec7b416c62746095f4cceeb593aed4

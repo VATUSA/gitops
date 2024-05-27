@@ -9,7 +9,7 @@ images:
   newTag: 92480de9710c4befe468824abc9c4dcc45ca3af5
 - name: vatusa/myvatusa
   newName: vatusa/myvatusa
-  newTag: cb8c417542ec7b416c62746095f4cceeb593aed4
+  newTag: eb2a4fa54ca783e1a53c9a0ef86a3cceb8b7080d
 - name: vatusa/primary-api
   newName: vatusa/primary-api
   newTag: 19084bc

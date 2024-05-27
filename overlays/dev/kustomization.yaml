@@ -12,4 +12,4 @@ images:
   newTag: eb2a4fa54ca783e1a53c9a0ef86a3cceb8b7080d
 - name: vatusa/primary-api
   newName: vatusa/primary-api
-  newTag: 48728de
+  newTag: "7811870"

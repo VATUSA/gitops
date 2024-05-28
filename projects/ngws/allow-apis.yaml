@@ -44,3 +44,9 @@ spec:
       ports:
         - protocol: TCP
           port: 587
+    - to:
+        - ipBlock:
+            cidr: 143.244.220.248/32 # The VATUSA Network
+      ports:
+        - protocol: TCP
+          port: 443

@@ -43,6 +43,14 @@ data:
     p, role:zkc-admin, exec, create, zkc/*, allow
     
     g, VATUSA:zkc, role:zkc-admin
+    
+    p, role:hcf-admin, projects, get, hcf, allow
+    p, role:hcf-admin, applications, *, hcf/*, allow
+    p, role:hcf-admin, repositories, get, hcf/*, allow
+    p, role:hcf-admin, logs, get, hcf/*, allow
+    p, role:hcf-admin, exec, create, hcf/*, allow
+    
+    g, VATUSA:hcf, role:hcf-admin
 
     p, role:ngws-admin, projects, get, ngws, allow
     p, role:ngws-admin, applications, *, ngws/*, allow

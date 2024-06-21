@@ -33,8 +33,3 @@ resources:
   - zlc/allow-apis.yaml
   - zlc/allow-db.yaml
   - zlc/allow-dns.yaml
-  - hcf/Project.yaml
-  - hcf/deny-egress.yaml
-  - hcf/allow-apis.yaml
-  - hcf/allow-db.yaml
-  - hcf/allow-dns.yaml

@@ -1,15 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-rabbitmq-egress
+  name: allow-rabbitmq-access
   namespace: current
 spec:
   podSelector: {}
-  egress:
-    - to:
+  policyTypes:
+    - Egress
+  ingress:
+    - from:
         - namespaceSelector:
             matchLabels:
               name: rabbitmq
-  ports:
-    - protocol: TCP
-      port: 5672
+      ports:
+        - protocol: TCP
+          port: 5672

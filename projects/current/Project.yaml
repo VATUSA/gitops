@@ -6,6 +6,7 @@ metadata:
 spec:
   sourceRepos:
     - 'https://github.com/vatusa/gitops'
+    - 'https://github.com/VATUSA/discord-bot-v3-config'
   destinations:
     - namespace: current
       server: '*'

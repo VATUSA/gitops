@@ -8,7 +8,6 @@ resources:
   - discord-bot-v3/certificate.yaml
   - discord-bot-v3/service.yaml
   - discord-bot-v3/configmap.yaml
-  - discord-bot-v3-config/configmap.yaml
   - google-workspace/deployment.yaml
 images:
   - name: vatusa/discord-bot-v3

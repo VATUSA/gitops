@@ -9,9 +9,21 @@ resources:
 - discord-bot-v3/service.yaml
 - discord-bot-v3/configmap.yaml
 - google-workspace/deployment.yaml
+- api/deployment.yaml
+- api/service.yaml
+- api/ingress.yaml
+- api/certificate.yaml
+- www/deployment.yaml
+- www/service.yaml
+- www/ingress.yaml
+- www/certificate.yaml
 images:
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17
 - name: vatusa/google-workspace-integration
   newTag: 1.1.28
+- name: vatusa/www
+  newTag: 7d95f4f
+- name: vatusa/api
+  newTag: 6f5a2df

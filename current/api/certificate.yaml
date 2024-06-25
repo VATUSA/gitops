@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: api-vatusa-net-tls
+spec:
+  dnsNames:
+    - api.vatusa.net
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: api-vatusa-net-tls

@@ -1,16 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - discord-bot-v3/deployment-bot.yaml
-  - discord-bot-v3/deployment-web.yaml
-  - discord-bot-v3/ingress.yaml
-  - discord-bot-v3/certificate.yaml
-  - discord-bot-v3/service.yaml
-  - discord-bot-v3/configmap.yaml
-  - google-workspace/deployment.yaml
+- namespace.yaml
+- discord-bot-v3/deployment-bot.yaml
+- discord-bot-v3/deployment-web.yaml
+- discord-bot-v3/ingress.yaml
+- discord-bot-v3/certificate.yaml
+- discord-bot-v3/service.yaml
+- discord-bot-v3/configmap.yaml
+- google-workspace/deployment.yaml
 images:
-  - name: vatusa/discord-bot-v3
-    newTag: "1.1.11"
-  - name: vatusa/google-workspace-integration
-    newTag: "1.1.28"
+- name: vatusa/discord-bot-v3
+  newName: vatusa/discord-bot-v3
+  newTag: 1.1.17
+- name: vatusa/google-workspace-integration
+  newTag: 1.1.28

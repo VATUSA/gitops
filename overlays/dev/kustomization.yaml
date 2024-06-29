@@ -13,3 +13,6 @@ images:
 - name: vatusa/primary-api
   newName: vatusa/primary-api
   newTag: "7811870"
+- name: vatusa/frontend
+  newName: vatusa/frontend
+  newTag: "7811870"

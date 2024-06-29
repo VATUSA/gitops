@@ -7,6 +7,10 @@ resources:
   - MyVATUSA/deployment.yaml
   - MyVATUSA/service.yaml
   - MyVATUSA/ingress.yaml
+  - frontend/certificate.yaml
+  - frontend/deployment.yaml
+  - frontend/service.yaml
+  - frontend/ingress.yaml
   - primary-api/deployment.yaml
   - primary-api/service.yaml
   - primary-api/ingress.yaml

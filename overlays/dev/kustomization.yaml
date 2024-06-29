@@ -7,12 +7,12 @@ images:
 - name: vatusa/auth
   newName: vatusa/auth
   newTag: 6d868e47522d28f6d0be91e75de49c32f6ceabea
+- name: vatusa/frontend
+  newName: vatusa/frontend
+  newTag: 666907165940f6372e0aad8b18f541e15fe93092
 - name: vatusa/myvatusa
   newName: vatusa/myvatusa
   newTag: f59568075c6a646ec365c8d08654dfe40384b6c1
 - name: vatusa/primary-api
   newName: vatusa/primary-api
-  newTag: "7811870"
-- name: vatusa/frontend
-  newName: vatusa/frontend
   newTag: "7811870"

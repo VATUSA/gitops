@@ -1,6 +1,7 @@
 image:
   repository: louislam/uptime-kuma
   pullPolicy: IfNotPresent
+useDeploy: true
 service:
   port: 3001
   nodePort:
@@ -57,10 +58,3 @@ volume:
   size: 4Gi
 strategy:
   type: Recreate
-monitorUrls: |
-  - type: url
-    url: https://zdvartcc.org
-    interval: 60 # Seconds
-  - type: url
-    url: https://zlcartcc.org
-    interval: 60

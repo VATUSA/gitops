@@ -1,14 +1,10 @@
-replicaCount: 1
 image:
   repository: louislam/uptime-kuma
   pullPolicy: IfNotPresent
-  tag: 2.19.1
 service:
   port: 3001
-persistence:
-  enabled: true
-  size: 10Gi
-  storageClassName: ""
+  nodePort:
+  annotations: {}
 ingress:
   enabled: true
   className: "nginx"
@@ -28,15 +24,39 @@ ingress:
     - secretName: uptime-kuma-tls
       hosts:
         - status.vatusa.dev
-resources:
-  requests:
-    memory: 50Mi
-    cpu: 50m
-  limits:
-    memory: 100Mi
-    cpu: 150m
-env:
-  TZ: "America/Chicago"
+nodeSelector: {}
+tolerations: []
+affinity: {}
+livenessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 180
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
+  exec:
+    command:
+      - "extra/healthcheck"
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+  successThreshold: 1
+  exec:
+    command: []
+  httpGet:
+    path: /
+    port: 3001
+    scheme: HTTP
+    httpHeaders: []
+volume:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 4Gi
+strategy:
+  type: Recreate
 monitorUrls: |
   - type: url
     url: https://zdvartcc.org

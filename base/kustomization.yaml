@@ -3,6 +3,10 @@ kind: Kustomization
 metadata:
   name: base-vatusa
 resources:
+  - uptime-kuma/certificate.yaml
+  - uptime-kuma/statefulset.yaml
+  - uptime-kuma/service.yaml
+  - uptime-kuma/ingress.yaml
   - MyVATUSA/certificate.yaml
   - MyVATUSA/deployment.yaml
   - MyVATUSA/service.yaml

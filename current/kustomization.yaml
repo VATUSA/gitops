@@ -13,6 +13,7 @@ resources:
 - api/service.yaml
 - api/ingress.yaml
 - api/certificate.yaml
+- api/configmap.yaml
 - www/deployment.yaml
 - www/service.yaml
 - www/ingress.yaml

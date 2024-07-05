@@ -32,4 +32,6 @@ spec:
           envFrom:
             - secretRef:
                 name: api-secrets
+            - configMapRef:
+                name: api-config
       restartPolicy: Always

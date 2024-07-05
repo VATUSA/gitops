@@ -1,13 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: api-ingress
+  name: api-test-ingress
   labels:
     app: api
 spec:
   ingressClassName: nginx
   rules:
-    - host: api.vatusa.net
+    - host: api-test.vatusa.dev
       http:
         paths:
           - backend:
@@ -19,5 +19,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - api.vatusa.net
-      secretName: api-vatusa-net-tls
+        - api-test.vatusa.dev
+      secretName: api-test-vatusa-dev-tls

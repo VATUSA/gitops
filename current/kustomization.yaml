@@ -18,6 +18,8 @@ resources:
 - www/service.yaml
 - www/ingress.yaml
 - www/certificate.yaml
+- api/test-ingress.yaml
+- api/test-cert.yaml
 images:
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3

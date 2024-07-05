@@ -5,6 +5,7 @@ metadata:
 spec:
   dnsNames:
     - api.vatusa.net
+    - test-api.vatusa.dev
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt

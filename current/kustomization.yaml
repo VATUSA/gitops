@@ -18,8 +18,6 @@ resources:
 - www/service.yaml
 - www/ingress.yaml
 - www/certificate.yaml
-- api/test-ingress.yaml
-- api/test-cert.yaml
 - api/deployment-queue.yaml
 - api/service-queue.yaml
 images:

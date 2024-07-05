@@ -4,7 +4,6 @@ metadata:
   name: api-vatusa-net-tls
 spec:
   dnsNames:
-    - api.vatusa.net
     - test-api.vatusa.dev
   issuerRef:
     kind: ClusterIssuer

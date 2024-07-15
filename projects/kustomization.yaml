@@ -22,6 +22,7 @@ resources:
   - zdv/Project.yaml
   - zdv/deny-egress.yaml
   - zdv/allow-apis.yaml
+  - zdv/allow-apis-fqdn.yaml
   - zdv/allow-db.yaml
   - zdv/allow-dns.yaml
   - zlc/Project.yaml

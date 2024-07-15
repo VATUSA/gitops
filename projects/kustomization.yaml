@@ -12,7 +12,7 @@ resources:
   - zkc/Project.yaml
   - zkc/deny-egress.yaml
   - zkc/allow-apis.yaml
-  - zdv/allow-apis-fqdn.yaml
+  - zkc/allow-apis-fqdn.yaml
   - zkc/allow-db.yaml
   - zkc/allow-dns.yaml
   - zfw/Project.yaml

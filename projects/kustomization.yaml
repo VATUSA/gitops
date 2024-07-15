@@ -12,11 +12,13 @@ resources:
   - zkc/Project.yaml
   - zkc/deny-egress.yaml
   - zkc/allow-apis.yaml
+  - zdv/allow-apis-fqdn.yaml
   - zkc/allow-db.yaml
   - zkc/allow-dns.yaml
   - zfw/Project.yaml
   - zfw/deny-egress.yaml
   - zfw/allow-apis.yaml
+  - zfw/allow-apis-fqdn.yaml
   - zfw/allow-db.yaml
   - zfw/allow-dns.yaml
   - zdv/Project.yaml
@@ -28,5 +30,12 @@ resources:
   - zlc/Project.yaml
   - zlc/deny-egress.yaml
   - zlc/allow-apis.yaml
+  - zlc/allow-apis-fqdn.yaml
   - zlc/allow-db.yaml
   - zlc/allow-dns.yaml
+  - zid/Project.yaml
+  - zid/deny-egress.yaml
+  - zid/allow-apis.yaml
+  - zid/allow-apis-fqdn.yaml
+  - zid/allow-db.yaml
+  - zid/allow-dns.yaml

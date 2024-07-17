@@ -43,6 +43,14 @@ data:
     p, role:zkc-admin, exec, create, zkc/*, allow
     
     g, VATUSA:zkc, role:zkc-admin
+    
+    p, role:zid-admin, projects, get, zid, allow
+    p, role:zid-admin, applications, *, zid/*, allow
+    p, role:zid-admin, repositories, get, zid/*, allow
+    p, role:zid-admin, logs, get, zid/*, allow
+    p, role:zid-admin, exec, create, zid/*, allow
+    
+    g, VATUSA:zid, role:zid-admin
 
     p, role:ngws-admin, projects, get, ngws, allow
     p, role:ngws-admin, applications, *, ngws/*, allow

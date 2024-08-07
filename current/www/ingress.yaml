@@ -19,5 +19,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - vatusa.dev
+        - vatusa.net
       secretName: vatusa-net-tls

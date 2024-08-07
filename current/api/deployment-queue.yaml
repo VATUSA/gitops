@@ -30,7 +30,7 @@ spec:
                 name: api-secrets
             - configMapRef:
                 name: api-config
-          image: vatusa/api:6f5a2df
+          image: vatusa/api
           imagePullPolicy: IfNotPresent
           name: api-queue
           resources:

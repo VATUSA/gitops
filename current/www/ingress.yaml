@@ -17,7 +17,18 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
+    - host: www.vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: www-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - vatusa.net
+        - www.vatusa.net
       secretName: vatusa-net-tls

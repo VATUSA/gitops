@@ -16,7 +16,7 @@ spec:
                 port:
                   number: 80
             path: /
-            pathType: Prefix
+            pathType: ImplementationSpecific
   tls:
     - hosts:
         - forums.vatusa.net

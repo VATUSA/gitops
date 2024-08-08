@@ -60,8 +60,6 @@ spec:
           volumeMounts:
             - mountPath: /www/attachments
               name: do-forums-attachments
-      imagePullSecrets:
-        - name: docker-hub-credentials
       schedulerName: default-scheduler
       securityContext: { }
       terminationGracePeriodSeconds: 30

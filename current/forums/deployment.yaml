@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forums
+  labels:
+    app: forums
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: forums
+  template:
+    metadata:
+      name: forums
+      labels:
+        app: forums
+    spec:
+      containers:
+        - name: forums
+          image: vatusa/forums:d9a0131
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 50m
+              memory: 75Mi
+            limits:
+              cpu: 100m
+              memory: 150Mi
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: forum-secrets
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 2
+            successThreshold: 1
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 2
+            successThreshold: 2
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 2
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+          volumeMounts:
+            - mountPath: /www/attachments
+              name: do-forums-attachments
+      imagePullSecrets:
+        - name: docker-hub-credentials
+      schedulerName: default-scheduler
+      securityContext: { }
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: do-forums-attachments
+          persistentVolumeClaim:
+            claimName: do-forums-attachments
+      restartPolicy: Always

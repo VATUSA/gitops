@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: forums-ingress
+  labels:
+    app: forums
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: forums.vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: forums-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - forums.vatusa.net
+      secretName: forums-vatusa-net-tls

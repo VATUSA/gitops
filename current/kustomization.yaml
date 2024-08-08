@@ -20,6 +20,11 @@ resources:
 - www/certificate.yaml
 - api/deployment-queue.yaml
 - api/service-queue.yaml
+- forums/pvc.yaml
+- forums/deployment.yaml
+- forums/service.yaml
+- forums/ingress.yaml
+- forums/certificate.yaml
 images:
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3

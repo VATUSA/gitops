@@ -6,7 +6,7 @@ spec:
   schedule: '* * * * *'  # Adjust the cron schedule as needed
   concurrencyPolicy: Allow
   failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:

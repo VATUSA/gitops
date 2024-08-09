@@ -40,3 +40,5 @@ images:
   newTag: 58604fe
 - name: vatusa/api
   newTag: bdf94cc
+- name: vatusa/forums
+  newTag: d9a0131

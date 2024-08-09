@@ -31,14 +31,14 @@ resources:
 - teamspeak/statefulset.yaml
 - teamspeak/service.yaml
 images:
+- name: vatusa/api
+  newTag: bdf94cc
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17
+- name: vatusa/forums
+  newName: vatusa/forums
 - name: vatusa/google-workspace-integration
   newTag: 1.1.28
 - name: vatusa/www
   newTag: 58604fe
-- name: vatusa/api
-  newTag: bdf94cc
-- name: vatusa/forums
-  newTag: d9a0131

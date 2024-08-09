@@ -28,6 +28,7 @@ resources:
 - forums/ingress.yaml
 - forums/certificate.yaml
 - teamspeak/pvc.yaml
+- teamspeak/statefulset.yaml
 - teamspeak/service.yaml
 images:
 - name: vatusa/discord-bot-v3

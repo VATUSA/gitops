@@ -41,7 +41,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /var/ts3server
-              name: teamspeak-data
+              name: do-teamspeak-data
           lifecycle:
             postStart:
               exec:

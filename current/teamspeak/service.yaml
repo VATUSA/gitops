@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamspeak
+  labels:
+    app: teamspeak
+spec:
+  type: ClusterIP
+  selector:
+    app: teamspeak
+  ports:
+    - name: udp9987
+      port: 9987
+      protocol: UDP
+      targetPort: 9987
+    - name: tcp10011
+      port: 10011
+      protocol: TCP
+      targetPort: 10011
+    - name: tcp30033
+      port: 30033
+      protocol: TCP
+      targetPort: 30033
+  ipFamilyPolicy: SingleStack
+  ipFamilies:
+    - IPv4
+  internalTrafficPolicy: Cluster

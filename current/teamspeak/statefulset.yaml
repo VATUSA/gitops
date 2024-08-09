@@ -55,17 +55,9 @@ spec:
             readOnlyRootFilesystem: false
             runAsNonRoot: false
       volumes:
-        - name: teamspeak-data
+        - name: do-teamspeak-data
           persistentVolumeClaim:
-            claimName: teamspeak-data
+            claimName: do-teamspeak-data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-  volumeClaimTemplates:
-    - metadata:
-        name: teamspeak-data
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 3Gi

@@ -1,0 +1,11 @@
+piVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: do-teamspeak-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  volumeMode: Filesystem

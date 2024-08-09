@@ -37,7 +37,8 @@ images:
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17
 - name: vatusa/forums
-  newTag: 73c14a7
+  newName: vatusa/forums
+  newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
 - name: vatusa/google-workspace-integration
   newTag: 1.1.28
 - name: vatusa/www

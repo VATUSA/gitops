@@ -14,10 +14,12 @@ resources:
 - api/ingress.yaml
 - api/certificate.yaml
 - api/configmap.yaml
+- api/cronjob.yaml
 - www/deployment.yaml
 - www/service.yaml
 - www/ingress.yaml
 - www/certificate.yaml
+- www/cronjob.yaml
 - api/deployment-queue.yaml
 - api/service-queue.yaml
 - forums/pvc.yaml

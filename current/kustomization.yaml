@@ -32,7 +32,8 @@ resources:
 - teamspeak/service.yaml
 images:
 - name: vatusa/api
-  newTag: bdf94cc
+  newName: vatusa/api
+  newTag: fe27afcccbc1741a31cc39004d83ff610f365014
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17

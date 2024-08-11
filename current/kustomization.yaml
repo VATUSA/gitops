@@ -27,9 +27,6 @@ resources:
 - forums/service.yaml
 - forums/ingress.yaml
 - forums/certificate.yaml
-- teamspeak/pvc.yaml
-- teamspeak/statefulset.yaml
-- teamspeak/service.yaml
 images:
 - name: vatusa/api
   newTag: bdf94cc

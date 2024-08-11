@@ -29,7 +29,8 @@ resources:
 - forums/certificate.yaml
 images:
 - name: vatusa/api
-  newTag: bdf94cc
+  newName: vatusa/api
+  newTag: 22947c07306d2de8d61e0124b1f6725f462d664e
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17
@@ -39,4 +40,5 @@ images:
 - name: vatusa/google-workspace-integration
   newTag: 1.1.28
 - name: vatusa/www
-  newTag: 58604fe
+  newName: vatusa/www
+  newTag: 689a89e0d9d11a7d0e8612009dd3ea83d20d878a

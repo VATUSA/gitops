@@ -43,4 +43,5 @@ images:
 - name: vatusa/google-workspace-integration
   newTag: 1.1.28
 - name: vatusa/www
-  newTag: 58604fe
+  newName: vatusa/www
+  newTag: f044614d21a7745e3a06fecf7cf52c82e9440755

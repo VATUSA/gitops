@@ -13,7 +13,7 @@ spec:
         spec:
           containers:
             - name: api-cron
-              image: vatusa/api:bdf94cc
+              image: vatusa/www
               imagePullPolicy: IfNotPresent
               command:
                 - php

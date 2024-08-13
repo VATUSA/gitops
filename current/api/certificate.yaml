@@ -6,6 +6,7 @@ spec:
   dnsNames:
     - api.vatusa.net
     - login.vatusa.net
+    - auth.vatusa.net
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt

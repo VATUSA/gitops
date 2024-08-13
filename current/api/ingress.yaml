@@ -27,8 +27,19 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
+    - host: auth.vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: api-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - api.vatusa.net
         - login.vatusa.net
+        - auth.vatusa.net
       secretName: api-vatusa-net-tls

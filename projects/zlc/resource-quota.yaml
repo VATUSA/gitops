@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ResourceQuota
 metadata:
   name: resource-limit
+  namespace: zlc
 spec:
   hard:
     limits.cpu: 1000m

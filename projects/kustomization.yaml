@@ -15,27 +15,32 @@ resources:
   - zkc/allow-apis-fqdn.yaml
   - zkc/allow-db.yaml
   - zkc/allow-dns.yaml
+  - zkc/resource-quota.yaml
   - zfw/Project.yaml
   - zfw/deny-egress.yaml
   - zfw/allow-apis.yaml
   - zfw/allow-apis-fqdn.yaml
   - zfw/allow-db.yaml
   - zfw/allow-dns.yaml
+  - zfw/resource-quota.yaml
   - zdv/Project.yaml
   - zdv/deny-egress.yaml
   - zdv/allow-apis.yaml
   - zdv/allow-apis-fqdn.yaml
   - zdv/allow-db.yaml
   - zdv/allow-dns.yaml
+  - zdv/resource-quota.yaml
   - zlc/Project.yaml
   - zlc/deny-egress.yaml
   - zlc/allow-apis.yaml
   - zlc/allow-apis-fqdn.yaml
   - zlc/allow-db.yaml
   - zlc/allow-dns.yaml
+  - zlc/resource-quota.yaml
   - zid/Project.yaml
   - zid/deny-egress.yaml
   - zid/allow-apis.yaml
   - zid/allow-apis-fqdn.yaml
   - zid/allow-db.yaml
   - zid/allow-dns.yaml
+  - zid/resource-quota.yaml

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adhp-discord-bot
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: adhp-discord-bot
+  template:
+    metadata:
+      labels:
+        app: adhp-discord-bot
+    spec:
+      containers:
+        - name: adhp-discord-bot
+          image: adhp/bot:48b73e4
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/bot/config.yaml
+              subPath: config.yaml
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 25m
+              memory: 25Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          envFrom:
+            - secretRef:
+                name: primary-api-secrets
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: adhp-discord-bot-secrets

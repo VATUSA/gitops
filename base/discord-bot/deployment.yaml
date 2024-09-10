@@ -28,9 +28,6 @@ spec:
             limits:
               cpu: 100m
               memory: 100Mi
-          envFrom:
-            - secretRef:
-                name: primary-api-secrets
       volumes:
         - name: config-volume
           secret:

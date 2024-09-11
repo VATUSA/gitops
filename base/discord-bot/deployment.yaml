@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: adhp-discord-bot
-          image: adhp/bot:a6e50b4
+          image: adhp/bot:e43578f
           volumeMounts:
             - name: config-volume
               mountPath: /etc/bot/config.yaml

@@ -15,6 +15,12 @@ spec:
             - aviationweather.gov
             - discord.com
             - gateway.discord.gg
+            - api.zanartcc.org
+            - api.zdvartcc.org
+            - api.zlcartcc.org
+            - api.zidartcc.org
+            - api.zkcartcc.org
+            - api.zfwartcc.org
       ports:
         - port: 443
           protocol: TCP

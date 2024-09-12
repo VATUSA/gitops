@@ -1,0 +1,24 @@
+apiVersion: networking.gke.io/v1alpha3
+kind: FQDNNetworkPolicy
+metadata:
+  name: allow-apis-fqdn
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - fqdns:
+            - data.vatsim.net
+            - api.vatusa.net
+            - aviationweather.gov
+            - discord.com
+      ports:
+        - port: 443
+          protocol: TCP
+    - to:
+        - fqdns:
+            - email-smtp.us-east-2.amazonaws.com
+      ports:
+        - port: 587
+          protocol: TCP

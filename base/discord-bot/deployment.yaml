@@ -23,11 +23,11 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 25m
-              memory: 25Mi
-            limits:
-              cpu: 100m
+              cpu: 50m
               memory: 100Mi
+            limits:
+              cpu: 150m
+              memory: 250Mi
       volumes:
         - name: config-volume
           secret:

@@ -16,6 +16,8 @@ spec:
       containers:
         - name: canvas
           image: ubuntu:24.04
+          command:
+            - "tail -f /dev/null"
           ports:
             - containerPort: 3000
               protocol: TCP

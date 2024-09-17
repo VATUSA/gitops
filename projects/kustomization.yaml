@@ -4,6 +4,7 @@ metadata:
   name: base-projects-adhp
 resources:
   - ngws/Project.yaml
+  - ngws/deny-egress.yaml
   - ngws/allow-apis.yaml
   - ngws/allow-db.yaml
   - ngws/allow-dns.yaml

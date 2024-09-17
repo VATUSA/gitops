@@ -17,7 +17,9 @@ spec:
         - name: canvas
           image: ubuntu:24.04
           command:
-            - "sleep infinity"
+            - "tail"
+            - "-f"
+            - "/dev/null"
           ports:
             - containerPort: 3000
               protocol: TCP

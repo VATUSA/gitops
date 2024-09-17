@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canvas
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: canvas
+  template:
+    metadata:
+      labels:
+        app: canvas
+    spec:
+      containers:
+        - name: canvas
+          image: ubuntu:24.04
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi

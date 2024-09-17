@@ -24,7 +24,3 @@ resources:
   - auth/service.yaml
   - auth/ingress.yaml
   - discord-bot/deployment.yaml
-  - canvas/certificate.yaml
-  - canvas/deployment.yaml
-  - canvas/ingress.yaml
-  - canvas/service.yaml

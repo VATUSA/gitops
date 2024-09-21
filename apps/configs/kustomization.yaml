@@ -10,3 +10,4 @@ resources:
   - base/cert-manager-ClusterIssuer.yaml
   - base/rabbitmq-ingress.yaml
   - base/rabbitmq-service.yaml
+  - base/postgresql-nodeport.yaml

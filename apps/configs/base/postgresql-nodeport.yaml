@@ -12,4 +12,5 @@ spec:
       targetPort: 5432
       nodePort: 30001
   selector:
-    app: postgresql
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: primary

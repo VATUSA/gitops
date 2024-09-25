@@ -23,4 +23,4 @@ resources:
   - auth/deployment.yaml
   - auth/service.yaml
   - auth/ingress.yaml
-  - discord-bot/deployment.yaml
+  # - discord-bot/deployment.yaml

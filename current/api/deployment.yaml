@@ -16,6 +16,16 @@ spec:
       labels:
         app: api
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - api
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: api
           image: vatusa/api

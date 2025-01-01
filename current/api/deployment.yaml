@@ -25,6 +25,10 @@ spec:
                     operator: In
                     values:
                       - api
+                  - key: pod-template-hash
+                    operator: NotIn
+                    values:
+                      - "{{ .Values.podTemplateHash }}"
               topologyKey: kubernetes.io/hostname
       containers:
         - name: api

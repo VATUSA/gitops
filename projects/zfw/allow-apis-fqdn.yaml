@@ -14,6 +14,7 @@ spec:
             - api.vatusa.net
             - aviationweather.gov
             - discord.com
+            - nfdc.faa.gov
       ports:
         - port: 443
           protocol: TCP

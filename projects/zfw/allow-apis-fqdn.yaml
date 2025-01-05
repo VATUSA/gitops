@@ -15,6 +15,7 @@ spec:
             - aviationweather.gov
             - discord.com
             - nfdc.faa.gov
+            - aeronav.faa.gov
       ports:
         - port: 443
           protocol: TCP

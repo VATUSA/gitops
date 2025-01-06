@@ -8,6 +8,4 @@ resources:
   - base/argocd-namespace-creator.yaml
   - base/argocd-namespace-creator-binding.yaml
   - base/cert-manager-ClusterIssuer.yaml
-  - base/rabbitmq-ingress.yaml
-  - base/rabbitmq-service.yaml
   - base/postgresql-nodeport.yaml

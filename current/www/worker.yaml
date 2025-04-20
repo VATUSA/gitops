@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: www-worker
+  labels:
+    app: www-worker
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: www-worker
+  template:
+    metadata:
+      name: www-worker
+      labels:
+        app: www-worker
+    spec:
+      containers:
+        - name: www-worker
+          image: vatusa/www
+          imagePullPolicy: IfNotPresent
+          command:
+            - php
+          args:
+            - artisan
+            - schedule:work
+          resources:
+            requests:
+              cpu: 25m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 250Mi
+          envFrom:
+            - secretRef:
+                name: www-secrets
+      restartPolicy: Always

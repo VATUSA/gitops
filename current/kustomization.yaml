@@ -19,7 +19,7 @@ resources:
 - www/service.yaml
 - www/ingress.yaml
 - www/certificate.yaml
-- www/cronjob.yaml
+- www/worker.yaml
 - api/deployment-queue.yaml
 - api/service-queue.yaml
 - forums/pvc.yaml

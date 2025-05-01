@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-worker
+  labels:
+    app: api-worker
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: api-worker
+  template:
+    metadata:
+      name: api-worker
+      labels:
+        app: api-worker
+    spec:
+      containers:
+        - name: api-worker
+          image: vatusa/api
+          imagePullPolicy: IfNotPresent
+          command:
+            - php
+          args:
+            - artisan
+            - schedule:work
+          resources:
+            requests:
+              cpu: 15m
+              memory: 50Mi
+            limits:
+              cpu: 100m
+              memory: 250Mi
+          envFrom:
+            - secretRef:
+                name: api-secrets
+      restartPolicy: Always

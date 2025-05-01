@@ -14,7 +14,7 @@ resources:
 - api/ingress.yaml
 - api/certificate.yaml
 - api/configmap.yaml
-- api/cronjob.yaml
+- api/worker.yaml
 - www/deployment.yaml
 - www/service.yaml
 - www/ingress.yaml

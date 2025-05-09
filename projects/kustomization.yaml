@@ -10,6 +10,13 @@ resources:
   - ngws/allow-dns.yaml
   - ngws/allow-apis-fqdn.yaml
   - current/Project.yaml
+  - zan/Project.yaml
+  - zan/deny-egress.yaml
+  - zan/allow-apis.yaml
+  - zan/allow-apis-fqdn.yaml
+  - zan/allow-db.yaml
+  - zan/allow-dns.yaml
+  - zan/resource-quota.yaml
   - zkc/Project.yaml
   - zkc/deny-egress.yaml
   - zkc/allow-apis.yaml

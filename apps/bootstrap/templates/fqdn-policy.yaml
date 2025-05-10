@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fqdn-policy
+  namespace: fqdn-policy
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: fqdn-policy
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: charts
+    repoURL: https://github.com/nais/fqdn-policy
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

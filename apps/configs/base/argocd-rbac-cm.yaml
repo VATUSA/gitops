@@ -10,7 +10,7 @@ data:
     p, role:org-admin, logs, get, *, allow
     p, role:org-admin, exec, create, */*, allow
 
-    g, VATUSA:argo-admin, role:org-admin
+    g, VATUSA:argo-admin, role:admin
 
     p, role:zdv-admin, projects, get, zdv, allow
     p, role:zdv-admin, applications, *, zdv/*, allow

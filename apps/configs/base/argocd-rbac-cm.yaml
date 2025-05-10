@@ -52,6 +52,14 @@ data:
     
     g, VATUSA:zid, role:zid-admin
 
+    p, role:zan-admin, projects, get, zan, allow
+    p, role:zan-admin, applications, *, zan/*, allow
+    p, role:zan-admin, repositories, get, zan/*, allow
+    p, role:zan-admin, logs, get, zan/*, allow
+    p, role:zan-admin, exec, create, zan/*, allow
+
+    g, VATUSA:zan, role:zan-admin
+
     p, role:ngws-admin, projects, get, ngws, allow
     p, role:ngws-admin, applications, *, ngws/*, allow
     p, role:ngws-admin, repositories, get, ngws/*, allow

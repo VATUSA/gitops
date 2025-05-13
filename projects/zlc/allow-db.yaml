@@ -1,22 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-db
+  name: allow-all-egress
   namespace: zlc
 spec:
   podSelector: {}
   policyTypes:
-    - Egress
+  - Egress
   egress:
-    - to:
-      - ipBlock:
-          cidr: 10.108.0.0/20
-      ports:
-        - protocol: TCP
-          port: 25060
-    - to:
-        - ipBlock:
-            cidr: 159.203.82.194/32
-      ports:
-        - protocol: TCP
-          port: 25060
+  - {}

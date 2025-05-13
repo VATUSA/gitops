@@ -16,7 +16,6 @@ resources:
   - zid/Project.yaml
   - zid/resource-quota.yaml
   - zan/allow-db.yaml
-  - zdv/allow-db.yaml
   - zfw/allow-db.yaml
   - zid/allow-db.yaml
   - zkc/allow-db.yaml

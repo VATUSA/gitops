@@ -1,4 +1,8 @@
 rabbitmq:
+  image:
+    registry: registry-1.docker.io
+    repository: bitnamicharts/rabbitmq
+
   auth:
     username: admin
     existingPasswordSecret: passwords

@@ -4,9 +4,8 @@ global:
     
 rabbitmq:
   image:
-    registry: registry-1.docker.io
-    repository: bitnamicharts/rabbitmq
-    digest: sha256:53769713d29cd8d9af4f1d3dfc9d02cc2fc9bd517c68bf65cefc6da99fb10f94
+    registry: public.ecr.aws
+    repository: bitnami/rabbitmq
 
   auth:
     username: admin

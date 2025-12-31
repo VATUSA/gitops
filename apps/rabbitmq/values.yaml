@@ -6,7 +6,7 @@ rabbitmq:
   image:
     registry: registry-1.docker.io
     repository: bitnamicharts/rabbitmq
-    tag: 16.0.14
+    digest: sha256:53769713d29cd8d9af4f1d3dfc9d02cc2fc9bd517c68bf65cefc6da99fb10f94
 
   auth:
     username: admin

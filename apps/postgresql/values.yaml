@@ -4,8 +4,8 @@ global:
     
 postgresql:
   image:
-    registry: registry-1.docker.io
-    repository: bitnamicharts/postgresql
+    registry: public.ecr.aws
+    repository: bitnami/postgresql
 
   auth:
     username: canvas

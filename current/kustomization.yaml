@@ -39,7 +39,7 @@ images:
   newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
 - name: vatusa/google-workspace-integration
   newName: vatusa/google-workspace-integration
-  newTag: 1.1.33
+  newTag: 1.1.34
 - name: vatusa/www
   newName: vatusa/www
   newTag: 2123807e84cdc9a108422b0aef57f3693a9660e3

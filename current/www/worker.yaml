@@ -5,7 +5,7 @@ metadata:
   labels:
     app: www-worker
 spec:
-  replicas: 3
+  replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -30,8 +30,8 @@ spec:
               cpu: 25m
               memory: 100Mi
             limits:
-              cpu: 100m
-              memory: 250Mi
+              cpu: 500m
+              memory: 500Mi
           envFrom:
             - secretRef:
                 name: www-secrets

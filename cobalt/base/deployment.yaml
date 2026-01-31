@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cobalt
+  labels:
+    app: cobalt
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: cobalt
+  template:
+    metadata:
+      name: cobalt
+      labels:
+        app: cobalt
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - cobalt
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: cobalt
+          image: vatusa/cobalt
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 750m
+              memory: 1Gi
+            limits:
+              cpu: 2
+              memory: 2Gi
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: cobalt-secrets
+            - configMapRef:
+                name: cobalt-config
+      restartPolicy: Always

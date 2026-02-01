@@ -6,6 +6,7 @@ resources:
 - base/configmap.yaml
 - base/deployment.yaml
 - base/ingress.yaml
+- base/ingress-inline.yaml
 - base/service.yaml
 images:
 - name: vatusa/cobalt

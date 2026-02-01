@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: cobalt-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /web
   labels:
     app: cobalt
 spec:
@@ -17,7 +19,18 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
+    - host: vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: cobalt-service
+                port:
+                  number: 80
+            path: /cobalt
+            pathType: Prefix
   tls:
     - hosts:
         - cobalt.vatusa.net
+        - vatusa.net
       secretName: cobalt-vatusa-net-tls

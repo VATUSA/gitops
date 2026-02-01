@@ -5,6 +5,7 @@ metadata:
 spec:
   dnsNames:
     - cobalt.vatusa.net
+    - vatusa.net
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt

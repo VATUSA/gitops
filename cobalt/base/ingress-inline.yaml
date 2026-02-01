@@ -13,7 +13,6 @@ spec:
       http:
         paths:
           - path: /cobalt/(.*)
-            pathType: Exact
             backend:
               service:
                 name: cobalt-service
@@ -23,7 +22,6 @@ spec:
       http:
         paths:
           - path: /cobalt/(.*)
-            pathType: Exact
             backend:
               service:
                 name: cobalt-service

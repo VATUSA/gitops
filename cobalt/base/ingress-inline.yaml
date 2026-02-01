@@ -2,8 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: cobalt-inline-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /web
   labels:
     app: cobalt
 spec:

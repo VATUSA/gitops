@@ -6,6 +6,7 @@ spec:
   dnsNames:
     - cobalt.vatusa.net
     - vatusa.net
+    - www.vatusa.net
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt

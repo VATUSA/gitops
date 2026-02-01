@@ -19,7 +19,18 @@ spec:
                   number: 80
             path: /cobalt
             pathType: Prefix
+    - host: www.vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: cobalt-service
+                port:
+                  number: 80
+            path: /cobalt
+            pathType: Prefix
   tls:
     - hosts:
         - vatusa.net
+        - www.vatusa.net
       secretName: cobalt-vatusa-net-tls

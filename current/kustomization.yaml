@@ -30,7 +30,7 @@ resources:
 images:
 - name: vatusa/api
   newName: vatusa/api
-  newTag: 1c0de1ff3f13b7d3bffc408794e7b50d50872a0c
+  newTag: e0ae86e61fcddbfa0f13fa9785ae37bbc30fda92
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17

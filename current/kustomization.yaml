@@ -42,4 +42,4 @@ images:
   newTag: 1.1.35
 - name: vatusa/www
   newName: vatusa/www
-  newTag: 13267d36ce0dd62bb938cd22f3dc425adab13e31
+  newTag: d63764dfcdf1f185d7bfd24970672ecfe8514b66

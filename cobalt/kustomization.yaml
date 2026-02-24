@@ -8,6 +8,8 @@ resources:
 - base/ingress.yaml
 - base/ingress-inline.yaml
 - base/service.yaml
+- base/service-account.yaml
+- base/service-account-bindings.yaml
 images:
 - name: vatusa/cobalt
   newName: vatusa/cobalt

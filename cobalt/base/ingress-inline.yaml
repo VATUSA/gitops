@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: cobalt-inline-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /web/$1
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   labels:
     app: cobalt
 spec:

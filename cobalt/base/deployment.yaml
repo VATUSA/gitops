@@ -46,4 +46,5 @@ spec:
                 name: cobalt-secrets
             - configMapRef:
                 name: cobalt-config
+      serviceAccountName: cobalt-sa
       restartPolicy: Always

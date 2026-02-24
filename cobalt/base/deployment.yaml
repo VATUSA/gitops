@@ -50,6 +50,6 @@ spec:
             - name: CONTAINER_IMAGE
               valueFrom:
                 fieldRef:
-                  fieldPath: spec.containers[0].image
+                  fieldPath: spec.template.spec.containers[0].image
       serviceAccountName: cobalt-sa
       restartPolicy: Always

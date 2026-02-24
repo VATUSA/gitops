@@ -46,11 +46,5 @@ spec:
                 name: cobalt-secrets
             - configMapRef:
                 name: cobalt-config
-          env:
-            - name: CONTAINER_IMAGE
-              valueFrom:
-                resourceFieldRef:
-                  containerName: cobalt
-                  resource: image
       serviceAccountName: cobalt-sa
       restartPolicy: Always

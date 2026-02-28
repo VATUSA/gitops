@@ -8,4 +8,5 @@ data:
   APP_ENV: "prod"
   APP_BASE_URL: "https://cobalt.vatusa.net/"
   POST_LOGIN_URL: "https://vatusa.net/"
+  VATSIM_API2_URL: "https://api.vatsim.net/v2"
 

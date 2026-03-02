@@ -13,4 +13,4 @@ resources:
 images:
 - name: vatusa/cobalt
   newName: vatusa/cobalt
-  newTag: 2a28b8fa1a7e5bbf6b81afc16055504c644772b3
+  newTag: 7ad3c80c1e32d2555ad86d430747c372f086a5e9

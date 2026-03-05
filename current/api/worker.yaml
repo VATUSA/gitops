@@ -30,8 +30,8 @@ spec:
               cpu: 15m
               memory: 250Mi
             limits:
-              cpu: 250m
-              memory: 1000Mi
+              cpu: 1000m
+              memory: 2000Mi
           envFrom:
             - secretRef:
                 name: api-secrets

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webapps-ingress
+  labels:
+    app: webapps
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: next.vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: webapps-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - next.vatusa.net
+      secretName: next-vatusa-net-tls

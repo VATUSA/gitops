@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base # Reference the base directory
+  - namespace.yaml
+patches:
+  - target:
+      kind: Ingress
+      name: cobalt-ingress
+    path: ingress-patch.yaml
+  - target:
+      kind: Ingress
+      name: cobalt-inline-ingress
+    path: ingress-inline-patch.yaml
+  - target:
+      kind: Certificate
+      name: cobalt-tls
+    path: certificate-patch.yaml

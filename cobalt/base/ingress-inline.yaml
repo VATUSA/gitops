@@ -33,4 +33,4 @@ spec:
     - hosts:
         - vatusa.net
         - www.vatusa.net
-      secretName: cobalt-vatusa-net-tls
+      secretName: cobalt-tls

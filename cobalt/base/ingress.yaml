@@ -20,4 +20,4 @@ spec:
   tls:
     - hosts:
         - cobalt.vatusa.net
-      secretName: cobalt-vatusa-net-tls
+      secretName: cobalt-tls

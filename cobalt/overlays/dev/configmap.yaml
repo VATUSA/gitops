@@ -5,8 +5,8 @@ metadata:
   labels:
     app: cobalt
 data:
-  APP_ENV: "prod"
-  APP_BASE_URL: "https://cobalt.vatusa.net/"
-  POST_LOGIN_URL: "https://vatusa.net/"
+  APP_ENV: "staging"
+  APP_BASE_URL: "https://cobalt.vatusa.dev/"
+  POST_LOGIN_URL: "https://vatusa.dev/"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
 

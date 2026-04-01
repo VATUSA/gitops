@@ -4,4 +4,3 @@ resources:
   - ../../base # Reference the base directory
   - namespace.yaml
   - configmap.yaml
-  - secret.yaml

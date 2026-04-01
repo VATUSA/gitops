@@ -17,3 +17,7 @@ patches:
       kind: Certificate
       name: cobalt-tls
     path: certificate-patch.yaml
+images:
+  - name: vatusa/cobalt
+    newName: vatusa/cobalt
+    newTag: 563cf4747e5afbda13872cce1efd2b13bee28b55

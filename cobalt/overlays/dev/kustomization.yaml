@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../base # Reference the base directory
   - namespace.yaml
+  - configmap.yaml
 patches:
   - target:
       kind: Ingress

@@ -8,5 +8,5 @@
   path: /spec/tls/0/hosts/0
   value: vatusa.dev
 - op: replace
-  path: /spec/tls/0/hosts/0
+  path: /spec/tls/1/hosts/0
   value: www.vatusa.dev

@@ -1,11 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../base # Reference the base directory
-  - namespace.yaml
-  - configmap.yaml
+- ../../base
+- namespace.yaml
+- configmap.yaml
 
 images:
-  - name: vatusa/cobalt
-    newName: vatusa/cobalt
-    newTag: 563cf4747e5afbda13872cce1efd2b13bee28b55
+- name: vatusa/cobalt
+  newName: vatusa/cobalt
+  newTag: 277f7cafe7fbc2a1b478c1fab0a708219b8ec4c7

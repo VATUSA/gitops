@@ -1,0 +1,39 @@
+name: Common Prod Release Workflow
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        type: string
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    env:
+      SHA: ${{ github.event.inputs.commit_sha || github.sha }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          repository: 'VATUSA/gitops'
+          path: gitops
+          token: ${{ secrets.G_TOKEN }}
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+      - name: Update manifests (prod)
+        run: |
+          cd $GITHUB_WORKSPACE/gitops/${{ inputs.image-name }}/overlays/prod
+          kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:${{ env.SHA }}
+      - name: Commit and push changes
+        run: |
+          cd $GITHUB_WORKSPACE/gitops
+          git config --global user.email "vatusa6@vatusa.net"
+          git config --global user.name "VATUSA6"
+          git add .
+          git commit -m "Update ${{ inputs.image-name }} image tag to ${{ env.SHA }}"
+      - name: Push to gitops repo
+        run: |
+          cd $GITHUB_WORKSPACE/gitops
+          git push origin main
+
+

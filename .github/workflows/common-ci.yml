@@ -5,15 +5,19 @@ on:
       image-name:
         required: true
         type: string
+      relative-path:
+        required: false
+        type: string
 jobs:
     build:
-      # The type of runner that the job will run on
       runs-on: ubuntu-latest
-
-      # Steps represent a sequence of tasks that will be executed as part of the job
       steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v2
+
+        - name: Change to relative path (if exists)
+          if: ${{ inputs.relative-path != ''}}
+          run: cd ${{ inputs.relative-path }}
 
         - name: Build Docker Image
           run: docker build . --file Dockerfile --tag vatusa/${{ inputs.image-name }} --target app

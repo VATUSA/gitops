@@ -5,6 +5,9 @@ on:
       image-name:
         required: true
         type: string
+      kustomization-folder:
+        required: true
+        type: string
 jobs:
   deploy:
     name: Deploy to Production
@@ -22,7 +25,7 @@ jobs:
         uses: imranismail/setup-kustomize@v2
       - name: Update manifests (prod)
         run: |
-          cd $GITHUB_WORKSPACE/gitops/${{ inputs.image-name }}/overlays/prod
+          cd $GITHUB_WORKSPACE/gitops/${{ inputs.kustomization-folder }}/overlays/prod
           kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:${{ env.SHA }}
       - name: Commit and push changes
         run: |

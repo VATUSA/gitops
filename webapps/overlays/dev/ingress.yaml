@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portal-inline-ingress
+  labels:
+    app: portal
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: vatusa.dev
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: portal-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - vatusa.dev
+      secretName: webapps-tls

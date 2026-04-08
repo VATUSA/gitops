@@ -5,6 +5,9 @@ on:
       image-name:
         required: true
         type: string
+      kustomization-folder:
+        required: true
+        type: string
       relative-path:
         required: false
         type: string
@@ -47,7 +50,7 @@ jobs:
           uses: imranismail/setup-kustomize@v2
         - name: Update manifests (dev)
           run: |
-            cd $GITHUB_WORKSPACE/gitops/${{ inputs.image-name }}/overlays/dev
+            cd $GITHUB_WORKSPACE/gitops/${{ inputs.kustomization-folder }}/overlays/dev
             kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:dev-${{ github.sha }}
         - name: Commit and push changes
           run: |

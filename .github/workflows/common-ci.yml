@@ -51,7 +51,7 @@ jobs:
         - name: Update manifests (dev)
           run: |
             cd $GITHUB_WORKSPACE/gitops/${{ inputs.kustomization-folder }}/overlays/dev
-            kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:dev-${{ github.sha }}
+            kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:${{ github.sha }}
         - name: Commit and push changes
           run: |
             cd $GITHUB_WORKSPACE/gitops

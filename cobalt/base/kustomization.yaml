@@ -8,3 +8,4 @@ resources:
 - service.yaml
 - service-account.yaml
 - service-account-bindings.yaml
+- network-policy.yaml

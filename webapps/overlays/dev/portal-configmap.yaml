@@ -8,4 +8,4 @@ data:
   NODE_ENV: "development"
   VATUSA_DISCORD_INVITE_URL: "https://discord.gg/a7Qcse7"
   NEXT_PUBLIC_SUPPORT_TICKET_URL: ""
-  COBALT_BASE_URL: "https://vatusa.dev/cobalt"
+  COBALT_BASE_URL: "http://cobalt-service.cobalt-dev.svc.cluster.local"

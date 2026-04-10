@@ -13,16 +13,6 @@ spec:
     - host: vatusa.dev
       http:
         paths:
-          - path: (/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: portal-service
-                port:
-                  number: 80
-    - host: vatusa.dev
-      http:
-        paths:
           - path: /staff(/|$)(.*)
             pathType: ImplementationSpecific
             backend:

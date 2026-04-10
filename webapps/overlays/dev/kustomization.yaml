@@ -4,7 +4,8 @@ resources:
 - ../../base
 - namespace.yaml
 - certificate.yaml
-- ingress.yaml
+- portal-ingress.yaml
+- staff-ingress.yaml
 - configmap.yaml
 images:
 - name: vatusa/portal

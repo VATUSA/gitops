@@ -8,9 +8,6 @@ on:
       kustomization-folder:
         required: true
         type: string
-      relative-path:
-        required: false
-        type: string
 jobs:
     deploy:
       name: Deploy to ArgoCD

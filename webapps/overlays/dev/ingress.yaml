@@ -3,7 +3,8 @@ kind: Ingress
 metadata:
   name: portal-inline-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   labels:
     app: portal
 spec:
@@ -12,7 +13,7 @@ spec:
     - host: vatusa.dev
       http:
         paths:
-          - path: /$1
+          - path: (/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
@@ -22,7 +23,7 @@ spec:
     - host: vatusa.dev
       http:
         paths:
-          - path: /staff/$1
+          - path: /staff(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:

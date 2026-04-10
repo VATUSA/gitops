@@ -5,7 +5,7 @@ resources:
 - namespace.yaml
 - certificate.yaml
 - ingress.yaml
-- portal-configmap.yaml
+- configmap.yaml
 images:
 - name: vatusa/portal
   newName: vatusa/portal

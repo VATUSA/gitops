@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portal
+  name: staff
   labels:
-    app: portal
+    app: staff
 spec:
   replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: portal
+      app: staff
   template:
     metadata:
-      name: portal
+      name: staff
       labels:
-        app: portal
+        app: staff
     spec:
       affinity:
         podAntiAffinity:
@@ -26,11 +26,11 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - portal
+                        - staff
                 topologyKey: kubernetes.io/hostname
       containers:
-        - name: portal
-          image: vatusa/portal
+        - name: staff
+          image: vatusa/staff
           imagePullPolicy: Always
           resources:
             requests:

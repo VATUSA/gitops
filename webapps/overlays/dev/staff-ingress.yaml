@@ -4,7 +4,7 @@ metadata:
   name: staff-inline-ingress
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /staff/$2
+    nginx.ingress.kubernetes.io/rewrite-target: /staff$1$2
   labels:
     app: staff
 spec:

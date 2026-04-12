@@ -10,7 +10,7 @@ resources:
 images:
 - name: vatusa/portal
   newName: vatusa/portal
-  newTag: dff0aea5276406e0364138bf4cfbd77aa3c695dc
+  newTag: f8be7dd0c5d82ca9290f9f3047f471fb4f29cf1c
 - name: vatusa/staff
   newName: vatusa/staff
   newTag: dff0aea5276406e0364138bf4cfbd77aa3c695dc

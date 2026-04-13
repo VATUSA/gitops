@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webapps-config
+  labels:
+    app: webapps
+data:
+  APP_ENV: "prod"
+  NEXT_PUBLIC_APP_URL: "https://next.vatusa.net/"

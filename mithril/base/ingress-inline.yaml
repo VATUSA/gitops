@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mithril-inline-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  labels:
+    app: mithril
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: vatusa.net
+      http:
+        paths:
+          - path: /mithril/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mithril-service
+                port:
+                  number: 80
+    - host: www.vatusa.net
+      http:
+        paths:
+          - path: /mithril/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mithril-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - vatusa.net
+        - www.vatusa.net
+      secretName: mithril-tls

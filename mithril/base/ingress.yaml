@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mithril-ingress
+  labels:
+    app: mithril
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mithril.vatusa.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: mithril-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - mithril.vatusa.net
+      secretName: mithril-tls

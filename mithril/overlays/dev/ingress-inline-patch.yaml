@@ -1,0 +1,12 @@
+- op: replace
+  path: /spec/rules/0/host
+  value: vatusa.dev
+- op: replace
+  path: /spec/rules/1/host
+  value: www.vatusa.dev
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: vatusa.dev
+- op: replace
+  path: /spec/tls/0/hosts/1
+  value: www.vatusa.dev

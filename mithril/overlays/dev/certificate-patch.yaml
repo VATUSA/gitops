@@ -1,0 +1,9 @@
+- op: replace
+  path: /spec/dnsNames/0
+  value: mithril.vatusa.dev
+- op: replace
+  path: /spec/dnsNames/1
+  value: vatusa.dev
+- op: replace
+  path: /spec/dnsNames/2
+  value: www.vatusa.dev

@@ -9,10 +9,6 @@ patches:
   target:
     kind: Ingress
     name: mithril-ingress
-- path: ingress-inline-patch.yaml
-  target:
-    kind: Ingress
-    name: mithril-inline-ingress
 - path: certificate-patch.yaml
   target:
     kind: Certificate

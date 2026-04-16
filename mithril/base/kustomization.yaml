@@ -4,7 +4,6 @@ resources:
 - certificate.yaml
 - deployment.yaml
 - ingress.yaml
-- ingress-inline.yaml
 - service.yaml
 - service-account.yaml
 - service-account-bindings.yaml

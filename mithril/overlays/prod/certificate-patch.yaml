@@ -1,4 +1,4 @@
 - op: replace
   path: /spec/dnsNames
   value:
-    - api.vatusa.dev
+    - api.vatusa.net

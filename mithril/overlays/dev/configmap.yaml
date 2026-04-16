@@ -4,8 +4,4 @@ metadata:
   name: mithril-config
   labels:
     app: mithril
-data:
-  APP_ENV: "staging"
-  APP_BASE_URL: "https://mithril.vatusa.dev/"
-  POST_LOGIN_URL: "https://vatusa.dev/auth/callback"
-  VATSIM_API2_URL: "https://api.vatsim.net/v2"
+data: {}

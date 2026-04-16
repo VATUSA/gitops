@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mithril-config
+  labels:
+    app: mithril
+data: {}

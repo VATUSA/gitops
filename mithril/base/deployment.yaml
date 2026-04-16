@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mithril
+  labels:
+    app: mithril
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: mithril
+  template:
+    metadata:
+      name: mithril
+      labels:
+        app: mithril
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - mithril
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: mithril
+          image: vatusa/mithril
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: mithril-secrets
+            - configMapRef:
+                name: mithril-config
+      serviceAccountName: mithril-sa
+      restartPolicy: Always

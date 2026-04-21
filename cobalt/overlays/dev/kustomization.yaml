@@ -20,4 +20,4 @@ patches:
 images:
 - name: vatusa/cobalt
   newName: vatusa/cobalt
-  newTag: 7e85f2bc392fde563340dcfbce46a51cf0f6486e
+  newTag: ed68544f46cd45ab6e093608e120f19e94b7f85b

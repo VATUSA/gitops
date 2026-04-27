@@ -40,7 +40,7 @@ spec:
               cpu: 500m
               memory: 512Mi
           ports:
-            - containerPort: 80
+            - containerPort: 4000
           envFrom:
             - secretRef:
                 name: mithril-secrets

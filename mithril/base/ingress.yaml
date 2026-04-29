@@ -18,7 +18,7 @@ spec:
                 name: mithril-service
                 port:
                   number: 80
-            path: /
+            path: /v3
             pathType: Prefix
   tls:
     - hosts:

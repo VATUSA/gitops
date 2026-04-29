@@ -4,10 +4,11 @@ metadata:
   name: api-vatusa-net-tls
 spec:
   dnsNames:
+    - vatusa.net
     - api.vatusa.net
     - login.vatusa.net
     - auth.vatusa.net
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt
-  secretName: api-vatusa-net-tls
+  secretName: vatusa-net-tls

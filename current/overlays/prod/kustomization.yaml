@@ -3,6 +3,9 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - ../../base/api
+  - ../../base/discord-bot-v3
+  - ../../base/forums
+  - ../../base/google-workspace
   - ../../base/www
   - certificate.yaml
   - api-ingress.yaml

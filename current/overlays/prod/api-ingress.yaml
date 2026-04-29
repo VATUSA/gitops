@@ -42,4 +42,4 @@ spec:
         - api.vatusa.net
         - login.vatusa.net
         - auth.vatusa.net
-      secretName: api-vatusa-net-tls
+      secretName: vatusa-net-tls

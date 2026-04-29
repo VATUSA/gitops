@@ -10,6 +10,8 @@ spec:
   destinations:
     - namespace: current
       server: '*'
+    - namespace: current-dev
+      server: '*'
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'

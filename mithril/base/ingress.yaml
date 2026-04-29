@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: mithril-ingress
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/limit-rps: "1"
     nginx.ingress.kubernetes.io/limit-connections: "5"
   labels:
@@ -18,8 +20,8 @@ spec:
                 name: mithril-service
                 port:
                   number: 80
-            path: /v3
-            pathType: Prefix
+            path: /v3(/|$)(.*)
+            pathType: ImplementationSpecific
   tls:
     - hosts:
         - mithril.vatusa.net

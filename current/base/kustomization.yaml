@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - api
+  - discord-bot-v3
+  - forums
+  - google-workspace
+  - www

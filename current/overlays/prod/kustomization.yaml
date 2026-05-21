@@ -1,29 +1,29 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - ../../base/api
-  - ../../base/discord-bot-v3
-  - ../../base/forums
-  - ../../base/google-workspace
-  - ../../base/www
-  - certificate.yaml
-  - api-ingress.yaml
-  - api-configmap.yaml
-  - www-ingress.yaml
+- namespace.yaml
+- ../../base/api
+- ../../base/discord-bot-v3
+- ../../base/forums
+- ../../base/google-workspace
+- ../../base/www
+- certificate.yaml
+- api-ingress.yaml
+- api-configmap.yaml
+- www-ingress.yaml
 images:
-  - name: vatusa/api
-    newName: vatusa/api
-    newTag: 7564b5f341521212d3c3ee1871e07d1190461fef
-  - name: vatusa/discord-bot-v3
-    newName: vatusa/discord-bot-v3
-    newTag: 1.1.18
-  - name: vatusa/forums
-    newName: vatusa/forums
-    newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
-  - name: vatusa/google-workspace-integration
-    newName: vatusa/google-workspace-integration
-    newTag: 1.1.37
-  - name: vatusa/www
-    newName: vatusa/www
-    newTag: 52f6d7b4feb6f350117575d176dee87bf6432074
+- name: vatusa/api
+  newName: vatusa/api
+  newTag: 8538243dabed67fdd025ff6092c38890e6515a72
+- name: vatusa/discord-bot-v3
+  newName: vatusa/discord-bot-v3
+  newTag: 1.1.18
+- name: vatusa/forums
+  newName: vatusa/forums
+  newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
+- name: vatusa/google-workspace-integration
+  newName: vatusa/google-workspace-integration
+  newTag: 1.1.37
+- name: vatusa/www
+  newName: vatusa/www
+  newTag: 52f6d7b4feb6f350117575d176dee87bf6432074

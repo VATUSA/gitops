@@ -17,7 +17,7 @@ images:
     newTag: 7564b5f341521212d3c3ee1871e07d1190461fef
   - name: vatusa/discord-bot-v3
     newName: vatusa/discord-bot-v3
-    newTag: 1.1.17
+    newTag: 1.1.18
   - name: vatusa/forums
     newName: vatusa/forums
     newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
@@ -26,4 +26,4 @@ images:
     newTag: 1.1.37
   - name: vatusa/www
     newName: vatusa/www
-    newTag: 7c0916cc4599aef2f9e4bd56e0af60e4d55aad70
+    newTag: 52f6d7b4feb6f350117575d176dee87bf6432074

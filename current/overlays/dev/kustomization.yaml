@@ -8,6 +8,8 @@ resources:
   - api-ingress.yaml
   - api-configmap.yaml
   - www-ingress.yaml
+  - external-secret-operator.yaml
+  - www-secrets-safe.yaml
 images:
   - name: vatusa/api
     newName: vatusa/api

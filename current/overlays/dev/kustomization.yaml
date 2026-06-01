@@ -8,7 +8,7 @@ resources:
   - api-ingress.yaml
   - api-configmap.yaml
   - www-ingress.yaml
-  - ../../base/eso-service-account.yaml
+  - eso-service-account.yaml
   - eso-secret-store.yaml
   - www-secrets-safe.yaml
 images:

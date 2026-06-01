@@ -9,7 +9,7 @@ resources:
   - api-configmap.yaml
   - www-ingress.yaml
   - ../../base/eso-service-account.yaml
-  - external-secret-operator.yaml
+  - eso-secret-store.yaml
   - www-secrets-safe.yaml
 images:
   - name: vatusa/api

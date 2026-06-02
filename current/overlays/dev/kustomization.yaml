@@ -1,40 +1,40 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - ../../base/api
-  - ../../base/www
-  - certificate.yaml
-  - api-ingress.yaml
-  - api-configmap.yaml
-  - www-ingress.yaml
-  - www-configmap.yaml
-  - eso-service-account.yaml
-  - eso-secret-store.yaml
-  - www-secrets-es.yaml
-  - api-secrets-es.yaml
+- namespace.yaml
+- ../../base/api
+- ../../base/www
+- certificate.yaml
+- api-ingress.yaml
+- api-configmap.yaml
+- www-ingress.yaml
+- www-configmap.yaml
+- eso-service-account.yaml
+- eso-secret-store.yaml
+- www-secrets-es.yaml
+- api-secrets-es.yaml
 patches:
-  - path: deployment-patch.yaml
-    target:
-      kind: Deployment
-      name: www
-  - path: deployment-patch.yaml
-    target:
-      kind: Deployment
-      name: api
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: www
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
 images:
-  - name: vatusa/api
-    newName: vatusa/api
-    newTag: ae967dca3b4a85527f9e25070041469d9c97cb25
-  - name: vatusa/discord-bot-v3
-    newName: vatusa/discord-bot-v3
-    newTag: 1.1.17
-  - name: vatusa/forums
-    newName: vatusa/forums
-    newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
-  - name: vatusa/google-workspace-integration
-    newName: vatusa/google-workspace-integration
-    newTag: 1.1.35
-  - name: vatusa/www
-    newName: vatusa/www
-    newTag: e43f9bec0cc4648a28df6c6b4557a555ad3bbfd6
+- name: vatusa/api
+  newName: vatusa/api
+  newTag: ae967dca3b4a85527f9e25070041469d9c97cb25
+- name: vatusa/discord-bot-v3
+  newName: vatusa/discord-bot-v3
+  newTag: 1.1.17
+- name: vatusa/forums
+  newName: vatusa/forums
+  newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
+- name: vatusa/google-workspace-integration
+  newName: vatusa/google-workspace-integration
+  newTag: 1.1.35
+- name: vatusa/www
+  newName: vatusa/www
+  newTag: 577721494b51e20a8c3ac9b5d5b870e82ac7ad65

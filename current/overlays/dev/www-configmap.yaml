@@ -16,7 +16,6 @@ data:
   VATSIM_OAUTH_BASE: "https://auth.vatsim.net"
   VATSIM_OAUTH_SCOPES: "full_name,email,vatsim_details"
   LOGIN_URL: "https://login.vatusa.dev"
-  LOG_CHANNEL: "stderr"
   MAIL_DRIVER: "smtp"
   EXAMS_BASIC: "7"
   EXAMS_BASIC_ENROLID: "311"

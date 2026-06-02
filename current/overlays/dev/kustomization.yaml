@@ -12,6 +12,11 @@ resources:
   - eso-service-account.yaml
   - eso-secret-store.yaml
   - www-secrets-es.yaml
+patches:
+  - path: www-deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: www
 images:
   - name: vatusa/api
     newName: vatusa/api

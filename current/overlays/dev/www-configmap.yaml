@@ -9,7 +9,7 @@ data:
   APP_ENV: "dev"
   APP_LOG_LEVEL: "debug"
   APP_NAME: "VATUSA"
-  APP_URL: "https://vatusa.dev/laravel"
+  APP_URL: "https://vatusa.dev/legacy"
   BROADCAST_DRIVER: "log"
   CACHE_DRIVER: "redis"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"

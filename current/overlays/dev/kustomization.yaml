@@ -13,10 +13,14 @@ resources:
   - eso-secret-store.yaml
   - www-secrets-es.yaml
 patches:
-  - path: www-deployment-patch.yaml
+  - path: deployment-patch.yaml
     target:
       kind: Deployment
       name: www
+  - path: deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: api
 images:
   - name: vatusa/api
     newName: vatusa/api

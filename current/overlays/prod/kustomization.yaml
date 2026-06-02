@@ -11,6 +11,7 @@ resources:
 - api-ingress.yaml
 - api-configmap.yaml
 - www-ingress.yaml
+- www-configmap.yaml
 images:
 - name: vatusa/api
   newName: vatusa/api

@@ -32,4 +32,6 @@ spec:
           envFrom:
             - secretRef:
                 name: www-secrets
+            - configMapRef:
+                name: www-config
       restartPolicy: Always

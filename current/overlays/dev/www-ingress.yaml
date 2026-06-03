@@ -17,7 +17,7 @@ spec:
                 name: www-service
                 port:
                   number: 80
-            path: /legacy(/)(.*)
+            path: /legacy(./)(.*)
             pathType: ImplementationSpecific
   tls:
     - hosts:

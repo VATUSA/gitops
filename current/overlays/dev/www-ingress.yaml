@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: www-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   labels:
     app: www
 spec:
@@ -18,6 +18,13 @@ spec:
                 port:
                   number: 80
             path: /legacy/(.*)
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: www-service
+                port:
+                  number: 80
+            path: /legacy
             pathType: ImplementationSpecific
   tls:
     - hosts:

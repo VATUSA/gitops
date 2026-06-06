@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bao-tls
+  namespace: openbao
+spec:
+  dnsNames:
+    - bao.vatusa.dev
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: bao-tls-secret

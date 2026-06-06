@@ -63,3 +63,4 @@ data:
   SESSION_DRIVER: "redis"
   SESSION_ENCRYPT: "false"
   SESSION_PATH: "/www/storage/sessions"
+  KB_JOIN_QUESTION_ID: "8"

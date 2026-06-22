@@ -1,0 +1,74 @@
+fluent-bit:
+  # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are injected from the
+  # manually-created secret "fluent-bit-do-spaces" in the logging namespace.
+  envFrom:
+    - secretRef:
+        name: fluent-bit-do-spaces
+
+  # Persist the tail position DB and S3 upload buffer across pod restarts.
+  daemonSetVolumes:
+    - name: fluent-bit-state
+      hostPath:
+        path: /var/fluent-bit
+        type: DirectoryOrCreate
+
+  daemonSetVolumeMounts:
+    - name: fluent-bit-state
+      mountPath: /var/fluent-bit
+
+  tolerations:
+    - operator: Exists
+
+  config:
+    service: |
+      [SERVICE]
+          Flush         5
+          Log_Level     info
+          Daemon        off
+          Parsers_File  /fluent-bit/etc/parsers.conf
+
+    inputs: |
+      [INPUT]
+          Name              tail
+          # Matches all containers in the ingress-nginx namespace.
+          Path              /var/log/containers/*_ingress-nginx_*.log
+          multiline.parser  cri
+          Tag               ingress.nginx.*
+          Mem_Buf_Limit     5MB
+          Skip_Long_Lines   On
+          # Tracks file positions so we don't re-ship on pod restart.
+          DB                /var/fluent-bit/ingress-nginx-pos.db
+
+    filters: |
+      [FILTER]
+          Name                kubernetes
+          Match               ingress.nginx.*
+          # Merges the JSON log line into the top-level record fields.
+          Merge_Log           On
+          Keep_Log            Off
+          K8S-Logging.Parser  On
+          K8S-Logging.Exclude On
+
+      [FILTER]
+          # Drop non-access-log lines (startup messages, errors) that aren't
+          # valid JSON — they won't have the "method" field our format emits.
+          Name    grep
+          Match   ingress.nginx.*
+          Regex   method .+
+
+    outputs: |
+      [OUTPUT]
+          Name              s3
+          Match             ingress.nginx.*
+          bucket            vatusa-api-logs
+          region            sfo3
+          endpoint          https://sfo3.digitaloceanspaces.com
+          # Hive-style partitioning so DuckDB can query by date automatically.
+          s3_key_format     /year=%Y/month=%m/day=%d/%H%M%S-$TAG
+          s3_key_format_tag_delimiters .
+          total_file_size   10M
+          upload_timeout    10m
+          compression       gzip
+          use_put_object    On
+          # Local buffer dir — on the hostPath volume so it survives pod restarts.
+          store_dir         /var/fluent-bit/s3-store

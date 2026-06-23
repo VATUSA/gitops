@@ -5,7 +5,7 @@ ingress-nginx:
       proxy-body-size: 128m
       use-forwarded-headers: "true"
       log-format-escape-json: "true"
-      log-format-upstream: '{"time":"$time_iso8601","host":"$host","method":"$request_method","uri":"$uri","status":$status,"request_time":$request_time,"bytes_sent":$bytes_sent,"user_agent":"$http_user_agent","client_ip":"$http_x_forwarded_for","upstream":"$proxy_upstream_name"}'
+      log-format-upstream: '{"time":"$time_iso8601","host":"$host","method":"$request_method","uri":"$uri","status":"$status","request_time":"$request_time","bytes_sent":"$bytes_sent","user_agent":"$http_user_agent","client_ip":"$http_x_forwarded_for","upstream":"$proxy_upstream_name"}'
     service:
       externalTrafficPolicy: Local
       ipFamilies:

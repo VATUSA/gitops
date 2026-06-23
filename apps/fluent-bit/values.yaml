@@ -1,6 +1,15 @@
 fluent-bit:
   # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are injected from the
   # manually-created secret "fluent-bit-do-spaces" in the logging namespace.
+  #
+  # WARNING: This secret is NOT tracked in Git. If the ArgoCD Application is
+  # deleted (or the logging namespace is destroyed), the secret is lost and
+  # must be recreated manually before fluent-bit will start:
+  #
+  #   kubectl create secret generic fluent-bit-do-spaces \
+  #     --namespace logging \
+  #     --from-literal=AWS_ACCESS_KEY_ID=<key> \
+  #     --from-literal=AWS_SECRET_ACCESS_KEY=<secret>
   envFrom:
     - secretRef:
         name: fluent-bit-do-spaces

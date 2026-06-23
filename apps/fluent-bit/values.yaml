@@ -14,16 +14,29 @@ fluent-bit:
     - secretRef:
         name: fluent-bit-do-spaces
 
+  # Run as root so the container can read root-owned host log files.
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+
   # Persist the tail position DB and S3 upload buffer across pod restarts.
+  # varlog must be explicit here — the chart's default host-log mounts are not
+  # applied automatically in this version.
   daemonSetVolumes:
     - name: fluent-bit-state
       hostPath:
         path: /var/fluent-bit
         type: DirectoryOrCreate
+    - name: varlog
+      hostPath:
+        path: /var/log
 
   daemonSetVolumeMounts:
     - name: fluent-bit-state
       mountPath: /var/fluent-bit
+    - name: varlog
+      mountPath: /var/log
+      readOnly: true
 
   tolerations:
     - operator: Exists

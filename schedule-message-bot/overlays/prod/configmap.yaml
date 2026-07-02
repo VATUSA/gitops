@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: schedule-message-bot-config
+  labels:
+    app: schedule-message-bot
+data:
+  # Non-secret runtime config. The secrets (DISCORD_TOKEN, DISCORD_GUILD_ID,
+  # REQUIRED_ROLE_ID) live in the schedule-message-bot-secrets Secret instead.
+  DATABASE_PATH: "/app/data/schedule.db"
+  POLL_INTERVAL: "15s"

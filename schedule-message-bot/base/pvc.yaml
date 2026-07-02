@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: schedule-message-bot-data
+  labels:
+    app: schedule-message-bot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      # The database holds only scheduled-message rows; 1Gi is generous.
+      storage: 1Gi

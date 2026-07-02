@@ -65,4 +65,6 @@ data:
   SESSION_PATH: "/www/storage/sessions"
   KB_JOIN_QUESTION_ID: "8"
   COBALT_URL: "https://cobalt.vatusa.dev"
+  COBALT_LOGIN_URL: "https://cobalt.vatusa.dev/login/connect"
+  USE_COBALT_LOGIN: "true"
   DB_MOODLE_DATABASE: "moodle_test"

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schedule-message-bot
+  labels:
+    app: schedule-message-bot
+spec:
+  # Single replica: SQLite has one writer and the scheduler must not run twice
+  # (that would double-send due messages). Recreate avoids two pods contending
+  # for the ReadWriteOnce volume during a rollout.
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: schedule-message-bot
+  template:
+    metadata:
+      name: schedule-message-bot
+      labels:
+        app: schedule-message-bot
+    spec:
+      # The distroless:nonroot image runs as uid/gid 65532. fsGroup makes the
+      # mounted PVC group-writable so the bot can create its SQLite database.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+      containers:
+        - name: schedule-message-bot
+          image: vatusa/schedule-message-bot
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 25m
+              memory: 50Mi
+            limits:
+              cpu: 50m
+              memory: 100Mi
+          envFrom:
+            - secretRef:
+                name: schedule-message-bot-secrets
+            - configMapRef:
+                name: schedule-message-bot-config
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: schedule-message-bot-data
+      restartPolicy: Always

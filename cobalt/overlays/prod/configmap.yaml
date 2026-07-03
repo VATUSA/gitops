@@ -10,4 +10,5 @@ data:
   POST_LOGIN_URL: "https://vatusa.net/"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
   REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev"
+  STAGING_PUBLIC_URL: "https://cobalt.vatusa.dev"
 

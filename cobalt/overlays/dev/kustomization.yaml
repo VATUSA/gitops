@@ -13,6 +13,12 @@ patches:
   target:
     kind: Certificate
     name: cobalt-tls
+- patch: |-
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: cobalt-inline-ingress
+    $patch: delete
 images:
 - name: vatusa/cobalt
   newName: vatusa/cobalt

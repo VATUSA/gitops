@@ -4,3 +4,6 @@ metadata:
   name: www-config
   labels:
     app: api
+data:
+  USE_COBALT_LOGIN: "true"
+  COBALT_LOGIN_URL: "https://cobalt.vatusa.net/login"

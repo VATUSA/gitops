@@ -9,4 +9,5 @@ data:
   APP_BASE_URL: "https://cobalt.vatusa.dev/"
   POST_LOGIN_URL: "https://vatusa.dev/auth/callback"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
+  COOKIE_DOMAIN: "vatusa.dev"
 

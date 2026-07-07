@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: vatusa.dev
+    - host: www.vatusa.dev
       http:
         paths:
           - backend:
@@ -28,5 +28,5 @@ spec:
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - vatusa.dev
+        - www.vatusa.dev
       secretName: vatusa-dev-tls

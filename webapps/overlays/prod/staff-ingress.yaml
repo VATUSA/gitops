@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: staff-inline-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /staff$1$2
+  labels:
+    app: staff
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: www.vatusa.net
+      http:
+        paths:
+          - path: /staff(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: staff-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - www.vatusa.net
+      secretName: webapps-tls

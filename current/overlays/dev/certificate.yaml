@@ -5,6 +5,7 @@ metadata:
 spec:
   dnsNames:
     - vatusa.dev
+    - www.vatusa.dev
     - api.vatusa.dev
     - login.vatusa.dev
     - auth.vatusa.dev

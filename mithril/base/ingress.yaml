@@ -12,7 +12,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: mithril.vatusa.net
+    - host: api.vatusa.net
       http:
         paths:
           - backend:
@@ -24,5 +24,5 @@ spec:
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - mithril.vatusa.net
+        - api.vatusa.net
       secretName: mithril-tls

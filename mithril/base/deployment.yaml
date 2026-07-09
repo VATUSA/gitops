@@ -5,7 +5,7 @@ metadata:
   labels:
     app: mithril
 spec:
-  replicas: 2
+  replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -34,10 +34,10 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 250m
+              memory: 256Mi
             limits:
-              cpu: 500m
+              cpu: "1"
               memory: 512Mi
           ports:
             - containerPort: 4000

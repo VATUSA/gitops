@@ -36,14 +36,6 @@ data:
     
     g, VATUSA:zfw, role:zfw-admin
 
-    p, role:zkc-admin, projects, get, zkc, allow
-    p, role:zkc-admin, applications, *, zkc/*, allow
-    p, role:zkc-admin, repositories, get, zkc/*, allow
-    p, role:zkc-admin, logs, get, zkc/*, allow
-    p, role:zkc-admin, exec, create, zkc/*, allow
-    
-    g, VATUSA:zkc, role:zkc-admin
-    
     p, role:zan-admin, projects, get, zan, allow
     p, role:zan-admin, applications, *, zan/*, allow
     p, role:zan-admin, repositories, get, zan/*, allow

@@ -13,6 +13,10 @@ patches:
   target:
     kind: Certificate
     name: mithril-tls
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: mithril
 images:
 - name: vatusa/mithril
   newName: vatusa/mithril

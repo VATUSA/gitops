@@ -18,10 +18,11 @@ spec:
     path: apps/argocd
     repoURL: https://github.com/vatusa/gitops
     targetRevision: HEAD
-  # PR1: syncPolicy.automated is intentionally omitted. The first sync is MANUAL
-  # so the adoption diff can be reviewed before anything is applied or pruned.
-  # A follow-up commit (once the adoption is verified clean) adds:
-  #   syncPolicy:
-  #     automated:
-  #       prune: true
-  #       selfHeal: true
+  # Automated self-management, enabled after the v2.10.6 adoption sync was
+  # verified clean (Synced/Healthy, no pod restarts, all other apps unaffected).
+  # NOTE: for the v3.0 major-version step, temporarily set prune: false for that
+  # one sync so a surprised diff can't cascade a prune (see the upgrade plan).
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

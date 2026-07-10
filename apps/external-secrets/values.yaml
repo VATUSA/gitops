@@ -1,0 +1,9 @@
+external-secrets:
+  crds:
+    # The clustersecretstores/secretstores CRD schemas are large enough that
+    # client-side apply's last-applied-configuration annotation exceeds the
+    # 262144-byte limit. Apply just the CRDs server-side; everything else
+    # stays on client-side apply (server-side apply on the Deployments and
+    # webhooks produces spurious permanent OutOfSync diffs).
+    annotations:
+      argocd.argoproj.io/sync-options: ServerSideApply=true

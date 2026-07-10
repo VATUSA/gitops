@@ -23,3 +23,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      name: openbao-agent-injector-cfg
+      jsonPointers:
+        - /webhooks/0/clientConfig/caBundle

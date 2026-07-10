@@ -28,14 +28,6 @@ data:
     
     g, VATUSA:zlc, role:zlc-admin
 
-    p, role:zfw-admin, projects, get, zfw, allow
-    p, role:zfw-admin, applications, *, zfw/*, allow
-    p, role:zfw-admin, repositories, get, zfw/*, allow
-    p, role:zfw-admin, logs, get, zfw/*, allow
-    p, role:zfw-admin, exec, create, zfw/*, allow
-    
-    g, VATUSA:zfw, role:zfw-admin
-
     p, role:zan-admin, projects, get, zan, allow
     p, role:zan-admin, applications, *, zan/*, allow
     p, role:zan-admin, repositories, get, zan/*, allow

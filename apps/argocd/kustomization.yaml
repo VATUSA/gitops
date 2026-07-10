@@ -7,7 +7,7 @@ namespace: argocd
 # ArgoCD itself, adopted from the upstream non-HA install manifest.
 # To upgrade: bump the single version tag below, review the rendered diff, then sync.
 resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.6/manifests/install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.14.21/manifests/install.yaml
 
 patches:
   # 1. Never manage argocd-secret. It is stateful/runtime-owned: admin password,

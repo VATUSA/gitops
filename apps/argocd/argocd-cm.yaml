@@ -1,0 +1,27 @@
+# Captured verbatim from the live cluster (kubectl -n argocd get cm argocd-cm)
+# on 2026-07-10 at v2.10.6. Merged onto the upstream empty argocd-cm so that
+# adopting ArgoCD is a zero-behavioral-change operation.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  # Public base URL — also the SSO/OAuth callback origin. Keep in sync with the
+  # Ingress in apps/configs/base/argocd-ingress.yaml.
+  url: https://argocd.vatusa.dev
+  # GitHub SSO via Dex. clientID/clientSecret resolve from argocd-secret
+  # (dex.github.clientID / dex.github.clientSecret) — which we intentionally do
+  # not manage. Membership is gated to the VATUSA org.
+  dex.config: |
+    connectors:
+      - type: github
+        id: github
+        name: Github
+        config:
+          clientID: $dex.github.clientID
+          clientSecret: $dex.github.clientSecret
+          orgs:
+          - name: VATUSA
+  resource.exclusions: |
+    - kinds:
+      - CiliumIdentity

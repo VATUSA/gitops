@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  # NOTE: no resources-finalizer here, unlike the other child apps. This
+  # Application manages ArgoCD *itself* — the control plane. Without the
+  # finalizer, deleting this App orphans (leaves running) the ArgoCD install
+  # instead of cascade-pruning it, so an accidental `kubectl delete app argocd`
+  # cannot tear down the cluster's control plane. Normal per-sync pruning is
+  # governed by syncPolicy below and is unaffected by this choice.
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: apps/argocd
+    repoURL: https://github.com/vatusa/gitops
+    targetRevision: HEAD
+  # PR1: syncPolicy.automated is intentionally omitted. The first sync is MANUAL
+  # so the adoption diff can be reviewed before anything is applied or pruned.
+  # A follow-up commit (once the adoption is verified clean) adds:
+  #   syncPolicy:
+  #     automated:
+  #       prune: true
+  #       selfHeal: true

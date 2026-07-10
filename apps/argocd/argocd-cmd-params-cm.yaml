@@ -1,0 +1,11 @@
+# The live cluster runs this ConfigMap fully defaulted (no data keys) at v2.10.6.
+# Captured here so any future command-line parameter overrides are tracked in Git.
+# This is a no-op strategic-merge patch today (empty data merges to nothing).
+#
+# Likely future use — the v3.0 upgrade (PR3) may pin behavior here, e.g.:
+#   controller.resource.health.persist: "false"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+data: {}

@@ -20,9 +20,10 @@ spec:
     targetRevision: HEAD
   # Automated self-management, enabled after the v2.10.6 adoption sync was
   # verified clean (Synced/Healthy, no pod restarts, all other apps unaffected).
-  # NOTE: for the v3.0 major-version step, temporarily set prune: false for that
-  # one sync so a surprised diff can't cascade a prune (see the upgrade plan).
+  # NOTE: prune is TEMPORARILY false for the v3.0.23 major-version sync so a
+  # surprised diff can't cascade a prune while we watch. Restore prune: true in a
+  # follow-up commit once v3.0.23 is verified Synced/Healthy (see upgrade plan).
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true

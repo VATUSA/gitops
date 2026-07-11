@@ -12,6 +12,11 @@ resources:
 - api-configmap.yaml
 - www-ingress.yaml
 - www-configmap.yaml
+patches:
+- path: www-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: www
 images:
 - name: vatusa/api
   newName: vatusa/api

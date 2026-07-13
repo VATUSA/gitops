@@ -3,6 +3,16 @@
 
 # Available parameters and their default values for the OpenBao chart.
 
+# NOTE: this is an umbrella chart whose subchart is named "openbao", so subchart
+# values MUST be nested under an `openbao:` key. The top-level `global:`/`injector:`/
+# `server:` blocks below are NOT passed to the subchart and are currently inert
+# (tracked separately). Values that must actually take effect go under `openbao:`.
+openbao:
+  injector:
+    webhook:
+      # DOKS upgrade preflight rejects webhook timeoutSeconds > 29 (chart default is 30).
+      timeoutSeconds: 29
+
 global:
   # -- enabled is the master enabled switch. Setting this to true or false
   # will enable or disable all the components within this chart by default.

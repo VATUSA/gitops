@@ -12,6 +12,8 @@ cert-manager:
       cpu: 100m
       memory: 192Mi
   webhook:
+    # DOKS upgrade preflight rejects webhook timeoutSeconds > 29 (chart default is 30).
+    timeoutSeconds: 29
     resources:
       requests:
         cpu: 10m

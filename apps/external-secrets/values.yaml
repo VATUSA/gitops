@@ -7,3 +7,28 @@ external-secrets:
     # webhooks produces spurious permanent OutOfSync diffs).
     annotations:
       argocd.argoproj.io/sync-options: ServerSideApply=true
+  # Requests anchored to observed usage (controller ~46Mi, webhook ~33Mi,
+  # cert-controller ~80Mi) so the scheduler accounts for what these already use.
+  resources:
+    requests:
+      cpu: 10m
+      memory: 96Mi
+    limits:
+      cpu: 100m
+      memory: 192Mi
+  webhook:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  certController:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 192Mi

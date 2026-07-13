@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - certificate.yaml
 - deployment.yaml
+- pdb.yaml
 - ingress.yaml
 - ingress-inline.yaml
 - service.yaml

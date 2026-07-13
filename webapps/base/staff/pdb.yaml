@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: staff
+  labels:
+    app: staff
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: staff

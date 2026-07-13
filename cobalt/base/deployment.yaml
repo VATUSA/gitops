@@ -32,10 +32,13 @@ spec:
         - name: cobalt
           image: vatusa/cobalt
           imagePullPolicy: Always
+          # Go HTTP API idling near-zero (~1m CPU, ~8-30Mi RSS). Requests sized
+          # to ~2x the observed working set for GC-heap/request headroom; the
+          # 512Mi limit absorbs spikes.
           resources:
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 50m
+              memory: 64Mi
             limits:
               cpu: 500m
               memory: 512Mi

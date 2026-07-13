@@ -20,7 +20,15 @@ spec:
         - name: api-worker
           image: vatusa/api
           imagePullPolicy: IfNotPresent
+          # Run schedule:work under tini (PID 1) so the per-minute forked
+          # scheduler tasks get reaped instead of piling up as zombies. Requires
+          # the vatusa/api image to ship /sbin/tini (api repo PR #110) — do NOT
+          # merge/sync this until that image is built and deployed, or pods on
+          # the old image crashloop on the missing binary.
           command:
+            - /sbin/tini
+            - -g
+            - --
             - php
           args:
             - artisan

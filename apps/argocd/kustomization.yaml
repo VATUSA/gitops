@@ -60,3 +60,101 @@ patches:
   # 4. Preserve our live configuration, merged onto the upstream (empty) ConfigMaps.
   - path: argocd-cm.yaml
   - path: argocd-cmd-params-cm.yaml
+
+  # 5. Resource requests/limits. Upstream non-HA install.yaml sets none, so every
+  #    argocd pod is BestEffort/Burstable-without-mem-request and first to be evicted
+  #    under node memory pressure — bad for the deploy control plane. Requests are
+  #    anchored to observed usage (app-controller ~542Mi, repo-server ~110Mi, etc.).
+  #    Container names must match the upstream pod spec (dex container is "dex",
+  #    redis is "redis") or the strategic merge adds a duplicate container.
+  - patch: |
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: argocd-application-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-application-controller
+                resources:
+                  requests: { cpu: 250m, memory: 768Mi }
+                  limits: { cpu: "1", memory: 1Gi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-repo-server
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-repo-server
+                resources:
+                  requests: { cpu: 50m, memory: 256Mi }
+                  limits: { cpu: 500m, memory: 512Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-server
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-server
+                resources:
+                  requests: { cpu: 25m, memory: 128Mi }
+                  limits: { cpu: 250m, memory: 256Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-dex-server
+      spec:
+        template:
+          spec:
+            containers:
+              - name: dex
+                resources:
+                  requests: { cpu: 10m, memory: 128Mi }
+                  limits: { cpu: 100m, memory: 256Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-applicationset-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-applicationset-controller
+                resources:
+                  requests: { cpu: 10m, memory: 64Mi }
+                  limits: { cpu: 100m, memory: 128Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-notifications-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-notifications-controller
+                resources:
+                  requests: { cpu: 10m, memory: 64Mi }
+                  limits: { cpu: 100m, memory: 128Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-redis
+      spec:
+        template:
+          spec:
+            containers:
+              - name: redis
+                resources:
+                  requests: { cpu: 25m, memory: 64Mi }
+                  limits: { cpu: 100m, memory: 128Mi }

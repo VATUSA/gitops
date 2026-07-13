@@ -1,0 +1,11 @@
+# The api-worker runs `php artisan schedule:work`, whose scheduled tasks
+# (vatsim:flights, moodle:*) do nothing useful in dev. Left running it also
+# leaks zombie processes — schedule:work forks child procs that PID 1 (plain
+# php, no init/reaper) never wait()s on, ballooning memory unbounded. Scale to
+# zero in dev; prod keeps the base replica count.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-worker
+spec:
+  replicas: 0

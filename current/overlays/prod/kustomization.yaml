@@ -17,6 +17,10 @@ patches:
   target:
     kind: Deployment
     name: www
+- path: api-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
 images:
 - name: vatusa/api
   newName: vatusa/api

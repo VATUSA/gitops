@@ -1,0 +1,21 @@
+# Right-size the prod api resources to observed usage. The base's 500Mi memory
+# request reserved ~1.5Gi across 3 replicas against a ~290Mi total working set;
+# trimming to 256Mi (still ~2.5x headroom) reclaims scheduler headroom on a
+# memory-tight cluster. CPU request was below real usage (~350-470m vs 250m) and
+# the 2500m limit was far above anything observed — bring both to honest values.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          resources:
+            requests:
+              cpu: 350m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi

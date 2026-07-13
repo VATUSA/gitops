@@ -43,7 +43,7 @@ spec:
             - containerPort: 80
           readinessProbe:
             httpGet:
-              path: /
+              path: /staff
               port: 3000
               scheme: HTTP
             initialDelaySeconds: 10
@@ -53,7 +53,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /
+              path: /staff
               port: 3000
               scheme: HTTP
             initialDelaySeconds: 30

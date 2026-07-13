@@ -7,6 +7,15 @@ resources:
 - portal-ingress.yaml
 - staff-ingress.yaml
 - configmap.yaml
+patches:
+- path: portal-replicas-patch.yaml
+  target:
+    kind: Deployment
+    name: portal
+- path: staff-replicas-patch.yaml
+  target:
+    kind: Deployment
+    name: staff
 images:
 - name: vatusa/portal
   newName: vatusa/portal

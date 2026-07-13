@@ -4,6 +4,7 @@ resources:
 - ../../base
 - namespace.yaml
 - configmap.yaml
+- pdb.yaml
 images:
 - name: vatusa/mithril
   newName: vatusa/mithril

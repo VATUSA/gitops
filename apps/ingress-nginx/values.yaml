@@ -1,6 +1,14 @@
 ingress-nginx:
   controller:
     kind: DaemonSet
+    # DaemonSet; requests anchored to observed usage (~114-118Mi per node).
+    resources:
+      requests:
+        cpu: 100m
+        memory: 192Mi
+      limits:
+        cpu: 300m
+        memory: 384Mi
     config:
       proxy-body-size: 128m
       use-forwarded-headers: "true"

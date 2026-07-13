@@ -12,10 +12,15 @@ resources:
 - api-configmap.yaml
 - www-ingress.yaml
 - www-configmap.yaml
+patches:
+- path: www-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: www
 images:
 - name: vatusa/api
   newName: vatusa/api
-  newTag: 172bee7e58eac16807317041e82b4f6c01aced0d
+  newTag: daf9dd3a68161a0e39cec44312883f40d2d837f2
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.18
@@ -27,4 +32,4 @@ images:
   newTag: 1.1.37
 - name: vatusa/www
   newName: vatusa/www
-  newTag: 577721494b51e20a8c3ac9b5d5b870e82ac7ad65
+  newTag: 4f4766f4a4667254857c11814a63e552b9449091

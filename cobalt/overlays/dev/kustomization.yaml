@@ -5,6 +5,10 @@ resources:
 - namespace.yaml
 - configmap.yaml
 patches:
+- path: replicas-patch.yaml
+  target:
+    kind: Deployment
+    name: cobalt
 - path: ingress-patch.yaml
   target:
     kind: Ingress

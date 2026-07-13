@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: postgresql
+  name: mithril-prod
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: postgresql
+    namespace: mithril-prod
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: apps/postgresql
+    path: mithril/overlays/prod
     repoURL: https://github.com/vatusa/gitops
     targetRevision: HEAD
   syncPolicy:

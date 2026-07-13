@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cobalt
+  labels:
+    app: cobalt
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cobalt

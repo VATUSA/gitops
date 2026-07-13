@@ -5,8 +5,7 @@ resources:
 - namespace.yaml
 - configmap.yaml
 - pdb.yaml
-
 images:
-- name: vatusa/cobalt
-  newName: vatusa/cobalt
-  newTag: 1a369fce7c690127c01f2004eb3688947a2d5bbe
+- name: vatusa/mithril
+  newName: vatusa/mithril
+  newTag: 13b61add577e40db650626995bd6223a8fb23107

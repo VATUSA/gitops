@@ -1,0 +1,42 @@
+# Captured verbatim from the live cluster (kubectl -n argocd get cm argocd-cm)
+# on 2026-07-10 at v2.10.6. Merged onto the upstream empty argocd-cm so that
+# adopting ArgoCD is a zero-behavioral-change operation.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  # --- ArgoCD 3.0 breaking-change pins (added for the v2.14.21 → v3.0.23 step) ---
+  # Both freeze the pre-3.0 behavior we verified this cluster relies on; each can
+  # later be migrated to the new 3.0 default as its own isolated, reviewed change.
+  #
+  # 3.0 flips the default resource-tracking method label → annotation. The live
+  # install has always tracked by label; pin it so the upgrade doesn't rewrite
+  # tracking metadata across every managed resource in one sync.
+  application.resourceTrackingMethod: label
+  # 3.0 stops fine-grained Application RBAC from cascading to sub-resources by
+  # default. Facility roles here are `applications, *, <fac>/*` and rely on that
+  # cascade to act on their apps' managed resources (UI delete/sync). "false"
+  # keeps the v2 inheritance so non-admin facility users aren't silently locked
+  # out of sub-resource actions.
+  server.rbac.disableApplicationFineGrainedRBACInheritance: "false"
+
+  # Public base URL — also the SSO/OAuth callback origin. Keep in sync with the
+  # Ingress in apps/configs/base/argocd-ingress.yaml.
+  url: https://argocd.vatusa.dev
+  # GitHub SSO via Dex. clientID/clientSecret resolve from argocd-secret
+  # (dex.github.clientID / dex.github.clientSecret) — which we intentionally do
+  # not manage. Membership is gated to the VATUSA org.
+  dex.config: |
+    connectors:
+      - type: github
+        id: github
+        name: Github
+        config:
+          clientID: $dex.github.clientID
+          clientSecret: $dex.github.clientSecret
+          orgs:
+          - name: VATUSA
+  resource.exclusions: |
+    - kinds:
+      - CiliumIdentity

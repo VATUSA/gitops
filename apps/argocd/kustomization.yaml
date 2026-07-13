@@ -1,0 +1,164 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: argocd
+namespace: argocd
+
+# ArgoCD itself, adopted from the upstream non-HA install manifest.
+# To upgrade: bump the single version tag below, review the rendered diff, then sync.
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.4.5/manifests/install.yaml
+
+patches:
+  # 1. Never manage argocd-secret. It is stateful/runtime-owned: admin password,
+  #    server.secretkey (session/JWT signing key), the Dex GitHub OAuth client
+  #    credentials, and the argocd.vatusa.dev TLS cert+key. Deleting it from the
+  #    render means ArgoCD neither overwrites nor prunes the live Secret.
+  - patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: argocd-secret
+
+  # 2. argocd-rbac-cm stays solely owned by apps/configs (base/argocd-rbac-cm.yaml).
+  #    Drop the empty copy from the upstream manifest to avoid dual ownership /
+  #    OutOfSync flapping between the two Applications.
+  - patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-rbac-cm
+
+  # 3. Server-side apply the three CRDs. The applicationsets CRD's last-applied
+  #    annotation is already ~220KB and will cross the 262144-byte client-side
+  #    apply limit in 3.x. SSA is set per-resource via annotation, never app-wide
+  #    (an app-wide syncOption caused phantom OutOfSync here before — see git log).
+  - patch: |
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: applications.argoproj.io
+        annotations:
+          argocd.argoproj.io/sync-options: ServerSideApply=true
+  - patch: |
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: applicationsets.argoproj.io
+        annotations:
+          argocd.argoproj.io/sync-options: ServerSideApply=true
+  - patch: |
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: appprojects.argoproj.io
+        annotations:
+          argocd.argoproj.io/sync-options: ServerSideApply=true
+
+  # 4. Preserve our live configuration, merged onto the upstream (empty) ConfigMaps.
+  - path: argocd-cm.yaml
+  - path: argocd-cmd-params-cm.yaml
+
+  # 5. Resource requests/limits. Upstream non-HA install.yaml sets none, so every
+  #    argocd pod is BestEffort/Burstable-without-mem-request and first to be evicted
+  #    under node memory pressure — bad for the deploy control plane. Requests are
+  #    anchored to observed usage (app-controller ~542Mi, repo-server ~110Mi, etc.).
+  #    Container names must match the upstream pod spec (dex container is "dex",
+  #    redis is "redis") or the strategic merge adds a duplicate container.
+  - patch: |
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: argocd-application-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-application-controller
+                resources:
+                  requests: { cpu: 250m, memory: 768Mi }
+                  limits: { cpu: "1", memory: 1Gi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-repo-server
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-repo-server
+                resources:
+                  # 512Mi OOMKilled repo-server under concurrent fleet manifest
+                  # generation (crashloop -> no ready endpoints -> all apps Unknown).
+                  # Limit raised to 1Gi; request left at 256Mi so scheduling on the
+                  # memory-tight nodes is unaffected (limits don't count against requests).
+                  requests: { cpu: 50m, memory: 256Mi }
+                  limits: { cpu: 500m, memory: 1Gi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-server
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-server
+                resources:
+                  requests: { cpu: 25m, memory: 128Mi }
+                  limits: { cpu: 250m, memory: 256Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-dex-server
+      spec:
+        template:
+          spec:
+            containers:
+              - name: dex
+                resources:
+                  requests: { cpu: 10m, memory: 128Mi }
+                  limits: { cpu: 100m, memory: 256Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-applicationset-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-applicationset-controller
+                resources:
+                  requests: { cpu: 10m, memory: 64Mi }
+                  limits: { cpu: 100m, memory: 128Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-notifications-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: argocd-notifications-controller
+                resources:
+                  requests: { cpu: 10m, memory: 64Mi }
+                  limits: { cpu: 100m, memory: 128Mi }
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-redis
+      spec:
+        template:
+          spec:
+            containers:
+              - name: redis
+                resources:
+                  requests: { cpu: 25m, memory: 64Mi }
+                  limits: { cpu: 100m, memory: 128Mi }

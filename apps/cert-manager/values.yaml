@@ -2,3 +2,30 @@ cert-manager:
   installCRDs: true
   prometheus:
     enabled: false
+  # Requests anchored to observed usage (controller ~62Mi, webhook ~24Mi,
+  # cainjector ~87Mi) so the scheduler accounts for what these already consume.
+  resources:
+    requests:
+      cpu: 10m
+      memory: 96Mi
+    limits:
+      cpu: 100m
+      memory: 192Mi
+  webhook:
+    # DOKS upgrade preflight rejects webhook timeoutSeconds > 29 (chart default is 30).
+    timeoutSeconds: 29
+    resources:
+      requests:
+        cpu: 10m
+        memory: 48Mi
+      limits:
+        cpu: 100m
+        memory: 96Mi
+  cainjector:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi

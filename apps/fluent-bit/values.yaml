@@ -41,6 +41,15 @@ fluent-bit:
   tolerations:
     - operator: Exists
 
+  # DaemonSet; requests anchored to observed usage (~39-45Mi per node).
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
   config:
     service: |
       [SERVICE]

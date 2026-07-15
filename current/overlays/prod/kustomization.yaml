@@ -24,7 +24,7 @@ patches:
 images:
 - name: vatusa/api
   newName: vatusa/api
-  newTag: 4be2a4e5cbaea3dd20d745a8d631d2332e6a4f50
+  newTag: b2507f57588423be420d4bb56f7e20315cf351c7
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.18

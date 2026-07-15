@@ -16,13 +16,13 @@ jobs:
       SHA: ${{ github.event.inputs.commit_sha || github.sha }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: 'VATUSA/gitops'
           path: gitops
           token: ${{ secrets.G_TOKEN }}
       - name: Setup Kustomize
-        uses: imranismail/setup-kustomize@v2
+        uses: imranismail/setup-kustomize@v3
       - name: Update manifests (prod)
         run: |
           cd $GITHUB_WORKSPACE/gitops/${{ inputs.kustomization-folder }}/overlays/prod

@@ -26,6 +26,10 @@ patches:
   target:
     kind: Deployment
     name: api-worker
+- path: www-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
 images:
 - name: vatusa/api
   newName: vatusa/api

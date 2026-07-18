@@ -35,7 +35,7 @@ spec:
             - schedule:work
           resources:
             requests:
-              cpu: 15m
+              cpu: 200m
               memory: 250Mi
             limits:
               cpu: 1000m

@@ -13,8 +13,8 @@ rabbitmq:
   primary:
     resources:
       requests:
-        memory: 1Gi
-        cpu: 500m
+        memory: 128Mi
+        cpu: 100m
       limits:
-        memory: 1Gi
-        cpu: 1000m
+        memory: 512Mi
+        cpu: 375m

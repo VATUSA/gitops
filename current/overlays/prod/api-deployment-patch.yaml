@@ -3,6 +3,9 @@
 # trimming to 256Mi (still ~2.5x headroom) reclaims scheduler headroom on a
 # memory-tight cluster. CPU request was below real usage (~350-470m vs 250m) and
 # the 2500m limit was far above anything observed — bring both to honest values.
+# 24h polling (289 samples) showed p50 26m but p95 877m / max 1003m — bursty,
+# and the max is already brushing the 1000m limit (throttling risk at peak).
+# Bumped request to 450m to reflect the real steady/burst mix; limit unchanged.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,7 +17,7 @@ spec:
         - name: api
           resources:
             requests:
-              cpu: 350m
+              cpu: 450m
               memory: 256Mi
             limits:
               cpu: 1000m

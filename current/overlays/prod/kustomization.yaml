@@ -17,10 +17,14 @@ patches:
   target:
     kind: Deployment
     name: www
+- path: api-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
 images:
 - name: vatusa/api
   newName: vatusa/api
-  newTag: daf9dd3a68161a0e39cec44312883f40d2d837f2
+  newTag: a0249b1c431262661e46e8b6d79ce3efa95840d2
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.18
@@ -32,4 +36,4 @@ images:
   newTag: 1.1.37
 - name: vatusa/www
   newName: vatusa/www
-  newTag: 4f4766f4a4667254857c11814a63e552b9449091
+  newTag: a7c82078ddca9177ec5a3616a9e53edfe48ab0da

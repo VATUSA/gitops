@@ -67,6 +67,10 @@ patches:
   #    anchored to observed usage (app-controller ~542Mi, repo-server ~110Mi, etc.).
   #    Container names must match the upstream pod spec (dex container is "dex",
   #    redis is "redis") or the strategic merge adds a duplicate container.
+  #    24h polling (289 samples) on app-controller: CPU p50 16m/p95 143m/max 324m
+  #    (well under the old 250m request, mostly idle) vs memory p50 689Mi/p95 735Mi/
+  #    max 776Mi (already at or above the old 768Mi request, though still under the
+  #    1Gi limit). Trimmed CPU request, raised memory request to match reality.
   - patch: |
       apiVersion: apps/v1
       kind: StatefulSet
@@ -78,7 +82,7 @@ patches:
             containers:
               - name: argocd-application-controller
                 resources:
-                  requests: { cpu: 250m, memory: 768Mi }
+                  requests: { cpu: 100m, memory: 850Mi }
                   limits: { cpu: "1", memory: 1Gi }
   - patch: |
       apiVersion: apps/v1

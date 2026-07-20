@@ -22,10 +22,18 @@ patches:
   target:
     kind: Deployment
     name: api
+- path: api-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-worker
+- path: www-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
 images:
 - name: vatusa/api
   newName: vatusa/api
-  newTag: ae967dca3b4a85527f9e25070041469d9c97cb25
+  newTag: a0249b1c431262661e46e8b6d79ce3efa95840d2
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17
@@ -37,4 +45,4 @@ images:
   newTag: 1.1.35
 - name: vatusa/www
   newName: vatusa/www
-  newTag: bd0b34612e993f72e8f0c2a46694927a99ce08cf
+  newTag: 96ced891eda07a905019ef7fca55a5a166193822

@@ -73,6 +73,4 @@ data:
   COBALT_URL: "https://cobalt.vatusa.net"
   COBALT_LOGIN_URL: "https://cobalt.vatusa.net/login"
   USE_COBALT_LOGIN: "true"
-  # DB_MOODLE_DATABASE: value intentionally omitted — dev uses "moodle_test",
-  # the real prod database name is not known from gitops/dev config alone.
-  # This MUST be filled in with the correct prod Moodle DB name before merge.
+  DB_MOODLE_DATABASE: "moodle"

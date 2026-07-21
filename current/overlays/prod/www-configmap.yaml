@@ -1,9 +1,23 @@
-# WARNING: this ConfigMap was previously populated and then wiped in commit
-# 26787aa ("Wipe prod www config map as it apparently broke things"). The
-# root cause of that breakage was never diagnosed. This re-populates it
-# (mirroring current/overlays/dev/www-configmap.yaml with prod values) as
-# part of staging the www.vatusa.net go-live — it MUST be carefully reviewed
-# and tested before this branch is merged, not merged on faith.
+# Root cause of the 2026-06-01 breakage (commit 26787aa "Wipe prod www config map
+# as it apparently broke things") found by diffing this file's keys against the
+# live `www-secrets` Secret in the `current` namespace: that Secret already carries
+# ~50 of the same keys this ConfigMap was setting (APP_ENV, APP_URL, CACHE_DRIVER,
+# DB_MOODLE_DATABASE, all EXAMS_*, all SESSION_*, LOGIN_URL, MAIL_DRIVER,
+# VATSIM_API2_URL, KB_JOIN_QUESTION_ID, COBALT_URL) with real production values.
+# `current/base/www/deployment.yaml`'s envFrom lists the Secret first and this
+# ConfigMap second — later sources win on key collisions — so the original
+# population silently overwrote those live values. The clearest confirmed mismatch:
+# APP_URL was set here to "https://vatusa.net" (no www) while the Secret's real
+# value was "https://www.vatusa.net" — breaking any absolute URL Laravel generated
+# from APP_URL. Dev's own www-secrets is minimal (just DB/Redis/APP_KEY/
+# COBALT_TOKEN, no overlapping keys), which is why the same file shape is safe
+# there but wasn't in prod.
+#
+# Fix: only set keys here that www-secrets does NOT already define, plus one
+# deliberate, called-out override below (APP_URL) that must change for the
+# /legacy cutover. Do not add back any of the keys already covered by the Secret
+# for confirmed values — see `kubectl get secret www-secrets -n current` for the
+# full key list.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,66 +25,18 @@ metadata:
   labels:
     app: www
 data:
-  APP_DEBUG: "false"
-  APP_ENV: "production"
+  # New keys — not present in www-secrets, safe to manage via gitops.
   APP_LOG_LEVEL: "error"
   APP_NAME: "VATUSA"
-  APP_URL: "https://www.vatusa.net/legacy"
   BROADCAST_DRIVER: "log"
-  CACHE_DRIVER: "redis"
-  VATSIM_API2_URL: "https://api.vatsim.net/v2"
   VATSIM_OAUTH_BASE: "https://auth.vatsim.net"
   VATSIM_OAUTH_SCOPES: "full_name,email,vatsim_details"
-  LOGIN_URL: "https://login.vatusa.net"
-  MAIL_DRIVER: "smtp"
-  EXAMS_BASIC: "7"
-  EXAMS_BASIC_ENROLID: "311"
-  EXAMS_BASIC_LEGACY: ""
-  EXAMS_BASIC_PASSING: "80"
-  EXAMS_BASIC_RCE: "102"
-  EXAMS_BASIC_RCE_COURSEID: "83"
-  EXAMS_BASIC_RCE_ENROLID: "311"
-  EXAMS_BASIC_RCE_LEGACY: "7"
-  EXAMS_BASIC_RCE_PASSING: "80"
-  EXAMS_C1: "10"
-  EXAMS_C1_COURSEID: "13"
-  EXAMS_C1_ENROLID: "34"
-  EXAMS_C1_LEGACY: "5"
-  EXAMS_C1_PASSING: "80"
-  EXAMS_C1_RCE: "105"
-  EXAMS_C1_RCE_COURSEID: "23"
-  EXAMS_C1_RCE_ENROLID: "64"
-  EXAMS_C1_RCE_LEGACY: ""
-  EXAMS_C1_RCE_PASSING: "80"
-  EXAMS_S2: "8"
-  EXAMS_S2_COURSEID: "11"
-  EXAMS_S2_ENROLID: "28"
-  EXAMS_S2_LEGACY: "50"
-  EXAMS_S2_PASSING: "80"
-  EXAMS_S2_RCE: "103"
-  EXAMS_S2_RCE_COURSEID: "84"
-  EXAMS_S2_RCE_ENROLID: "313"
-  EXAMS_S2_RCE_LEGACY: ""
-  EXAMS_S2_RCE_PASSING: "80"
-  EXAMS_S3: "9"
-  EXAMS_S3_COURSEID: "12"
-  EXAMS_S3_ENROLID: "31"
-  EXAMS_S3_LEGACY: "4"
-  EXAMS_S3_PASSING: "80"
-  EXAMS_S3_RCE: "104"
-  EXAMS_S3_RCE_COURSEID: "85"
-  EXAMS_S3_RCE_ENROLID: "315"
-  EXAMS_S3_RCE_LEGACY: ""
-  EXAMS_S3_RCE_PASSING: "80"
-  SESSION_COOKIE: "VATUSA_token"
-  SESSION_COIOKIE_PATH: "/"
-  SESSION_COOKIE_SECURE: "true"
-  SESSION_DOMAIN: ".vatusa.net"
-  SESSION_DRIVER: "redis"
-  SESSION_ENCRYPT: "false"
-  SESSION_PATH: "/www/storage/sessions"
-  KB_JOIN_QUESTION_ID: "8"
-  COBALT_URL: "https://cobalt.vatusa.net"
   COBALT_LOGIN_URL: "https://cobalt.vatusa.net/login"
   USE_COBALT_LOGIN: "true"
-  DB_MOODLE_DATABASE: "moodle"
+
+  # Deliberate override — the only key here that also exists in www-secrets.
+  # Required for the /legacy cutover. Must stay on the www.vatusa.net host to
+  # match cobalt-prod's REDIRECT_ALLOWLIST (see cobalt/overlays/prod/configmap.yaml
+  # in this same PR) — this is exactly the host mismatch that broke prod in
+  # 26787aa, so do not drop the "www." here.
+  APP_URL: "https://www.vatusa.net/legacy"

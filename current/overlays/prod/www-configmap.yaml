@@ -1,6 +1,42 @@
+# Root cause of the 2026-06-01 breakage (commit 26787aa "Wipe prod www config map
+# as it apparently broke things") found by diffing this file's keys against the
+# live `www-secrets` Secret in the `current` namespace: that Secret already carries
+# ~50 of the same keys this ConfigMap was setting (APP_ENV, APP_URL, CACHE_DRIVER,
+# DB_MOODLE_DATABASE, all EXAMS_*, all SESSION_*, LOGIN_URL, MAIL_DRIVER,
+# VATSIM_API2_URL, KB_JOIN_QUESTION_ID, COBALT_URL) with real production values.
+# `current/base/www/deployment.yaml`'s envFrom lists the Secret first and this
+# ConfigMap second — later sources win on key collisions — so the original
+# population silently overwrote those live values. The clearest confirmed mismatch:
+# APP_URL was set here to "https://vatusa.net" (no www) while the Secret's real
+# value was "https://www.vatusa.net" — breaking any absolute URL Laravel generated
+# from APP_URL. Dev's own www-secrets is minimal (just DB/Redis/APP_KEY/
+# COBALT_TOKEN, no overlapping keys), which is why the same file shape is safe
+# there but wasn't in prod.
+#
+# Fix: only set keys here that www-secrets does NOT already define, plus one
+# deliberate, called-out override below (APP_URL) that must change for the
+# /legacy cutover. Do not add back any of the keys already covered by the Secret
+# for confirmed values — see `kubectl get secret www-secrets -n current` for the
+# full key list.
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: www-config
   labels:
-    app: api
+    app: www
+data:
+  # New keys — not present in www-secrets, safe to manage via gitops.
+  APP_LOG_LEVEL: "error"
+  APP_NAME: "VATUSA"
+  BROADCAST_DRIVER: "log"
+  VATSIM_OAUTH_BASE: "https://auth.vatsim.net"
+  VATSIM_OAUTH_SCOPES: "full_name,email,vatsim_details"
+  COBALT_LOGIN_URL: "https://cobalt.vatusa.net/login"
+  USE_COBALT_LOGIN: "true"
+
+  # Deliberate override — the only key here that also exists in www-secrets.
+  # Required for the /legacy cutover. Must stay on the www.vatusa.net host to
+  # match cobalt-prod's REDIRECT_ALLOWLIST (see cobalt/overlays/prod/configmap.yaml
+  # in this same PR) — this is exactly the host mismatch that broke prod in
+  # 26787aa, so do not drop the "www." here.
+  APP_URL: "https://www.vatusa.net/legacy"

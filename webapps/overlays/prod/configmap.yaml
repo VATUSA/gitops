@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webapps-config
+data:
+  NODE_ENV: "production"
+  VATUSA_DISCORD_INVITE_URL: "https://discord.gg/a7Qcse7"
+  NEXT_PUBLIC_SUPPORT_TICKET_URL: "https://www.vatusa.net/legacy/help/ticket/new"
+  NEXT_PUBLIC_COBALT_EXTERNAL_BASE_URL: "https://www.vatusa.net/cobalt"
+  COBALT_INTERNAL_BASE_URL: "http://cobalt-service.cobalt-prod.svc.cluster.local"
+  STAFF_NEXT_BASE_PATH: "/staff"
+  # Sentry DSN is not secret (it's shipped in the client bundle). Shared
+  # project across portal and staff for now.
+  SENTRY_DSN: "https://694bd9505cf1b9dc355d7d96d1b17cd0@o4511780803772416.ingest.us.sentry.io/4511780811046912"
+  NEXT_PUBLIC_SENTRY_DSN: "https://694bd9505cf1b9dc355d7d96d1b17cd0@o4511780803772416.ingest.us.sentry.io/4511780811046912"
+  SENTRY_ENVIRONMENT: "prod"
+  NEXT_PUBLIC_SENTRY_ENVIRONMENT: "prod"

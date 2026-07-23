@@ -7,8 +7,8 @@ metadata:
 data:
   APP_ENV: "prod"
   APP_BASE_URL: "https://cobalt.vatusa.net/"
-  POST_LOGIN_URL: "https://vatusa.net/"
+  POST_LOGIN_URL: "https://www.vatusa.net/auth/callback"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
-  REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev"
+  REDIRECT_ALLOWLIST: "vatusa.net,www.vatusa.net"
   STAGING_PUBLIC_URL: "https://cobalt.vatusa.dev"
 

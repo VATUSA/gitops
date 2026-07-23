@@ -36,7 +36,7 @@ jobs:
           git config --global user.email "vatusa6@vatusa.net"
           git config --global user.name "VATUSA6"
           git add .
-          git commit -m "Update ${{ inputs.image-name }} image tag to ${{ env.SHA }}"
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update ${{ inputs.image-name }} image tag to ${{ env.SHA }}"
       - name: Push to gitops repo
         run: |
           cd $GITHUB_WORKSPACE/gitops

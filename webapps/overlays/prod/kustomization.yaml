@@ -10,13 +10,9 @@ resources:
 - portal-pdb.yaml
 - staff-pdb.yaml
 images:
-# NOTE: these tags are placeholders only, set so `kustomize build` succeeds
-# for local review. The real prod tag is set by the prod-release.yml ->
-# common-release.yml workflow (`kustomize edit set image`) when this
-# overlay is actually released — do not treat these as the deploy tag.
 - name: vatusa/portal
   newName: vatusa/portal
-  newTag: f48104cb1af85d25429d00a1aa7bc054f1b00745
+  newTag: 7aaadb230202ddcccbb55c8986e92d73f31c2df7
 - name: vatusa/staff
   newName: vatusa/staff
-  newTag: f48104cb1af85d25429d00a1aa7bc054f1b00745
+  newTag: 7aaadb230202ddcccbb55c8986e92d73f31c2df7

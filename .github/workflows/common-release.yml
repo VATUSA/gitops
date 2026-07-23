@@ -12,6 +12,9 @@ jobs:
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    concurrency:
+      group: gitops-main-push
+      cancel-in-progress: false
     env:
       SHA: ${{ github.event.inputs.commit_sha || github.sha }}
     steps:

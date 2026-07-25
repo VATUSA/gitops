@@ -1,3 +1,6 @@
 - op: replace
   path: /spec/replicas
   value: 1
+- op: replace
+  path: /spec/template/spec/containers/0/resources/requests/memory
+  value: 320Mi

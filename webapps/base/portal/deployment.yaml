@@ -32,10 +32,12 @@ spec:
         - name: portal
           image: vatusa/portal
           imagePullPolicy: Always
+          # Node SSR steady-state settles ~300-360Mi under render-cache load;
+          # request tracks the observed peak with headroom.
           resources:
             requests:
               cpu: 100m
-              memory: 320Mi
+              memory: 384Mi
             limits:
               cpu: 500m
               memory: 768Mi

@@ -4,7 +4,6 @@ resources:
 - namespace.yaml
 - ../../base/api
 - ../../base/discord-bot-v3
-- ../../base/forums
 - ../../base/google-workspace
 - ../../base/www
 - certificate.yaml
@@ -28,9 +27,6 @@ images:
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.18
-- name: vatusa/forums
-  newName: vatusa/forums
-  newTag: 5b16e0884e1cd85b1b7e9f3e0a59fb3a8664405e
 - name: vatusa/google-workspace-integration
   newName: vatusa/google-workspace-integration
   newTag: 1.1.37

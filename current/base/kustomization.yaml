@@ -3,6 +3,5 @@ kind: Kustomization
 resources:
   - api
   - discord-bot-v3
-  - forums
   - google-workspace
   - www

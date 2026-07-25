@@ -5,7 +5,7 @@ metadata:
   labels:
     app: portal
 spec:
-  replicas: 2
+  replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -34,15 +34,26 @@ spec:
           imagePullPolicy: Always
           # Node SSR steady-state settles ~300-360Mi under render-cache load;
           # request tracks the observed peak with headroom.
+          # CPU request/limit tracks observed 341-407m under real traffic
+          # (previously 100m/500m caused throttling -> probe timeouts -> restarts -> 502/503).
           resources:
             requests:
-              cpu: 100m
+              cpu: 400m
               memory: 384Mi
             limits:
-              cpu: 500m
+              cpu: 1000m
               memory: 768Mi
           ports:
             - containerPort: 80
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 12
           readinessProbe:
             httpGet:
               path: /
@@ -50,7 +61,7 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 10
-            timeoutSeconds: 1
+            timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 3
           livenessProbe:
@@ -60,7 +71,7 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 10
-            timeoutSeconds: 1
+            timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 3
           envFrom:

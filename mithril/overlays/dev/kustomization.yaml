@@ -20,4 +20,4 @@ patches:
 images:
 - name: vatusa/mithril
   newName: vatusa/mithril
-  newTag: 93661127db9d2bbccf97d617ee9b64b11165b078
+  newTag: cac6f23b64e78b3606e433d305f4dc6cfba496d4

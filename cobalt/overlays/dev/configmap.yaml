@@ -11,4 +11,5 @@ data:
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
   COOKIE_DOMAIN: "vatusa.dev"
   REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev,www.vatusa.dev"
+  MOODLE_URL: "https://academy-test.vatusa.net"
 

@@ -11,4 +11,5 @@ data:
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
   REDIRECT_ALLOWLIST: "vatusa.net,www.vatusa.net"
   STAGING_PUBLIC_URL: "https://cobalt.vatusa.dev"
+  MOODLE_URL: "https://academy.vatusa.net"
 

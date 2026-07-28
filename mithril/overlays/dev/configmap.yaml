@@ -4,4 +4,5 @@ metadata:
   name: mithril-config
   labels:
     app: mithril
-data: {}
+data:
+  DISABLE_ROSTER_POLLER: "true"

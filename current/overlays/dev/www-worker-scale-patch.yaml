@@ -1,6 +1,10 @@
+# www-worker runs `php artisan schedule:work`, whose scheduled tasks
+# (vatsim:sync, cobalt:sync_roles, etc.) sync against real VATSIM/prod data
+# and do nothing useful in dev. Same rationale as api-worker: scale to zero
+# rather than run a fragile job here for no benefit.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: www-worker
 spec:
-  replicas: 1
+  replicas: 0

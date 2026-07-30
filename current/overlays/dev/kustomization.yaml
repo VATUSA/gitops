@@ -26,6 +26,14 @@ patches:
   target:
     kind: Deployment
     name: api
+- path: api-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-queue-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-queue
 - path: api-worker-scale-patch.yaml
   target:
     kind: Deployment

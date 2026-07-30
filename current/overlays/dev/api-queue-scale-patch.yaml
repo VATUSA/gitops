@@ -1,0 +1,5 @@
+# api doesn't work in dev (nginx vhost/APP_URL hostname mismatch predates
+# this) and prod is what matters - scaled to zero rather than chasing it.
+- op: replace
+  path: /spec/replicas
+  value: 0

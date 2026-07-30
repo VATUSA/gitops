@@ -1,0 +1,23 @@
+# api's routes are gated behind Route::domain(config('app.url')) (see
+# RouteServiceProvider::mapApiRoutes), so any request without a matching
+# Host header 404s regardless of path - kubelet's httpGet probe doesn't
+# send one by default.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          readinessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: api.vatusa.dev
+          livenessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: api.vatusa.dev

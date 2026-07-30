@@ -22,3 +22,17 @@ spec:
             limits:
               cpu: 1000m
               memory: 2Gi
+          # api's routes are gated behind Route::domain(config('app.url')) (see
+          # RouteServiceProvider::mapApiRoutes), so any request without a matching
+          # Host header 404s regardless of path - kubelet's httpGet probe doesn't
+          # send one by default.
+          readinessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: api.vatusa.net
+          livenessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: api.vatusa.net

@@ -22,6 +22,10 @@ patches:
   target:
     kind: Deployment
     name: api
+- path: api-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
 - path: api-worker-scale-patch.yaml
   target:
     kind: Deployment

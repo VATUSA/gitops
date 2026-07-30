@@ -46,9 +46,14 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 15
-            timeoutSeconds: 5
+            # The hourly vatsim:sync job (www-worker) saturates the DB shared with
+            # www's PHP-FPM pool for a few minutes each hour, which can stall FPM
+            # workers past the old 5s/3-failure threshold and trigger a pointless
+            # kubelet restart of an otherwise-healthy pod. Widened so a transient
+            # stall doesn't get treated as a dead container.
+            timeoutSeconds: 10
             successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: 5
           envFrom:
             - secretRef:
                 name: www-secrets

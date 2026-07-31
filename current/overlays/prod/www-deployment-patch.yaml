@@ -1,3 +1,9 @@
+# The memory limit is sized against php-fpm's pm.max_children (24, set in
+# current's resources/docker/etc/php83/php-fpm.d/www.conf). At ~35MB RSS per
+# worker observed in prod, a fully-saturated pool needs ~840MB plus ~60MB for
+# nginx and the fpm master, so 512Mi would OOMKill a full pool. Keep this at or
+# above 1Gi whenever max_children is 24, and re-check both together if either
+# one changes.
 - op: replace
   path: /spec/template/spec/containers/0/resources
   value:
@@ -6,4 +12,4 @@
       memory: 200Mi
     limits:
       cpu: 750m
-      memory: 512Mi
+      memory: 1Gi

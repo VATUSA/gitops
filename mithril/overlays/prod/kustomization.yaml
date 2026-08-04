@@ -8,4 +8,4 @@ resources:
 images:
 - name: vatusa/mithril
   newName: vatusa/mithril
-  newTag: 17e50e8ad27720dfb6b328656ab7ed48b500227f
+  newTag: ff30728aed50484018ad96ae66da62105c3c97a5

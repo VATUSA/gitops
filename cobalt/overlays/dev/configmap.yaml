@@ -12,4 +12,6 @@ data:
   COOKIE_DOMAIN: "vatusa.dev"
   REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev,www.vatusa.dev"
   MOODLE_URL: "https://academy-test.vatusa.net"
+  # Per pod; dev runs 1 replica. See the prod overlay.
+  DB_MAX_OPEN_CONNS: "5"
 

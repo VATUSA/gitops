@@ -6,3 +6,5 @@ metadata:
     app: mithril
 data:
   DISABLE_ROSTER_POLLER: "true"
+  # Per-pool; dev runs 1 replica x 2 pools = 4 connections. See prod overlay.
+  DB_MAX_CONNECTIONS: "2"

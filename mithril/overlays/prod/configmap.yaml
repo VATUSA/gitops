@@ -4,4 +4,10 @@ metadata:
   name: mithril-config
   labels:
     app: mithril
-data: {}
+data:
+  # Applies to *each* of mithril's two pools (vatusa_db, cobalt_db), so the
+  # server-side ceiling is this x2 pools x2 replicas = 8. The app default is 5
+  # (=20), which is far past need: observed peak is 2 connections total across
+  # both replicas. The `ngws` cluster's connection budget is tight enough to
+  # matter — see docs/migration-steps.md step 0a.
+  DB_MAX_CONNECTIONS: "2"

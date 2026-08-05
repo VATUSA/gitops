@@ -12,4 +12,9 @@ data:
   REDIRECT_ALLOWLIST: "vatusa.net,www.vatusa.net"
   STAGING_PUBLIC_URL: "https://cobalt.vatusa.dev"
   MOODLE_URL: "https://academy.vatusa.net"
+  # Per pod, so the server-side ceiling is this x2 replicas = 20. Matches the
+  # app default; set explicitly so the shared MySQL connection budget is
+  # visible here alongside mithril's DB_MAX_CONNECTIONS rather than only in
+  # code. Steady-state usage is ~2 per pod.
+  DB_MAX_OPEN_CONNS: "10"
 

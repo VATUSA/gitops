@@ -20,14 +20,6 @@ data:
     
     g, VATUSA:zdv, role:zdv-admin
 
-    p, role:zlc-admin, projects, get, zlc, allow
-    p, role:zlc-admin, applications, *, zlc/*, allow
-    p, role:zlc-admin, repositories, get, zlc/*, allow
-    p, role:zlc-admin, logs, get, zlc/*, allow
-    p, role:zlc-admin, exec, create, zlc/*, allow
-    
-    g, VATUSA:zlc, role:zlc-admin
-
     p, role:zan-admin, projects, get, zan, allow
     p, role:zan-admin, applications, *, zan/*, allow
     p, role:zan-admin, repositories, get, zan/*, allow

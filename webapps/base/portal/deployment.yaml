@@ -16,18 +16,19 @@ spec:
       labels:
         app: portal
     spec:
+      # Required (not preferred): both replicas landing on the same node let a single
+      # correlated crash (e.g. a Node/webstreams race) take the whole service down.
+      # Cluster has 2 nodes and replicas: 2 — bump the node pool before raising replicas.
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - portal
-                topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - portal
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: portal
           image: vatusa/portal

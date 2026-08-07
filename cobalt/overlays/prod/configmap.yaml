@@ -18,3 +18,9 @@ data:
   # code. Steady-state usage is ~2 per pod.
   DB_MAX_OPEN_CONNS: "10"
 
+  # DigitalOcean Spaces bucket holding uploaded event banners. Note the sfo3
+  # region — most other VATUSA buckets are in nyc3, this one is not. The
+  # matching DO_SPACES_KEY/DO_SPACES_SECRET live in the cobalt-secrets secret.
+  DO_SPACES_REGION: "sfo3"
+  DO_SPACES_BUCKET: "vatusa-events"
+  DO_SPACES_PUBLIC_BASE_URL: "https://vatusa-events.sfo3.cdn.digitaloceanspaces.com"

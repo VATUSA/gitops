@@ -45,10 +45,19 @@ spec:
               cpu: 1000m
               memory: 768Mi
           ports:
-            - containerPort: 80
+            # The app listens on 3000 (Dockerfile ENV PORT=3000); portal-service
+            # already targets 3000. This was declared as 80 and is informational
+            # only, so nothing broke — but it made the port story hard to read.
+            - containerPort: 3000
+          # All three probes hit /api/health, a dependency-free route handler.
+          # They previously hit `/`, which server-side renders the homepage and
+          # fetches news + events from Cobalt: a slow render failed liveness
+          # three times over and got the pod killed, even though the process was
+          # healthy and restarting it could not fix a backend. Liveness must
+          # test "is this process serving HTTP", not "is Cobalt up".
           startupProbe:
             httpGet:
-              path: /
+              path: /api/health
               port: 3000
               scheme: HTTP
             initialDelaySeconds: 5
@@ -57,7 +66,7 @@ spec:
             failureThreshold: 12
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/health
               port: 3000
               scheme: HTTP
             initialDelaySeconds: 10
@@ -67,7 +76,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/health
               port: 3000
               scheme: HTTP
             initialDelaySeconds: 30
@@ -81,3 +90,8 @@ spec:
             - configMapRef:
                 name: webapps-config
       restartPolicy: Always
+      # Explicit rather than relying on the default, because the SIGTERM handler
+      # in instrumentation.ts sizes its Sentry flush and its self-SIGKILL
+      # watchdog against this number. Same value as the default — no behaviour
+      # change, just making the contract visible from both sides.
+      terminationGracePeriodSeconds: 30

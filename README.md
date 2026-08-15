@@ -25,10 +25,7 @@ Most workload manifests are plain Kubernetes YAML grouped with `kustomization.ya
 
 Examples:
 
-- `kustomization.yaml` points at `base/`
-- `base/kustomization.yaml` assembles the legacy/base apps
 - `current/kustomization.yaml` assembles the current production apps
-- `overlays/dev/kustomization.yaml` defines a dev overlay with image overrides
 - `cobalt/kustomization.yaml` defines a standalone app namespace and resources
 
 Kustomize is also used to pin container image tags via the `images:` section in some app groupings.
@@ -59,15 +56,6 @@ Cluster-wide infrastructure and ArgoCD bootstrap resources.
 - `rabbitmq/`: Helm chart wrapper for RabbitMQ
 - `configs/`: cluster config manifests managed with Kustomize
 
-### `base/`
-
-Base or older app manifests managed with Kustomize. Typical app shape here is:
-
-- `deployment.yaml`
-- `service.yaml`
-- `ingress.yaml`
-- `certificate.yaml`
-
 ### `current/`
 
 Current production application namespace and manifests. This is the clearest reference for how new workloads are modeled in this repo.
@@ -86,10 +74,6 @@ A standalone Kustomize-managed application with its own namespace and service ac
 ### `projects/`
 
 ArgoCD `AppProject` definitions and some namespace-specific policies such as quotas and network policies.
-
-### `overlays/`
-
-Kustomize overlays. Currently `overlays/dev/` provides a dev environment rooted in `base/`.
 
 ## Networking, Ingress, and TLS
 
@@ -211,5 +195,4 @@ If you are new to this repo, start with:
 - `apps/bootstrap/templates/`
 - `apps/configs/kustomization.yaml`
 - `current/kustomization.yaml`
-- `base/kustomization.yaml`
 - `projects/current/Project.yaml`

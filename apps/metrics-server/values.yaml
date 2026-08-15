@@ -1,11 +1,11 @@
 metrics-server:
   replicas: 2
-  # Requests anchored to observed usage (~5m CPU / 30Mi memory per replica)
+  # Requests anchored to observed usage (~5m CPU / 35-37Mi memory per replica)
   # so the scheduler accounts for what these already consume.
   resources:
     requests:
       cpu: 10m
-      memory: 48Mi
+      memory: 56Mi
     limits:
       cpu: 100m
       memory: 128Mi

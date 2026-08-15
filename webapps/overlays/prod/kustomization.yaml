@@ -9,6 +9,11 @@ resources:
 - configmap.yaml
 - portal-pdb.yaml
 - staff-pdb.yaml
+patches:
+- path: staff-resources-patch.yaml
+  target:
+    kind: Deployment
+    name: staff
 images:
 - name: vatusa/portal
   newName: vatusa/portal

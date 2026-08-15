@@ -35,9 +35,11 @@ spec:
           name: api-queue
           resources:
             limits:
-              memory: 50Mi
+              cpu: 50m
+              memory: 96Mi
             requests:
-              memory: 25Mi
+              cpu: 10m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false

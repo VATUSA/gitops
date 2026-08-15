@@ -112,7 +112,7 @@ patches:
             containers:
               - name: argocd-server
                 resources:
-                  requests: { cpu: 25m, memory: 128Mi }
+                  requests: { cpu: 50m, memory: 160Mi }
                   limits: { cpu: 250m, memory: 256Mi }
   - patch: |
       apiVersion: apps/v1
@@ -125,7 +125,7 @@ patches:
             containers:
               - name: dex
                 resources:
-                  requests: { cpu: 10m, memory: 128Mi }
+                  requests: { cpu: 10m, memory: 64Mi }
                   limits: { cpu: 100m, memory: 256Mi }
   - patch: |
       apiVersion: apps/v1
@@ -164,5 +164,5 @@ patches:
             containers:
               - name: redis
                 resources:
-                  requests: { cpu: 25m, memory: 64Mi }
+                  requests: { cpu: 25m, memory: 24Mi }
                   limits: { cpu: 100m, memory: 128Mi }

@@ -34,14 +34,14 @@ spec:
           imagePullPolicy: Always
           # Rust/axum idles at ~2-5Mi and 1m CPU (no GC heap, no per-request
           # interpreter). Requests are sized well above the observed working set
-          # for connection/request headroom; the 256Mi limit absorbs spikes.
+          # for connection/request headroom; the 128Mi limit absorbs spikes.
           resources:
             requests:
-              cpu: 25m
-              memory: 64Mi
+              cpu: 15m
+              memory: 32Mi
             limits:
-              cpu: 500m
-              memory: 256Mi
+              cpu: 200m
+              memory: 128Mi
           ports:
             - containerPort: 4000
           readinessProbe:

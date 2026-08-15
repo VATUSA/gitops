@@ -4,7 +4,7 @@ ingress-nginx:
     # DaemonSet; requests anchored to observed usage (~114-118Mi per node).
     resources:
       requests:
-        cpu: 100m
+        cpu: 50m
         memory: 192Mi
       limits:
         cpu: 300m

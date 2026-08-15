@@ -23,10 +23,10 @@ spec:
           resources:
             requests:
               cpu: 25m
-              memory: 50Mi
+              memory: 64Mi
             limits:
               cpu: 50m
-              memory: 100Mi
+              memory: 128Mi
           command: ["/app/bot"]
           env:
             - name: CONFIG_PATH

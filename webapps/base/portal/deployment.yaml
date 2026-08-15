@@ -37,13 +37,14 @@ spec:
           # request tracks the observed peak with headroom.
           # CPU request/limit tracks observed 341-407m under real traffic
           # (previously 100m/500m caused throttling -> probe timeouts -> restarts -> 502/503).
+          # Do not lower cpu request/limit below this - see incident note above.
           resources:
             requests:
               cpu: 400m
-              memory: 384Mi
+              memory: 420Mi
             limits:
               cpu: 1000m
-              memory: 768Mi
+              memory: 640Mi
           ports:
             # The app listens on 3000 (Dockerfile ENV PORT=3000); portal-service
             # already targets 3000. This was declared as 80 and is informational

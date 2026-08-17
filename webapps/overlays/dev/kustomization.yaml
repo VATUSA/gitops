@@ -19,7 +19,7 @@ patches:
 images:
 - name: vatusa/portal
   newName: vatusa/portal
-  newTag: 4fa8597d554e041cd706208ba5f33e10142ef8af
+  newTag: f8138755b2ccfdf3d434551029f328f9a625c5ac
 - name: vatusa/staff
   newName: vatusa/staff
   newTag: 4fa8597d554e041cd706208ba5f33e10142ef8af

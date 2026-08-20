@@ -11,3 +11,10 @@ data:
   # both replicas. The `ngws` cluster's connection budget is tight enough to
   # matter — see docs/migration-steps.md step 0a.
   DB_MAX_CONNECTIONS: "2"
+  # DigitalOcean Spaces bucket holding uploaded event banners. Shared with
+  # cobalt (see cobalt's configmap.yaml) — same bucket, same DO_SPACES_KEY/
+  # DO_SPACES_SECRET in mithril-secrets, objects namespaced under
+  # event-banners/<facility>/... so the two apps don't collide.
+  DO_SPACES_REGION: "sfo3"
+  DO_SPACES_BUCKET: "vatusa-events"
+  DO_SPACES_PUBLIC_BASE_URL: "https://vatusa-events.sfo3.cdn.digitaloceanspaces.com"

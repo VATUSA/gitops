@@ -42,4 +42,4 @@ jobs:
               vatusa/${{ inputs.image-name }}:latest
               vatusa/${{ inputs.image-name }}:${{ github.sha }}
             cache-from: type=gha,scope=${{ inputs.image-name }}
-            cache-to: type=gha,mode=max,scope=${{ inputs.image-name }}
+            cache-to: type=gha,mode=min,scope=${{ inputs.image-name }}

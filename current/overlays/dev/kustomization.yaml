@@ -18,6 +18,10 @@ patches:
   target:
     kind: Deployment
     name: www
+- path: www-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: www
 - path: deployment-patch.yaml
   target:
     kind: Deployment

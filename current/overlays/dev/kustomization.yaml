@@ -46,6 +46,10 @@ patches:
   target:
     kind: Deployment
     name: www-worker
+- path: www-worker-redis-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
 images:
 - name: vatusa/api
   newName: vatusa/api

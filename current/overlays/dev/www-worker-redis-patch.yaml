@@ -1,0 +1,14 @@
+- op: add
+  path: /spec/template/spec/containers/0/env
+  value:
+    - name: REDIS_HOST
+      value: valkey.valkey-dev.svc.cluster.local
+    - name: REDIS_PORT
+      value: "6379"
+    - name: REDIS_SCHEME
+      value: tcp
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-dev-redis

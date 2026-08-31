@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: valkey
+  namespace: valkey
+  labels:
+    app.kubernetes.io/name: valkey
+    app.kubernetes.io/instance: valkey
+spec:
+  replicas: 1
+  serviceName: valkey-headless
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: valkey
+      app.kubernetes.io/instance: valkey
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: valkey
+        app.kubernetes.io/instance: valkey
+    spec:
+      containers:
+        - name: valkey
+          image: valkey/valkey:8-alpine
+          command:
+            - valkey-server
+            - --requirepass
+            - $(VALKEY_PASSWORD)
+            - --appendonly
+            - "yes"
+          ports:
+            - name: valkey
+              containerPort: 6379
+          env:
+            - name: VALKEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: valkey-password
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 25m
+            limits:
+              memory: 256Mi
+              cpu: 250m
+          readinessProbe:
+            tcpSocket:
+              port: valkey
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: valkey
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app.kubernetes.io/name: valkey
+          app.kubernetes.io/instance: valkey
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: managed-csi
+        resources:
+          requests:
+            storage: 2Gi

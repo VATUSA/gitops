@@ -67,7 +67,7 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        storageClassName: managed-csi
+        storageClassName: do-block-storage
         resources:
           requests:
             storage: 2Gi

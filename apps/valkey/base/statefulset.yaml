@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: valkey
-  namespace: valkey
   labels:
     app.kubernetes.io/name: valkey
     app.kubernetes.io/instance: valkey

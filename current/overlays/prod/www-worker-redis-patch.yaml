@@ -1,0 +1,9 @@
+# Same override as www-redis-envfrom-patch.yaml, applied to www-worker
+# (which runs `php artisan schedule:work` against real prod data). This one
+# has no configMapRef at all, so the single valkey-prod-redis secretRef
+# (REDIS_HOST/PORT/SCHEME/PASSWORD) is sufficient on its own.
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-prod-redis

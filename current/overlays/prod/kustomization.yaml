@@ -16,6 +16,14 @@ patches:
   target:
     kind: Deployment
     name: www
+- path: www-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: www
+- path: www-worker-redis-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
 - path: api-deployment-patch.yaml
   target:
     kind: Deployment

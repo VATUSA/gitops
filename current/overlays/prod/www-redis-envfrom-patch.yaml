@@ -1,0 +1,21 @@
+# Deliberate override of REDIS_HOST/REDIS_PORT/REDIS_SCHEME/REDIS_PASSWORD,
+# which already exist in www-secrets (DO-managed Redis values) — pointing them
+# at the in-cluster ValKey instance instead, as a feasibility proof for the
+# eventual Azure migration. Appended last in envFrom (after both www-secrets
+# and www-config) so it wins on these specific keys only.
+#
+# Deliberately NOT done via www-configmap.yaml: that file already carries a
+# hard warning (see its header comment, root-caused from the 2026-06-01
+# outage) against adding keys that overlap with www-secrets, since
+# configMapRef silently wins there too and past changes have broken prod this
+# way. A dedicated, single-purpose Secret keeps this override visible and
+# scoped instead of growing that already-fragile ConfigMap.
+#
+# valkey-prod-redis is created out-of-band (not gitops-managed), same as the
+# valkey-dev-redis secret used in the dev overlay and valkey's own
+# `passwords` secrets.
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-prod-redis

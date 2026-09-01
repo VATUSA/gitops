@@ -1,0 +1,10 @@
+# Same override as api-redis-envfrom-patch.yaml, applied to api-worker
+# (php artisan schedule:work — also uses Redis for withoutOverlapping mutex
+# locks; see api's CLAUDE.md scheduled-jobs section). Existing locks simply
+# won't exist in the new store, which is harmless — it's equivalent to every
+# mutex being freshly released.
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-prod-redis

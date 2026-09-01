@@ -1,0 +1,8 @@
+# Same pattern as www-redis-envfrom-patch.yaml: point REDIS_HOST/PORT/SCHEME/
+# PASSWORD at the in-cluster ValKey instance instead of the DO-managed Redis
+# in api-secrets, via a dedicated secretRef appended last in envFrom.
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-dev-redis

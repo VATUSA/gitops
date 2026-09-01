@@ -1,0 +1,9 @@
+# Same override as api-redis-envfrom-patch.yaml, applied to api-queue
+# (php artisan queue:work redis). No active job dispatches exist in the app
+# today (UpdateControllerHoursJob::dispatch() is commented out), so there is
+# no in-flight-job-loss risk from this cutover.
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-prod-redis

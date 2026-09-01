@@ -34,11 +34,23 @@ patches:
   target:
     kind: Deployment
     name: api
+- path: api-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api
 - path: api-queue-scale-patch.yaml
   target:
     kind: Deployment
     name: api-queue
+- path: api-queue-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api-queue
 - path: api-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-worker
+- path: api-worker-redis-envfrom-patch.yaml
   target:
     kind: Deployment
     name: api-worker

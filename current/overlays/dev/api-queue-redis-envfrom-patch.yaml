@@ -1,0 +1,7 @@
+# Same override as api-redis-envfrom-patch.yaml, applied to api-queue
+# (php artisan queue:work redis).
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-dev-redis

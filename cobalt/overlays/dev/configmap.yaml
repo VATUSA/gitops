@@ -21,3 +21,10 @@ data:
   DO_SPACES_REGION: "sfo3"
   DO_SPACES_BUCKET: "vatusa-events"
   DO_SPACES_PUBLIC_BASE_URL: "https://vatusa-events.sfo3.cdn.digitaloceanspaces.com"
+
+  # DigitalOcean Spaces bucket holding policy documents — a separate bucket
+  # (nyc3, not sfo3) from event banners above, but the same DO account, so it
+  # reuses the same DO_SPACES_KEY/DO_SPACES_SECRET from cobalt-secrets.
+  DO_SPACES_DOCS_REGION: "nyc3"
+  DO_SPACES_DOCS_BUCKET: "vatusa-storage"
+  DO_SPACES_DOCS_PUBLIC_BASE_URL: "https://vatusa-storage.nyc3.cdn.digitaloceanspaces.com"

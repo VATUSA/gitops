@@ -6,8 +6,13 @@ metadata:
 spec:
   sourceRepos:
     - 'https://github.com/vpaza/gitops'
+    # zan-new-dev deploys from our own gitops repo, entirely separate from the existing
+    # ZAN application above (which is sourced from the volunteer's own vpaza/gitops repo).
+    - 'https://github.com/vatusa/gitops'
   destinations:
     - namespace: zan
+      server: '*'
+    - namespace: zan-new-dev
       server: '*'
   clusterResourceWhitelist:
     - group: '*'

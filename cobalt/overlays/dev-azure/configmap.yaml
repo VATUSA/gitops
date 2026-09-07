@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cobalt-config
+  labels:
+    app: cobalt
+data:
+  APP_ENV: "staging"
+  APP_BASE_URL: "https://cobalt.azure.vatusa.dev/"
+  POST_LOGIN_URL: "https://www.azure.vatusa.dev/auth/callback"
+  VATSIM_API2_URL: "https://api.vatsim.net/v2"
+  COOKIE_DOMAIN: "azure.vatusa.dev"
+  REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev,www.vatusa.dev,azure.vatusa.dev,www.azure.vatusa.dev"
+  MOODLE_URL: "https://academy-test.vatusa.net"
+  # Per pod; dev runs 1 replica. See the prod overlay.
+  DB_MAX_OPEN_CONNS: "5"
+
+  # DigitalOcean Spaces bucket holding uploaded event banners. Note the sfo3
+  # region — most other VATUSA buckets are in nyc3, this one is not. The
+  # matching DO_SPACES_KEY/DO_SPACES_SECRET live in the cobalt-secrets secret.
+  #
+  # Still DO Spaces here, not Azure Blob — cobalt's storage/spaces.go hasn't
+  # been rewritten for Azure Blob's (non-S3) API yet. Spaces is public HTTPS
+  # and reachable from AKS as-is, so this overlay carries it unchanged until
+  # that app-code work lands (see migration-steps.md §3).
+  DO_SPACES_REGION: "sfo3"
+  DO_SPACES_BUCKET: "vatusa-events"
+  DO_SPACES_PUBLIC_BASE_URL: "https://vatusa-events.sfo3.cdn.digitaloceanspaces.com"
+
+  # DigitalOcean Spaces bucket holding policy documents — a separate bucket
+  # (nyc3, not sfo3) from event banners above, but the same DO account, so it
+  # reuses the same DO_SPACES_KEY/DO_SPACES_SECRET from cobalt-secrets.
+  DO_SPACES_DOCS_REGION: "nyc3"
+  DO_SPACES_DOCS_BUCKET: "vatusa-storage"
+  DO_SPACES_DOCS_PUBLIC_BASE_URL: "https://vatusa-storage.nyc3.cdn.digitaloceanspaces.com"

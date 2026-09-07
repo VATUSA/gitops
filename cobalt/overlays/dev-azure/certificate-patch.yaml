@@ -1,0 +1,9 @@
+- op: replace
+  path: /spec/dnsNames/0
+  value: cobalt.azure.vatusa.dev
+- op: replace
+  path: /spec/dnsNames/1
+  value: azure.vatusa.dev
+- op: replace
+  path: /spec/dnsNames/2
+  value: www.azure.vatusa.dev

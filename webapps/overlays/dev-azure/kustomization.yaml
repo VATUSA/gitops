@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base
+- namespace.yaml
+- certificate.yaml
+- portal-ingress.yaml
+- staff-ingress.yaml
+- configmap.yaml
+patches:
+- path: portal-replicas-patch.yaml
+  target:
+    kind: Deployment
+    name: portal
+- path: staff-replicas-patch.yaml
+  target:
+    kind: Deployment
+    name: staff
+images:
+- name: vatusa/portal
+  newName: vatusa/portal
+  newTag: 596048774ca0cf3253327d6265acf76532e50c46
+- name: vatusa/staff
+  newName: vatusa/staff
+  newTag: 596048774ca0cf3253327d6265acf76532e50c46

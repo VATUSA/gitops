@@ -1,0 +1,77 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- ../../base/api
+- ../../base/www
+- certificate.yaml
+- api-ingress.yaml
+- api-configmap.yaml
+- www-ingress.yaml
+- www-configmap.yaml
+- eso-service-account.yaml
+- eso-secret-store.yaml
+- www-secrets-es.yaml
+- api-secrets-es.yaml
+patches:
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: www
+- path: www-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: www
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-queue-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-queue
+- path: api-queue-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api-queue
+- path: api-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-worker
+- path: api-worker-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api-worker
+- path: www-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
+- path: www-worker-redis-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
+images:
+- name: vatusa/api
+  newName: vatusa/api
+  newTag: 8fd14aaf670cb56c6595da1731444767b9911e35
+- name: vatusa/discord-bot-v3
+  newName: vatusa/discord-bot-v3
+  newTag: 1.1.17
+- name: vatusa/google-workspace-integration
+  newName: vatusa/google-workspace-integration
+  newTag: 1.1.35
+- name: vatusa/www
+  newName: vatusa/www
+  newTag: ae8f7e4e73be2044b8c7705195752f737b4349c5

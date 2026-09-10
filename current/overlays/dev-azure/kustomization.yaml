@@ -1,5 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# No ESO/OpenBao here (see docs/migration-steps.md §3, "Secrets: OpenBao deferred to
+# post-prod") - api-secrets and www-secrets (consumed via envFrom in base/api and
+# base/www) must be created manually on this cluster, e.g.:
+#   kubectl create secret generic api-secrets -n current-dev \
+#     --from-literal=DB_CONNECTION=... --from-literal=DB_DATABASE=... \
+#     --from-literal=DB_HOST=... --from-literal=DB_PASSWORD=... \
+#     --from-literal=DB_PORT=... --from-literal=DB_USERNAME=... \
+#     --from-literal=APP_KEY=... \
+#     --from-literal=REDIS_HOST=... --from-literal=REDIS_PASSWORD=... --from-literal=REDIS_PORT=...
+#   kubectl create secret generic www-secrets -n current-dev \
+#     --from-literal=<same fields as above> --from-literal=COBALT_TOKEN=...
+# (field names/values sourced from DOKS's OpenBao kv/legacy/dev/{db,laravel,redis,cobalt},
+# with DB_HOST/REDIS_HOST swapped to the Azure equivalents.)
 resources:
 - namespace.yaml
 - ../../base/api
@@ -9,10 +22,6 @@ resources:
 - api-configmap.yaml
 - www-ingress.yaml
 - www-configmap.yaml
-- eso-service-account.yaml
-- eso-secret-store.yaml
-- www-secrets-es.yaml
-- api-secrets-es.yaml
 patches:
 - path: deployment-patch.yaml
   target:

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zan-site-config
+  labels:
+    app: zan-site
+data:
+  # Read at container startup by docker-entrypoint.d/40-env-config.sh, not baked in at
+  # `vite build` time - see the site's Dockerfile and src/config.js.
+  VITE_API_URL: "https://zan-new-api.vatusa.dev"
+  VITE_VATSIM_AUTH_URL: "https://auth-dev.vatsim.net/oauth/authorize"
+  # Not secret (only the client secret is) but still a real value someone has to register
+  # with VATSIM Connect against the https://zan-new.vatusa.dev/ redirect URI below -
+  # replace before this deployment can actually log anyone in.
+  VITE_VATSIM_CLIENT_ID: "REPLACE_ME"
+  VITE_VATSIM_REDIRECT_URI: "https://zan-new.vatusa.dev/"

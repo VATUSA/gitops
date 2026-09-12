@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zan-api-data
+  labels:
+    app: zan-api
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      # zan.db (roster/events/files metadata) plus uploaded SOP/LOA/Training/Admin Policy
+      # documents - 2Gi is generous for a single ARTCC's worth of files.
+      storage: 2Gi

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: webapps-tls
+spec:
+  dnsNames:
+    - azure.vatusa.dev
+    - www.azure.vatusa.dev
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: webapps-tls

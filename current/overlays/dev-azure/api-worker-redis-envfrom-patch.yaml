@@ -1,0 +1,8 @@
+# Same override as api-redis-envfrom-patch.yaml, applied to api-worker
+# (php artisan schedule:work — also uses Redis for withoutOverlapping mutex
+# locks; see api's CLAUDE.md scheduled-jobs section).
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-
+  value:
+    secretRef:
+      name: valkey-dev-redis

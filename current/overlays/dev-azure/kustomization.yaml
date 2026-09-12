@@ -1,0 +1,86 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# No ESO/OpenBao here (see docs/migration-steps.md §3, "Secrets: OpenBao deferred to
+# post-prod") - api-secrets and www-secrets (consumed via envFrom in base/api and
+# base/www) must be created manually on this cluster, e.g.:
+#   kubectl create secret generic api-secrets -n current-dev \
+#     --from-literal=DB_CONNECTION=... --from-literal=DB_DATABASE=... \
+#     --from-literal=DB_HOST=... --from-literal=DB_PASSWORD=... \
+#     --from-literal=DB_PORT=... --from-literal=DB_USERNAME=... \
+#     --from-literal=APP_KEY=... \
+#     --from-literal=REDIS_HOST=... --from-literal=REDIS_PASSWORD=... --from-literal=REDIS_PORT=...
+#   kubectl create secret generic www-secrets -n current-dev \
+#     --from-literal=<same fields as above> --from-literal=COBALT_TOKEN=...
+# (field names/values sourced from DOKS's OpenBao kv/legacy/dev/{db,laravel,redis,cobalt},
+# with DB_HOST/REDIS_HOST swapped to the Azure equivalents.)
+resources:
+- namespace.yaml
+- ../../base/api
+- ../../base/www
+- certificate.yaml
+- api-ingress.yaml
+- api-configmap.yaml
+- www-ingress.yaml
+- www-configmap.yaml
+patches:
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: www
+- path: www-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: www
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api
+- path: api-queue-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-queue
+- path: api-queue-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api-queue
+- path: api-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: api-worker
+- path: api-worker-redis-envfrom-patch.yaml
+  target:
+    kind: Deployment
+    name: api-worker
+- path: www-worker-scale-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
+- path: www-worker-redis-patch.yaml
+  target:
+    kind: Deployment
+    name: www-worker
+images:
+- name: vatusa/api
+  newName: vatusa/api
+  newTag: 8fd14aaf670cb56c6595da1731444767b9911e35
+- name: vatusa/discord-bot-v3
+  newName: vatusa/discord-bot-v3
+  newTag: 1.1.17
+- name: vatusa/google-workspace-integration
+  newName: vatusa/google-workspace-integration
+  newTag: 1.1.35
+- name: vatusa/www
+  newName: vatusa/www
+  newTag: ae8f7e4e73be2044b8c7705195752f737b4349c5

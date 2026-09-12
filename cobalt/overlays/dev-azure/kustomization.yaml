@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base
+- namespace.yaml
+- configmap.yaml
+patches:
+- path: replicas-patch.yaml
+  target:
+    kind: Deployment
+    name: cobalt
+- path: ingress-patch.yaml
+  target:
+    kind: Ingress
+    name: cobalt-ingress
+- path: certificate-patch.yaml
+  target:
+    kind: Certificate
+    name: cobalt-tls
+- path: ingress-inline-patch.yaml
+  target:
+    kind: Ingress
+    name: cobalt-inline-ingress
+images:
+- name: vatusa/cobalt
+  newName: vatusa/cobalt
+  newTag: cbfe7f3addfe9bc6e338c1925b89150eb0ac42dd

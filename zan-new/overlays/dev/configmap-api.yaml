@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zan-api-config
+  labels:
+    app: zan-api
+data:
+  # This is a real HTTPS deployment behind ingress-nginx, not localhost - "production"
+  # mode is what we actually want (Secure cookies on, dev-login bypass off), the same
+  # reasoning cobalt's dev overlay uses APP_ENV=staging rather than "development" for.
+  NODE_ENV: "production"
+  FRONTEND_URL: "https://zan-new.vatusa.dev"
+  FRONTEND_REDIRECT_URI: "https://zan-new.vatusa.dev/"
+  # One hop: ingress-nginx sits directly in front of this pod.
+  TRUST_PROXY_HOPS: "1"

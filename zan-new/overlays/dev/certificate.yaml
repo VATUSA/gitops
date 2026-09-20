@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: zan-new-tls
+spec:
+  dnsNames:
+    - zan-new.vatusa.dev
+    - zan-new-api.vatusa.dev
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: zan-new-tls

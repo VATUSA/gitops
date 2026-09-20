@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zan-api-ingress
+  labels:
+    app: zan-api
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: zan-new-api.vatusa.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: zan-api-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - zan-new-api.vatusa.dev
+      secretName: zan-new-tls

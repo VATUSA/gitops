@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zan-api
+  labels:
+    app: zan-api
+spec:
+  # Single replica: better-sqlite3 is one process with one writer against zan.db, and the
+  # PVC below is ReadWriteOnce. Recreate avoids two pods briefly contending for that volume
+  # during a rollout - same constraint schedule-message-bot has for the same reason.
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zan-api
+  template:
+    metadata:
+      name: zan-api
+      labels:
+        app: zan-api
+    spec:
+      # The image runs as the built-in `node` user (uid/gid 1000). fsGroup makes the
+      # mounted PVC group-writable so it can create/update zan.db and uploaded files.
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: zan-api
+          image: vatusa/zan-api
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          ports:
+            - containerPort: 4000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          envFrom:
+            - secretRef:
+                name: zan-api-secrets
+            - configMapRef:
+                name: zan-api-config
+          volumeMounts:
+            # subPath mounts targeting the exact files/dirs the app writes, not a
+            # whole-directory mount at /app - that would shadow the application code baked
+            # into the image. See the api's Dockerfile for why zan.db is pre-created empty
+            # so the subPath mount resolves it as a file rather than a directory.
+            - name: data
+              mountPath: /app/zan.db
+              subPath: zan.db
+            - name: data
+              mountPath: /app/uploads
+              subPath: uploads
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: zan-api-data
+      restartPolicy: Always

@@ -6,6 +6,15 @@ metadata:
     app: api
 data:
   APP_DEBUG: "true"
+  # Azure Database for MySQL sets require_secure_transport=ON. Pointing
+  # DB_SSL_CA at the image's CA bundle makes PDO encrypt the connection and
+  # verify Azure's certificate, whose chain ends at DigiCert Global Root G2 and
+  # whose SANs include the server hostname.
+  #
+  # Deliberately absent from the DigitalOcean overlays, and deliberately not
+  # applied to the `moodle` connection (which has its own DB_MOODLE_SSL_CA and
+  # stays on DigitalOcean).
+  DB_SSL_CA: "/etc/ssl/certs/ca-certificates.crt"
   APP_ENV: "dev"
   APP_LOG_LEVEL: "debug"
   APP_NAME: "VATUSA"

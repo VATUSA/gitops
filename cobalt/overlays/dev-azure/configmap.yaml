@@ -15,6 +15,15 @@ data:
   # Per pod; dev runs 1 replica. See the prod overlay.
   DB_MAX_OPEN_CONNS: "5"
 
+  # Azure Database for MySQL sets require_secure_transport=ON. "true" encrypts
+  # and fully verifies the server certificate and hostname against the system
+  # roots in the image; Azure's chain ends at DigiCert Global Root G2 and the
+  # hostname is in the certificate SANs, so no CA file needs shipping.
+  #
+  # Deliberately absent from the DigitalOcean overlays: that endpoint presents a
+  # certificate from DigitalOcean's own CA, which is not in the system roots.
+  DB_TLS: "true"
+
   # DigitalOcean Spaces bucket holding uploaded event banners. Note the sfo3
   # region — most other VATUSA buckets are in nyc3, this one is not. The
   # matching DO_SPACES_KEY/DO_SPACES_SECRET live in the cobalt-secrets secret.

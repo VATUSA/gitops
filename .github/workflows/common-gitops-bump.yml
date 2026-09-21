@@ -43,7 +43,7 @@ jobs:
           [[ "$TAG" =~ ^[0-9a-f]{40}$ ]] || fail "tag must be a full 40-character lowercase commit SHA"
 
       - name: Check out the gitops repo
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: 'VATUSA/gitops'
           path: gitops

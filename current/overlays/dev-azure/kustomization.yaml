@@ -74,7 +74,7 @@ patches:
 images:
 - name: vatusa/api
   newName: vatusa/api
-  newTag: 8fd14aaf670cb56c6595da1731444767b9911e35
+  newTag: 19fde4f9a8581236cc486e177a4955d1a876eacb
 - name: vatusa/discord-bot-v3
   newName: vatusa/discord-bot-v3
   newTag: 1.1.17
@@ -83,4 +83,4 @@ images:
   newTag: 1.1.35
 - name: vatusa/www
   newName: vatusa/www
-  newTag: ae8f7e4e73be2044b8c7705195752f737b4349c5
+  newTag: 9c386260f25217376007dbb2f8aaf8f5b9a35529

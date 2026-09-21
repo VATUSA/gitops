@@ -3,7 +3,13 @@
 #
 #   kubectl --context vatusa-dev-aks apply -f apps/bootstrap-azure/Application.yaml
 #
-# From then on this app manages itself and every child in templates/.
+# It then manages every child Application in templates/ — but NOT itself: no template in
+# this chart renders `apps-azure`, so ArgoCD will never reconcile the root app's own
+# source. Changing `targetRevision` here has no effect on the running cluster until the
+# live object is patched by hand:
+#
+#   kubectl --context vatusa-dev-aks -n argocd patch app apps-azure --type merge \
+#     -p '{"spec":{"source":{"targetRevision":"HEAD"}}}'
 #
 # NOTE the name differs from DOKS's root app ("apps"). The two clusters never share an
 # ArgoCD, so a collision is impossible today, but distinct names keep transcripts,
@@ -23,7 +29,7 @@ spec:
   source:
     path: apps/bootstrap-azure
     repoURL: https://github.com/vatusa/gitops
-    targetRevision: celeo/azure-dev
+    targetRevision: HEAD
   syncPolicy:
     automated:
       prune: true

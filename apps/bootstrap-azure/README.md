@@ -110,6 +110,18 @@ Then create the secrets that are intentionally not in this repo — see
 
 ## `targetRevision`
 
-`values.yaml` pins `targetRevision: celeo/azure-dev` so the AKS stack can run before that
-branch merges. **Set it back to `HEAD` once it does**, in both `values.yaml` and
-`Application.yaml` (the root app's own source is not templated by itself).
+Both `values.yaml` and `Application.yaml` track `HEAD`. `celeo/azure-dev` merged to `main`
+on 2026-09-20 and the branch is gone; nothing here should reference it again.
+
+If you ever repoint the stack at a feature branch, change **both** files. `values.yaml`
+covers the nine child Applications, and ArgoCD rolls those out for you. `Application.yaml`
+does not roll out — this chart never renders its own root app, so the live `apps-azure`
+object must be patched directly:
+
+```sh
+kubectl --context vatusa-dev-aks -n argocd patch app apps-azure --type merge \
+  -p '{"spec":{"source":{"targetRevision":"<branch>"}}}'
+```
+
+Forgetting that step leaves the root app on the old revision while its children move,
+which is confusing precisely because everything still reports `Synced`.

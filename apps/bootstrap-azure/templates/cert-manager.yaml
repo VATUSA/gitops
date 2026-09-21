@@ -19,6 +19,30 @@ spec:
     path: apps/cert-manager
     repoURL: {{ .Values.repoURL }}
     targetRevision: {{ .Values.targetRevision }}
+  # AKS runs an "Admissions Enforcer" that rewrites every third-party admission webhook
+  # to exempt Azure's own system namespaces, appending these to namespaceSelector:
+  #
+  #     control-plane                  NotIn [true]
+  #     kubernetes.azure.com/managedby NotIn [aks]
+  #
+  # cert-manager's chart declares namespaceSelector on this one object (1 expression), so
+  # ArgoCD owns the list, sees 1 vs 3 and reports OutOfSync forever. Every sync strips
+  # Azure's two entries and Azure immediately re-adds them. Not a hot loop — it settles —
+  # but the app never goes green, which devalues "Synced" across the whole stack.
+  #
+  # Accept Azure's version. The alternative, annotating the webhook
+  # `admissions.enforcer/disabled: "true"`, is wrong twice: it would have to live in
+  # apps/cert-manager, the only path BOTH clusters share, so it would reach the DOKS
+  # cluster that issues production certificates — and it discards a protection Azure adds
+  # on purpose. Scoping it here keeps it Azure-only.
+  #
+  # DOKS needs none of this: no enforcer, so apps/bootstrap's copy stays unpatched.
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: cert-manager-webhook
+      jsonPointers:
+        - /webhooks/0/namespaceSelector
   syncPolicy:
     automated:
       prune: true

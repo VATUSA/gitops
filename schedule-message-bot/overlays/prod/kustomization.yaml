@@ -8,4 +8,4 @@ resources:
 images:
 - name: vatusa/schedule-message-bot
   newName: vatusa/schedule-message-bot
-  newTag: c792afcde65c2173fe501f47d880c30424aabe9e
+  newTag: 207d5334bff7a4de194f41fd7c3c521b3f15d8c6

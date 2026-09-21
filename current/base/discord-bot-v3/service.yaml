@@ -4,7 +4,7 @@ metadata:
   name: discord-bot-v3-web-shim
 spec:
   selector:
-    app: discord-bot-v3-web-shim
+    app: discord-bot-v3
   ports:
     - protocol: TCP
       port: 9002

@@ -43,3 +43,15 @@ patches:
     patch: |
       - op: remove
         path: /data/dex.config
+
+  # 3. Scale Dex to zero. With patch 2 removing dex.config there are no connectors, and
+  #    dex exits immediately on an empty configuration — leaving a permanently
+  #    CrashLoopBackOff pod next to a healthy control plane. Kept at 0 replicas rather
+  #    than deleted so re-enabling SSO later is a one-line revert of patches 2 and 3.
+  - target:
+      kind: Deployment
+      name: argocd-dex-server
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 0

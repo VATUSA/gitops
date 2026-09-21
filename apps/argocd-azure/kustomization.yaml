@@ -1,0 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: argocd-azure
+namespace: argocd
+
+# The AKS ArgoCD install. Deliberately a thin overlay on apps/argocd rather than a
+# copy: the upstream manifest pin, the argocd-secret/argocd-rbac-cm deletions, the
+# ServerSideApply CRD annotations and the resource requests are all cluster-agnostic
+# and must not drift between the two instances. Only the two genuinely
+# cluster-specific values are patched here.
+#
+# Per docs/migration-steps.md §3 this is a SECOND, INDEPENDENT ArgoCD. It manages only
+# its own local cluster (destination in-cluster) and never learns about DOKS. Both
+# instances read the same repo read-only, which cannot conflict.
+resources:
+  - ../argocd
+
+patches:
+  # 1. Public base URL. Also the OAuth callback origin, so it must match the Ingress in
+  #    apps/configs-azure/argocd-ingress.yaml.
+  - target:
+      kind: ConfigMap
+      name: argocd-cm
+    patch: |
+      - op: replace
+        path: /data/url
+        value: https://argocd.azure.vatusa.dev
+
+  # 2. Drop Dex/GitHub SSO on this instance. The GitHub OAuth app behind
+  #    dex.github.clientID is registered against argocd.vatusa.dev's callback URL and
+  #    cannot serve a second origin; leaving the connector configured would render a
+  #    "Log in via GitHub" button that always fails. Local admin login still works —
+  #    ArgoCD generates argocd-initial-admin-secret on first install (argocd-secret is
+  #    deleted from the render by apps/argocd, so nothing overwrites it).
+  #
+  #    If AKS ArgoCD should later have SSO, register a separate GitHub OAuth app for
+  #    argocd.azure.vatusa.dev, put its credentials in this cluster's argocd-secret, and
+  #    delete this patch.
+  - target:
+      kind: ConfigMap
+      name: argocd-cm
+    patch: |
+      - op: remove
+        path: /data/dex.config

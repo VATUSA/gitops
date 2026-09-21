@@ -1,0 +1,26 @@
+# NOTE: DOKS's cobalt-dev/cobalt-prod Applications run `automated: {}` — auto-sync with
+# neither prune nor selfHeal. This one enables both. AKS dev is a proving ground with no
+# users, and drift protection is the whole point of standing it up under GitOps; if that
+# turns out to be wrong for cobalt specifically, narrow it here rather than everywhere.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cobalt-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: cobalt-dev
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cobalt/overlays/dev-azure
+    repoURL: {{ .Values.repoURL }}
+    targetRevision: {{ .Values.targetRevision }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,27 @@
+# Unmodified from the DOKS chart — cert-manager needs nothing Azure-specific. The
+# ClusterIssuer it serves comes from apps/configs-azure and solves DNS01 against
+# Cloudflare, so it needs the `cloudflare-api-token` Secret to exist in this namespace.
+# That Secret is created by hand on each cluster and is in no repo; see
+# docs/sitrep-20260920.md §4.3.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: apps/cert-manager
+    repoURL: {{ .Values.repoURL }}
+    targetRevision: {{ .Values.targetRevision }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

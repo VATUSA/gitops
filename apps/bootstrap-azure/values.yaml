@@ -1,0 +1,8 @@
+# Source coordinates for every child Application. Templated here — unlike
+# apps/bootstrap, which hardcodes them — because the AKS stack has to run from the
+# celeo/azure-dev branch until it merges, and flipping one value is safer than editing
+# nine templates.
+#
+# AFTER THE MERGE: set targetRevision back to HEAD.
+repoURL: https://github.com/vatusa/gitops
+targetRevision: celeo/azure-dev

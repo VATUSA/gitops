@@ -1,0 +1,32 @@
+# Root Application for the AKS cluster. Apply ONCE by hand, against the AKS context
+# only, after ArgoCD itself is installed:
+#
+#   kubectl --context vatusa-dev-aks apply -f apps/bootstrap-azure/Application.yaml
+#
+# From then on this app manages itself and every child in templates/.
+#
+# NOTE the name differs from DOKS's root app ("apps"). The two clusters never share an
+# ArgoCD, so a collision is impossible today, but distinct names keep transcripts,
+# alerts and `argocd app list` output unambiguous while both clusters exist.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps-azure
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: apps/bootstrap-azure
+    repoURL: https://github.com/vatusa/gitops
+    targetRevision: celeo/azure-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

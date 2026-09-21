@@ -1,0 +1,29 @@
+# `current` on AKS deploys base/api and base/www only — not discord-bot-v3 or
+# google-workspace, which stay on DOKS. That is why this cluster needs neither rabbitmq
+# nor the bot's Ingress. See current/overlays/dev-azure/kustomization.yaml.
+#
+# api, api-queue, api-worker and www-worker are all scaled to 0 in this overlay, matching
+# the DOKS dev posture: the workers run `schedule:work`, whose jobs sync real VATSIM data
+# and send mail. Nothing here will email anyone.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: current-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: current-dev
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: current/overlays/dev-azure
+    repoURL: {{ .Values.repoURL }}
+    targetRevision: {{ .Values.targetRevision }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

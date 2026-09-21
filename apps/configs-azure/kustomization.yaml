@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: configs-azure
+
+# Cluster-scoped configuration for AKS. Overlays apps/configs so the ClusterIssuer and
+# the ArgoCD RBAC policy stay single-sourced — those are identical on both clusters and
+# must not fork. Only the ArgoCD Ingress hostname differs, and rabbitmq is not deployed
+# here at all.
+resources:
+  - ../configs
+
+patches:
+  # rabbitmq is not part of the AKS dev stack. It exists on DOKS solely for
+  # discord-bot-v3's discord_sync queue, and discord-bot-v3 is not in the dev-azure
+  # overlay of `current` (that overlay pulls only base/api and base/www). Drop the
+  # Ingress so ArgoCD doesn't try to create one pointing at a nonexistent Service.
+  - patch: |
+      $patch: delete
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: rabbitmq
+        namespace: rabbitmq
+
+  # argocd.vatusa.dev belongs to the DOKS instance; this one answers on the
+  # azure.vatusa.dev scheme used by every other dev-azure host. Keep in sync with
+  # `url` in apps/argocd-azure/kustomization.yaml.
+  - target:
+      kind: Ingress
+      name: argocd
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: argocd.azure.vatusa.dev
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: argocd.azure.vatusa.dev

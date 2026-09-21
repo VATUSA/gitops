@@ -1,0 +1,41 @@
+# AKS flavour of apps/ingress-nginx. A separate chart rather than an overlay because the
+# DOKS copy is a Helm chart, not a kustomization — there is no overlay mechanism to hang
+# a patch on. Everything outside the `service:` block is a verbatim copy and MUST be kept
+# in step with apps/ingress-nginx/values.yaml.
+ingress-nginx:
+  controller:
+    kind: DaemonSet
+    # DaemonSet; requests anchored to observed usage (~114-118Mi per node).
+    resources:
+      requests:
+        cpu: 50m
+        memory: 192Mi
+      limits:
+        cpu: 300m
+        memory: 384Mi
+    config:
+      proxy-body-size: 128m
+      use-forwarded-headers: "true"
+      log-format-escape-json: "true"
+      log-format-upstream: '{"time":"$time_iso8601","host":"$host","method":"$request_method","uri":"$uri","status":"$status","request_time":"$request_time","bytes_sent":"$bytes_sent","user_agent":"$http_user_agent","client_ip":"$http_x_forwarded_for","upstream":"$proxy_upstream_name"}'
+    service:
+      externalTrafficPolicy: Local
+      ipFamilies:
+      - IPv4
+      # --- Azure-specific: claim the pre-reserved static IP ---------------------
+      # vatusa-dev-ingress-ip / 132.196.34.17 was created up front (see
+      # docs/azure-changelog.md) and lives in resource group `vatusa-dev`, NOT in the
+      # AKS-managed MC_vatusa-dev_vatusa-dev-aks_centralus group. Both annotations are
+      # therefore required: the name alone is only resolved within the node resource
+      # group.
+      #
+      # This also needs the cluster's control-plane managed identity to hold
+      # `Network Contributor` on the `vatusa-dev` resource group — granted 2026-09-20,
+      # command recorded in docs/azure-changelog.md. Without it the Service stays
+      # <pending> with an authorization error in the cloud-controller logs.
+      #
+      # `azure-pip-name` is used in preference to the Service's `loadBalancerIP` field,
+      # which Kubernetes deprecated in 1.24 and which AKS treats as legacy.
+      annotations:
+        service.beta.kubernetes.io/azure-pip-name: vatusa-dev-ingress-ip
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: vatusa-dev

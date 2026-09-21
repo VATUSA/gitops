@@ -126,6 +126,21 @@ At a high level:
 3. ArgoCD detects the Git change and syncs the manifests into the cluster.
 4. Kubernetes rolls out the updated workload.
 
+## Building an Image from a Branch
+
+Each application repo has a dispatch-only `build-branch.yml` workflow that builds and pushes an image from any branch except the default one, for testing unmerged work:
+
+```
+gh workflow run build-branch.yml -R VATUSA/<repo> --ref my-branch
+# optional: -f platforms=linux/amd64 for a faster single-arch build
+```
+
+- Images are pushed as `vatusa/<image>:<commit-sha>` and a mutable `vatusa/<image>:branch-<branch-name>` (the name lowercased, with anything other than `a-z 0-9 . _ -` replaced by `-`).
+- `:latest` is never moved, nothing is deployed, and no overlay in this repo is touched. To try the image, point a throwaway deployment at the tag.
+- A prod release is refused unless it is dispatched from the default branch for a commit that is on it, so a branch image can't be released by accident.
+- The branch must contain the workflow file. If it was cut before `build-branch.yml` landed, merge the default branch into it first.
+- `webapps` builds two images (`portal`, `staff`); pass `-f apps=portal|staff|both` (default `both`).
+
 ## Adding a New Web App
 
 For a typical public web application, the usual pattern in this repo is:

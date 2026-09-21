@@ -1,0 +1,90 @@
+name: Common GitOps Bump Workflow
+
+# The single place that points a gitops overlay at a new image tag and pushes the result to main.
+# Called by common-dev-ci.yml and common-release.yml (not by the app repos directly).
+#
+# Every attempt starts from a fresh origin/main and re-applies the edit, so a push rejected because
+# someone else (another repo's CI, a human) landed a commit first is simply retried.
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        type: string
+      kustomization-folder:
+        required: true
+        type: string
+      overlay:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  bump:
+    name: Update ${{ inputs.overlay }} image tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate inputs
+        env:
+          IMAGE_NAME: ${{ inputs.image-name }}
+          FOLDER: ${{ inputs.kustomization-folder }}
+          OVERLAY: ${{ inputs.overlay }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          fail() { echo "::error::$1"; exit 1; }
+          [[ "$IMAGE_NAME" =~ ^[a-z0-9][a-z0-9-]*$ ]] || fail "image-name must match ^[a-z0-9][a-z0-9-]*$"
+          [[ "$FOLDER" =~ ^[a-z0-9][a-z0-9-]*$ ]] || fail "kustomization-folder must match ^[a-z0-9][a-z0-9-]*$"
+          [[ "$OVERLAY" == "dev" || "$OVERLAY" == "prod" ]] || fail "overlay must be 'dev' or 'prod'"
+          [[ "$TAG" =~ ^[0-9a-f]{40}$ ]] || fail "tag must be a full 40-character lowercase commit SHA"
+
+      - name: Check out the gitops repo
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: 'VATUSA/gitops'
+          path: gitops
+          token: ${{ secrets.G_TOKEN }}
+
+      # Use the runner image's kustomize rather than a third-party setup action (this job holds the
+      # gitops PAT). Fail loudly if a runner image update changes the major version, since that could
+      # change how `kustomize edit` rewrites the file.
+      - name: Check kustomize
+        run: |
+          v="$(kustomize version)"
+          echo "kustomize $v"
+          [[ "$v" == v5.* || "$v" == 5.* ]] || { echo "::error::expected kustomize 5.x, found $v"; exit 1; }
+
+      - name: Update overlay and push
+        env:
+          IMAGE_NAME: ${{ inputs.image-name }}
+          FOLDER: ${{ inputs.kustomization-folder }}
+          OVERLAY: ${{ inputs.overlay }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          cd "$GITHUB_WORKSPACE/gitops"
+          git config user.email "vatusa6@vatusa.net"
+          git config user.name "VATUSA6"
+          overlay_dir="$FOLDER/overlays/$OVERLAY"
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            git reset --hard --quiet origin/main
+            (cd "$overlay_dir" && kustomize edit set image "vatusa/${IMAGE_NAME}=vatusa/${IMAGE_NAME}:${TAG}")
+            git add -u -- "$overlay_dir"
+            if git diff --cached --quiet; then
+              echo "$overlay_dir already points at ${IMAGE_NAME}:${TAG}; nothing to commit"
+              exit 0
+            fi
+            git commit --quiet -m "Update ${IMAGE_NAME} image tag to ${TAG}"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt of 5); retrying from a fresh origin/main"
+            sleep $((RANDOM % 5 + 2))
+          done
+          echo "::error::Could not push to gitops main after 5 attempts"
+          exit 1

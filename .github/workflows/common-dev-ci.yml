@@ -8,32 +8,17 @@ on:
       kustomization-folder:
         required: true
         type: string
+
+permissions:
+  contents: read
+
 jobs:
-    deploy:
-      name: Deploy to ArgoCD
-      runs-on: ubuntu-latest
-      steps:
-        - name: Check out the repo
-          uses: actions/checkout@v5
-          with:
-            repository: 'VATUSA/gitops'
-            path: gitops
-            token: ${{ secrets.G_TOKEN }}
-        - name: Setup Kustomize
-          uses: imranismail/setup-kustomize@v3
-        - name: Update manifests (dev)
-          run: |
-            cd $GITHUB_WORKSPACE/gitops/${{ inputs.kustomization-folder }}/overlays/dev
-            kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:${{ github.sha }}
-        - name: Commit and push changes
-          run: |
-            cd $GITHUB_WORKSPACE/gitops
-            git config --global user.email "vatusa6@vatusa.net"
-            git config --global user.name "VATUSA6"
-            git add .
-            git commit -m "Update ${{ inputs.image-name }} image tag to ${{ github.sha }}"
-        - name: Push to gitops repo
-          run: |
-            cd $GITHUB_WORKSPACE/gitops
-            git push origin main
-            
+  deploy:
+    name: Deploy to ArgoCD
+    uses: ./.github/workflows/common-gitops-bump.yml
+    with:
+      image-name: ${{ inputs.image-name }}
+      kustomization-folder: ${{ inputs.kustomization-folder }}
+      overlay: dev
+      tag: ${{ github.sha }}
+    secrets: inherit

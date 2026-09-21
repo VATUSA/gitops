@@ -1,4 +1,8 @@
 name: Common Prod Release Workflow
+
+# Releases an already-built image to prod by pointing the prod overlay at it. Building/pushing images
+# from any branch is fine (common-build.yml); *releasing* is only allowed from the default branch, for a
+# commit that is on the default branch and whose image exists.
 on:
   workflow_call:
     inputs:
@@ -8,38 +12,64 @@ on:
       kustomization-folder:
         required: true
         type: string
+
+permissions:
+  contents: read
+
 jobs:
-  deploy:
-    name: Deploy to Production
+  verify:
+    name: Verify release
     runs-on: ubuntu-latest
-    concurrency:
-      group: gitops-main-push
-      cancel-in-progress: false
-    env:
-      SHA: ${{ github.event.inputs.commit_sha || github.sha }}
+    outputs:
+      sha: ${{ steps.resolve.outputs.sha }}
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v5
+      - name: Resolve and validate the commit to release
+        id: resolve
+        env:
+          # The caller's workflow_dispatch input (empty for push-triggered callers).
+          INPUT_SHA: ${{ github.event.inputs.commit_sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          fail() { echo "::error::$1"; exit 1; }
+
+          [[ "$GITHUB_REF" == "refs/heads/$DEFAULT_BRANCH" ]] \
+            || fail "Prod releases must be dispatched from '$DEFAULT_BRANCH' (this run is on '$GITHUB_REF')"
+
+          sha="${INPUT_SHA//[[:space:]]/}"
+          sha="${sha:-$GITHUB_SHA}"
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || fail "commit_sha must be a full 40-character lowercase commit SHA, got '${sha:0:60}'"
+
+          # The commit must already be part of the default branch: identical, or behind it.
+          status="$(gh api "repos/$GITHUB_REPOSITORY/compare/$DEFAULT_BRANCH...$sha" --jq .status)" \
+            || fail "Could not compare $sha with $DEFAULT_BRANCH (unknown commit?)"
+          [[ "$status" == "identical" || "$status" == "behind" ]] \
+            || fail "$sha is not on '$DEFAULT_BRANCH' (compare status: $status); merge it before releasing"
+
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      # Authenticated so the manifest lookup isn't subject to anonymous Docker Hub pull rate limits.
+      - name: Log in to Docker Hub
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
-          repository: 'VATUSA/gitops'
-          path: gitops
-          token: ${{ secrets.G_TOKEN }}
-      - name: Setup Kustomize
-        uses: imranismail/setup-kustomize@v3
-      - name: Update manifests (prod)
-        run: |
-          cd $GITHUB_WORKSPACE/gitops/${{ inputs.kustomization-folder }}/overlays/prod
-          kustomize edit set image vatusa/${{ inputs.image-name }}=vatusa/${{ inputs.image-name }}:${{ env.SHA }}
-      - name: Commit and push changes
-        run: |
-          cd $GITHUB_WORKSPACE/gitops
-          git config --global user.email "vatusa6@vatusa.net"
-          git config --global user.name "VATUSA6"
-          git add .
-          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update ${{ inputs.image-name }} image tag to ${{ env.SHA }}"
-      - name: Push to gitops repo
-        run: |
-          cd $GITHUB_WORKSPACE/gitops
-          git push origin main
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Check the image exists
+        env:
+          IMAGE_NAME: ${{ inputs.image-name }}
+          SHA: ${{ steps.resolve.outputs.sha }}
+        run: |
+          docker buildx imagetools inspect "vatusa/${IMAGE_NAME}:${SHA}" > /dev/null \
+            || { echo "::error::vatusa/${IMAGE_NAME}:${SHA} not found on Docker Hub; has it been built?"; exit 1; }
 
+  release:
+    name: Deploy to Production
+    needs: verify
+    uses: ./.github/workflows/common-gitops-bump.yml
+    with:
+      image-name: ${{ inputs.image-name }}
+      kustomization-folder: ${{ inputs.kustomization-folder }}
+      overlay: prod
+      tag: ${{ needs.verify.outputs.sha }}
+    secrets: inherit

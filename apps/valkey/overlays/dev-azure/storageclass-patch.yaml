@@ -1,10 +1,14 @@
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: valkey
-spec:
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        storageClassName: managed-csi
+# Azure Disk (StandardSSD_LRS, RWO) replaces DigitalOcean block storage.
+#
+# This MUST be a JSON6902 patch, not a strategic merge. volumeClaimTemplates is a plain
+# list with no patchMergeKey, so a strategic-merge patch REPLACES the whole entry rather
+# than merging into it — silently dropping accessModes, resources.requests.storage and
+# the labels, and leaving a StatefulSet the API server rejects:
+#   StatefulSet.apps "valkey" is invalid:
+#     spec.volumeClaimTemplates[0].spec.accessModes: Required value: at least 1 access
+#     mode is required
+#     spec.volumeClaimTemplates[0].spec.resources[storage]: Required value
+# Addressing the single field by path leaves the rest of the template intact.
+- op: replace
+  path: /spec/volumeClaimTemplates/0/spec/storageClassName
+  value: managed-csi

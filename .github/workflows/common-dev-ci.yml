@@ -19,6 +19,14 @@ jobs:
     with:
       image-name: ${{ inputs.image-name }}
       kustomization-folder: ${{ inputs.kustomization-folder }}
-      overlay: dev
+      # Both dev clusters at once. DOKS reads overlays/dev, AKS reads
+      # overlays/dev-azure; bumping only the former is what let AKS drift five
+      # commits behind and silently stop being an arm64 canary. They move in one
+      # commit, so the two clusters cannot disagree between runs.
+      #
+      # This does mean every merge to a default branch now deploys to BOTH dev
+      # clusters. If AKS is ever wanted as an independent staging surface again,
+      # drop "dev-azure" from this line — nothing else needs to change.
+      overlay: dev dev-azure
       tag: ${{ github.sha }}
     secrets: inherit

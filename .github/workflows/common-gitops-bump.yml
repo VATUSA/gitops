@@ -5,6 +5,11 @@ name: Common GitOps Bump Workflow
 #
 # Every attempt starts from a fresh origin/main and re-applies the edit, so a push rejected because
 # someone else (another repo's CI, a human) landed a commit first is simply retried.
+#
+# `overlay` takes one name or a space-separated list. A list is edited into a SINGLE commit, so the
+# overlays can never be left disagreeing with each other by a half-finished run. An overlay whose
+# directory does not exist is skipped with a notice rather than failing the job — not every app has
+# every overlay (schedule-message-bot, for instance, is prod-only).
 on:
   workflow_call:
     inputs:
@@ -15,6 +20,7 @@ on:
         required: true
         type: string
       overlay:
+        description: 'One overlay name, or several separated by spaces (e.g. "dev dev-azure").'
         required: true
         type: string
       tag:
@@ -39,7 +45,13 @@ jobs:
           fail() { echo "::error::$1"; exit 1; }
           [[ "$IMAGE_NAME" =~ ^[a-z0-9][a-z0-9-]*$ ]] || fail "image-name must match ^[a-z0-9][a-z0-9-]*$"
           [[ "$FOLDER" =~ ^[a-z0-9][a-z0-9-]*$ ]] || fail "kustomization-folder must match ^[a-z0-9][a-z0-9-]*$"
-          [[ "$OVERLAY" == "dev" || "$OVERLAY" == "prod" ]] || fail "overlay must be 'dev' or 'prod'"
+          [[ -n "${OVERLAY// /}" ]] || fail "overlay must not be empty"
+          for o in $OVERLAY; do
+            case "$o" in
+              dev|prod|dev-azure|prod-azure) ;;
+              *) fail "overlay must be one or more of 'dev', 'prod', 'dev-azure', 'prod-azure'; got '$o'" ;;
+            esac
+          done
           [[ "$TAG" =~ ^[0-9a-f]{40}$ ]] || fail "tag must be a full 40-character lowercase commit SHA"
 
       - name: Check out the gitops repo
@@ -68,17 +80,29 @@ jobs:
           cd "$GITHUB_WORKSPACE/gitops"
           git config user.email "vatusa6@vatusa.net"
           git config user.name "VATUSA6"
-          overlay_dir="$FOLDER/overlays/$OVERLAY"
           for attempt in 1 2 3 4 5; do
             git fetch --quiet origin main
             git reset --hard --quiet origin/main
-            (cd "$overlay_dir" && kustomize edit set image "vatusa/${IMAGE_NAME}=vatusa/${IMAGE_NAME}:${TAG}")
-            git add -u -- "$overlay_dir"
+            edited=()
+            for overlay in $OVERLAY; do
+              overlay_dir="$FOLDER/overlays/$overlay"
+              if [[ ! -d "$overlay_dir" ]]; then
+                echo "::notice::$overlay_dir does not exist; skipping"
+                continue
+              fi
+              (cd "$overlay_dir" && kustomize edit set image "vatusa/${IMAGE_NAME}=vatusa/${IMAGE_NAME}:${TAG}")
+              git add -u -- "$overlay_dir"
+              edited+=("$overlay")
+            done
+            if [[ ${#edited[@]} -eq 0 ]]; then
+              echo "::error::none of the requested overlays exist under $FOLDER/overlays/"
+              exit 1
+            fi
             if git diff --cached --quiet; then
-              echo "$overlay_dir already points at ${IMAGE_NAME}:${TAG}; nothing to commit"
+              echo "${edited[*]} already point at ${IMAGE_NAME}:${TAG}; nothing to commit"
               exit 0
             fi
-            git commit --quiet -m "Update ${IMAGE_NAME} image tag to ${TAG}"
+            git commit --quiet -m "Update ${IMAGE_NAME} image tag to ${TAG} (${edited[*]})"
             if git push origin HEAD:main; then
               echo "Pushed on attempt $attempt"
               exit 0

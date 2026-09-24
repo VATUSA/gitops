@@ -1,0 +1,124 @@
+fluent-bit:
+  # AZURE_BLOB_SHARED_KEY is injected from the manually-created secret
+  # "fluent-bit-azure-blob" in the logging namespace.
+  #
+  # WARNING: This secret is NOT tracked in Git (.gitignore covers *secret.yaml,
+  # and a storage account key does not belong in a repo regardless). If the
+  # ArgoCD Application is deleted, or the logging namespace is destroyed, the
+  # secret is lost and must be recreated before fluent-bit will start:
+  #
+  #   kubectl --context vatusa-dev-aks create secret generic fluent-bit-azure-blob \
+  #     --namespace logging \
+  #     --from-literal=AZURE_BLOB_SHARED_KEY="$(az storage account keys list \
+  #        -g vatusa-dev -n vatusadevstorage --query '[0].value' -o tsv)"
+  #
+  # Same operational shape as DOKS's "fluent-bit-do-spaces", so the runbook is
+  # unchanged apart from the key's provenance.
+  envFrom:
+    - secretRef:
+        name: fluent-bit-azure-blob
+
+  # Run as root so the container can read root-owned host log files.
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+
+  # Persist the tail position DB and the upload buffer across pod restarts.
+  # varlog must be explicit — the chart's default host-log mounts are not
+  # applied automatically.
+  daemonSetVolumes:
+    - name: fluent-bit-state
+      hostPath:
+        path: /var/fluent-bit
+        type: DirectoryOrCreate
+    - name: varlog
+      hostPath:
+        path: /var/log
+
+  daemonSetVolumeMounts:
+    - name: fluent-bit-state
+      mountPath: /var/fluent-bit
+    - name: varlog
+      mountPath: /var/log
+      readOnly: true
+
+  tolerations:
+    - operator: Exists
+
+  # DaemonSet; mirrors the DOKS requests (~39-45Mi per node observed there).
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  config:
+    service: |
+      [SERVICE]
+          Flush         5
+          Log_Level     info
+          Daemon        off
+          Parsers_File  /fluent-bit/etc/parsers.conf
+          HTTP_Server   On
+          HTTP_Listen   0.0.0.0
+          HTTP_Port     2020
+
+    inputs: |
+      [INPUT]
+          Name              tail
+          # Matches all containers in the ingress-nginx namespace.
+          Path              /var/log/containers/*_ingress-nginx_*.log
+          multiline.parser  cri
+          Tag               ingress.nginx.*
+          Mem_Buf_Limit     5MB
+          Skip_Long_Lines   On
+          # Tracks file positions so we don't re-ship on pod restart.
+          DB                /var/fluent-bit/ingress-nginx-pos.db
+
+    filters: |
+      [FILTER]
+          Name                kubernetes
+          Match               ingress.nginx.*
+          # Merges the JSON log line into the top-level record fields.
+          Merge_Log           On
+          Keep_Log            Off
+          K8S-Logging.Parser  On
+          K8S-Logging.Exclude On
+
+      [FILTER]
+          # Drop non-access-log lines (startup messages, errors) that aren't
+          # valid JSON — they won't have the "method" field our format emits.
+          # apps/ingress-nginx-azure sets the same log-format-upstream as DOKS,
+          # so this filter is identical on both clusters.
+          Name    grep
+          Match   ingress.nginx.*
+          Regex   method .+
+
+    outputs: |
+      [OUTPUT]
+          Name                  azure_blob
+          Match                 ingress.nginx.*
+          account_name          vatusadevstorage
+          auth_type             key
+          shared_key            ${AZURE_BLOB_SHARED_KEY}
+          container_name        vatusa-api-logs
+          # The container is created by hand (see azure-changelog.md) and is
+          # PRIVATE, unlike the two app containers which are public-read. Leave
+          # this off so a typo'd container name fails loudly instead of quietly
+          # creating a second one.
+          auto_create_container off
+          tls                   on
+          # Hive-style partitioning, matching the s3_key_format on DOKS, so the
+          # DuckDB queries in apps/fluent-bit/README.md work unchanged apart from
+          # the URL scheme. azure_blob resolves strftime directives plus $UUID.
+          path                  year=%Y/month=%m/day=%d/%H%M%S-$UUID
+          # blockblob (not the appendblob default) is required for both
+          # compression and disk buffering.
+          blob_type             blockblob
+          compress_blob         on
+          buffering_enabled     on
+          buffer_dir            /var/fluent-bit/azure-blob-store
+          upload_file_size      10M
+          upload_timeout        10m

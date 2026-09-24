@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluent-bit
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: logging
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    # apps/fluent-bit-azure, NOT apps/fluent-bit. The DOKS chart ships to DO
+    # Spaces over S3; Azure Blob does not speak S3, so this is a different
+    # output plugin rather than an overlay of the same one. Keeping them as
+    # sibling directories also keeps the DOKS cluster's path untouched.
+    path: apps/fluent-bit-azure
+    repoURL: https://github.com/vatusa/gitops
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -17,8 +17,10 @@ resources:
   - ../argocd
 
 patches:
-  # 1. Public base URL. Also the OAuth callback origin, so it must match the Ingress in
-  #    apps/configs-azure/argocd-ingress.yaml.
+  # 1. Base URL. Only used for generated links and as the OAuth callback origin; with
+  #    Dex off and the Ingress removed (apps/configs-azure) the UI is reached via
+  #    port-forward, so this is inert until SSO or a public Ingress comes back — keep it
+  #    matching that hostname if either does.
   - target:
       kind: ConfigMap
       name: argocd-cm

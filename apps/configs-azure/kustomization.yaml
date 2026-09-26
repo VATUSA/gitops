@@ -23,16 +23,22 @@ patches:
         name: rabbitmq
         namespace: rabbitmq
 
-  # argocd.vatusa.dev belongs to the DOKS instance; this one answers on the
-  # azure.vatusa.dev scheme used by every other dev-azure host. Keep in sync with
-  # `url` in apps/argocd-azure/kustomization.yaml.
-  - target:
+  # No public ArgoCD UI on AKS. The base Ingress would expose the local `admin`
+  # password login to the internet with nothing in front of it: the azure.* names are
+  # DNS-only (no Cloudflare), and Dex/SSO is off on this instance (see
+  # apps/argocd-azure). Nothing needs inbound HTTP to argocd-server here — there are no
+  # GitHub webhooks, the repo is polled — so reach the UI/API over the tunnel instead:
+  #
+  #   kubectl --context vatusa-dev-aks -n argocd port-forward svc/argocd-server 8080:443
+  #   # then https://localhost:8080, or: argocd login localhost:8080 --insecure
+  #
+  # To restore a public UI, replace this delete with a host patch to
+  # argocd.azure.vatusa.dev plus an nginx.ingress.kubernetes.io/whitelist-source-range
+  # annotation, or register an SSO client first.
+  - patch: |
+      $patch: delete
+      apiVersion: networking.k8s.io/v1
       kind: Ingress
-      name: argocd
-    patch: |
-      - op: replace
-        path: /spec/rules/0/host
-        value: argocd.azure.vatusa.dev
-      - op: replace
-        path: /spec/tls/0/hosts/0
-        value: argocd.azure.vatusa.dev
+      metadata:
+        name: argocd
+        namespace: argocd

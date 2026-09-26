@@ -1,6 +1,6 @@
 # AKS flavour of apps/ingress-nginx. A separate chart rather than an overlay because the
 # DOKS copy is a Helm chart, not a kustomization — there is no overlay mechanism to hang
-# a patch on. Everything outside the `service:` block is a verbatim copy and MUST be kept
+# a patch on. Everything outside the `service:` and `addHeaders:` blocks is a verbatim copy and MUST be kept
 # in step with apps/ingress-nginx/values.yaml.
 ingress-nginx:
   controller:
@@ -18,6 +18,19 @@ ingress-nginx:
       use-forwarded-headers: "true"
       log-format-escape-json: "true"
       log-format-upstream: '{"time":"$time_iso8601","host":"$host","method":"$request_method","uri":"$uri","status":"$status","request_time":"$request_time","bytes_sent":"$bytes_sent","user_agent":"$http_user_agent","client_ip":"$http_x_forwarded_for","upstream":"$proxy_upstream_name"}'
+    # --- Azure-specific: keep dev out of search indexes ------------------------
+    # Every azure.* host is DNS-only, so none of Cloudflare's crawler handling applies,
+    # and www.azure.vatusa.dev was already being crawled as a duplicate of the real
+    # site. Stamped on every response from this controller, i.e. every dev-azure host.
+    #
+    # Deliberately NOT a disallow-all robots.txt: a crawler that is disallowed never
+    # fetches the page, so never sees the noindex, and URLs it already knows stay in
+    # the index. noindex has to be crawlable to work.
+    #
+    # Must NOT be carried into the prod-azure controller — delete at cutover
+    # (docs/migration-steps.md §9).
+    addHeaders:
+      X-Robots-Tag: "noindex, nofollow"
     service:
       externalTrafficPolicy: Local
       ipFamilies:

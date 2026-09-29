@@ -9,10 +9,6 @@ data:
   APP_BASE_URL: "https://cobalt.azure.vatusa.dev/"
   POST_LOGIN_URL: "https://www.azure.vatusa.dev/auth/callback"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
-  # This instance has its own VATSIM Connect client (id/secret in cobalt-secrets),
-  # registered with exactly this callback. Setting it makes cobalt run the OAuth
-  # round trip itself instead of relaying logins to prod (cobalt#33).
-  VATSIM_CONNECT_REDIRECT_URI: "https://cobalt.azure.vatusa.dev/login/connect"
   COOKIE_DOMAIN: "azure.vatusa.dev"
   REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev,www.vatusa.dev,azure.vatusa.dev,www.azure.vatusa.dev"
   MOODLE_URL: "https://academy-test.vatusa.net"

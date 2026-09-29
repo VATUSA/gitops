@@ -1,6 +1,6 @@
 # `apps/bootstrap-azure` — the AKS app-of-apps
 
-The AKS (`vatusa-dev-aks`) counterpart to `apps/bootstrap`. Per
+The AKS (`vatusa-dev-aks-wus2`, West US 2) counterpart to `apps/bootstrap`. Per
 [`docs/migration-steps.md`](../../../docs/migration-steps.md) §3, AKS runs its **own**
 ArgoCD; each instance manages only its own local cluster and neither is ever given
 credentials for the other. Both read this same repository read-only, which cannot
@@ -58,11 +58,11 @@ cluster with no SSO configured. Port them when prod moves, not before.
 ## Bootstrapping a cluster from nothing
 
 ArgoCD cannot install itself, so the first step is manual. Two steps here are **not**
-obvious, and both were found by hitting them on `vatusa-dev-aks` on 2026-09-20 — do not
-reorder or skip them:
+obvious, and both were found by hitting them on 2026-09-20 on `vatusa-dev-aks` (the original
+Central US cluster, deleted 2026-09-29) — do not reorder or skip them:
 
 ```sh
-kubectl --context vatusa-dev-aks create namespace argocd
+kubectl --context vatusa-dev-aks-wus2 create namespace argocd
 
 # 1. The three argoproj CRDs MUST go on server-side.
 #    applicationsets.argoproj.io carries a ~220KB schema, and a client-side
@@ -74,12 +74,12 @@ kubectl --context vatusa-dev-aks create namespace argocd
 #    this, but that only governs ArgoCD's OWN syncs — it does nothing for a raw kubectl
 #    apply during bootstrap.
 kubectl kustomize apps/argocd-azure \
-  | kubectl --context vatusa-dev-aks apply --server-side --force-conflicts -f - \
+  | kubectl --context vatusa-dev-aks-wus2 apply --server-side --force-conflicts -f - \
       --dry-run=none --selector= 2>/dev/null || true
 #    (or extract just the CustomResourceDefinition documents and apply those server-side)
 
 # 2. Everything else, client-side as normal.
-kubectl --context vatusa-dev-aks apply -k apps/argocd-azure
+kubectl --context vatusa-dev-aks-wus2 apply -k apps/argocd-azure
 
 # 3. Create an EMPTY argocd-secret before argocd-server will start.
 #    apps/argocd deliberately deletes argocd-secret from the render ("never manage it —
@@ -88,15 +88,15 @@ kubectl --context vatusa-dev-aks apply -k apps/argocd-azure
 #      {"level":"fatal","msg":"secret \"argocd-secret\" not found"}
 #    ArgoCD populates server.secretkey itself once the Secret object exists, and writes
 #    the initial admin password to argocd-initial-admin-secret.
-kubectl --context vatusa-dev-aks -n argocd create secret generic argocd-secret
-kubectl --context vatusa-dev-aks -n argocd label secret argocd-secret \
+kubectl --context vatusa-dev-aks-wus2 -n argocd create secret generic argocd-secret
+kubectl --context vatusa-dev-aks-wus2 -n argocd label secret argocd-secret \
     app.kubernetes.io/name=argocd-secret app.kubernetes.io/part-of=argocd --overwrite
 
 # 4. Hand it the root app; everything else follows from git.
-kubectl --context vatusa-dev-aks apply -f apps/bootstrap-azure/Application.yaml
+kubectl --context vatusa-dev-aks-wus2 apply -f apps/bootstrap-azure/Application.yaml
 
 # 5. Initial admin password:
-kubectl --context vatusa-dev-aks -n argocd get secret argocd-initial-admin-secret \
+kubectl --context vatusa-dev-aks-wus2 -n argocd get secret argocd-initial-admin-secret \
     -o jsonpath='{.data.password}' | base64 -d
 ```
 
@@ -149,7 +149,7 @@ does not roll out — this chart never renders its own root app, so the live `ap
 object must be patched directly:
 
 ```sh
-kubectl --context vatusa-dev-aks -n argocd patch app apps-azure --type merge \
+kubectl --context vatusa-dev-aks-wus2 -n argocd patch app apps-azure --type merge \
   -p '{"spec":{"source":{"targetRevision":"<branch>"}}}'
 ```
 

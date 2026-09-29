@@ -1,14 +1,14 @@
 # Root Application for the AKS cluster. Apply ONCE by hand, against the AKS context
 # only, after ArgoCD itself is installed:
 #
-#   kubectl --context vatusa-dev-aks apply -f apps/bootstrap-azure/Application.yaml
+#   kubectl --context vatusa-dev-aks-wus2 apply -f apps/bootstrap-azure/Application.yaml
 #
 # It then manages every child Application in templates/ — but NOT itself: no template in
 # this chart renders `apps-azure`, so ArgoCD will never reconcile the root app's own
 # source. Changing `targetRevision` here has no effect on the running cluster until the
 # live object is patched by hand:
 #
-#   kubectl --context vatusa-dev-aks -n argocd patch app apps-azure --type merge \
+#   kubectl --context vatusa-dev-aks-wus2 -n argocd patch app apps-azure --type merge \
 #     -p '{"spec":{"source":{"targetRevision":"HEAD"}}}'
 #
 # NOTE the name differs from DOKS's root app ("apps"). The two clusters never share an

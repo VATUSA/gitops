@@ -7,7 +7,7 @@ fluent-bit:
   # ArgoCD Application is deleted, or the logging namespace is destroyed, the
   # secret is lost and must be recreated before fluent-bit will start:
   #
-  #   kubectl --context vatusa-dev-aks create secret generic fluent-bit-azure-blob \
+  #   kubectl --context vatusa-dev-aks-wus2 create secret generic fluent-bit-azure-blob \
   #     --namespace logging \
   #     --from-literal=AZURE_BLOB_SHARED_KEY="$(az storage account keys list \
   #        -g vatusa-dev -n vatusadevstorage --query '[0].value' -o tsv)"

@@ -36,19 +36,22 @@ ingress-nginx:
       ipFamilies:
       - IPv4
       # --- Azure-specific: claim the pre-reserved static IP ---------------------
-      # vatusa-dev-ingress-ip / 132.196.34.17 was created up front (see
+      # vatusa-dev-wus2-ingress-ip / 20.69.161.143 was created up front (see
       # docs/azure-changelog.md) and lives in resource group `vatusa-dev`, NOT in the
-      # AKS-managed MC_vatusa-dev_vatusa-dev-aks_centralus group. Both annotations are
+      # AKS-managed MC_vatusa-dev_vatusa-dev-aks-wus2_westus2 group. Both annotations are
       # therefore required: the name alone is only resolved within the node resource
       # group.
       #
+      # Public IPs are regional. This was vatusa-dev-ingress-ip / 132.196.34.17 (Central
+      # US) until dev AKS was rebuilt in West US 2, next to the database, on 2026-09-29.
+      #
       # This also needs the cluster's control-plane managed identity to hold
-      # `Network Contributor` on the `vatusa-dev` resource group — granted 2026-09-20,
+      # `Network Contributor` on the `vatusa-dev` resource group — granted 2026-09-29,
       # command recorded in docs/azure-changelog.md. Without it the Service stays
       # <pending> with an authorization error in the cloud-controller logs.
       #
       # `azure-pip-name` is used in preference to the Service's `loadBalancerIP` field,
       # which Kubernetes deprecated in 1.24 and which AKS treats as legacy.
       annotations:
-        service.beta.kubernetes.io/azure-pip-name: vatusa-dev-ingress-ip
+        service.beta.kubernetes.io/azure-pip-name: vatusa-dev-wus2-ingress-ip
         service.beta.kubernetes.io/azure-load-balancer-resource-group: vatusa-dev

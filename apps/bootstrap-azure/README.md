@@ -106,7 +106,37 @@ client-side last-applied annotation. That is cosmetic once step 1 has been done 
 itself applies that CRD server-side via the annotation.
 
 Then create the secrets that are intentionally not in this repo — see
-[`docs/sitrep-20260920.md`](../../docs/sitrep-20260920.md) §4.3 for the full list.
+[`docs/sitrep-20260920.md`](../../docs/sitrep-20260920.md) §4.3 for the full list, plus
+`logging/fluent-bit-azure-blob`. Pods that started before their Secret existed need a
+`rollout restart`.
+
+### Two more traps after step 4
+
+Both were hit rebuilding dev in West US 2 on 2026-09-29 (`vatusa-dev-aks-wus2`):
+
+- **ingress-nginx's first sync can hang forever.** ArgoCD waits for the controller
+  Service to become healthy, and it never will if `azure-pip-name` names an IP the cluster
+  cannot bind (Public IPs are regional; an IP in another region fails with
+  `SyncLoadBalancerFailed`). Later commits don't help, because the running operation is
+  pinned to its revision. Point the annotation at an IP in the cluster's own region
+  *before* step 4. If it's already stuck, terminate the operation and let auto-sync
+  retry at `HEAD`:
+
+  ```sh
+  kubectl -n argocd patch app ingress-nginx --type merge \
+    -p '{"status":{"operationState":{"phase":"Terminating"}}}'
+  ```
+
+- **The first app with an Ingress can lose the race with the admission webhook.** If it
+  syncs before ingress-nginx's `admission-patch` job has injected the webhook's CA, the
+  Ingress is rejected with `x509: certificate signed by unknown authority`, ArgoCD gives
+  up after 5 retries, and the app shows `OutOfSync` with no Ingress (its site `503`s).
+  Check every app after the first sync settles, and re-sync any that failed:
+
+  ```sh
+  kubectl -n argocd patch app mithril-dev --type merge \
+    -p '{"operation":{"initiatedBy":{"username":"bootstrap"},"sync":{"revision":"HEAD"}}}'
+  ```
 
 ## `targetRevision`
 

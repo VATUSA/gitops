@@ -29,6 +29,11 @@ data:
   VATSIM_OAUTH_SCOPES: "full_name,email,vatsim_details"
   LOGIN_URL: "https://login.azure.vatusa.dev"
   MAIL_DRIVER: "smtp"
+  # Object storage (policy documents, docs/...): Cloudflare R2, the same dev bucket as
+  # cobalt. Needs current#181 (DO_SPACES_ENDPOINT). Keys are in www-secrets.
+  DO_SPACES_ENDPOINT: "https://11976c0a4f2b9d3e1176dba5177bf32c.r2.cloudflarestorage.com"
+  DO_SPACES_REGION: "auto"
+  DO_SPACES_BUCKET: "vatusa-azure-dev"
   EXAMS_BASIC: "7"
   EXAMS_BASIC_ENROLID: "311"
   EXAMS_BASIC_LEGACY: ""

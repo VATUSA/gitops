@@ -4,3 +4,10 @@
 - op: replace
   path: /spec/template/spec/containers/0/resources/requests/memory
   value: 320Mi
+# Dev AKS runs on a single node (2026-09-29, cost). Portal's base request of 400m
+# reflects prod traffic; dev idles at ~5m, and 400m left no room on one node for
+# a rollout's surge pod. Only the *request* is lowered: the 1000m limit, whose
+# earlier 500m value caused the throttling the base warns about, is unchanged.
+- op: replace
+  path: /spec/template/spec/containers/0/resources/requests/cpu
+  value: 100m

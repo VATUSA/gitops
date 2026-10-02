@@ -87,6 +87,44 @@ kubectl create secret generic fluent-bit-do-spaces \
 
 Future improvement: wire this through External Secrets Operator + OpenBao instead.
 
+## IP truncation
+
+The privacy policy (www.vatusa.net/info/privacy#data-retention) promises full
+IP addresses for 90 days, then truncated IPs. The `log-ip-truncation` CronJob
+(`templates/log-ip-truncation.yaml`, script in `files/truncate_log_ips.py`)
+runs daily at 04:30 UTC and rewrites each object in day partitions older than
+90 days, in place, with `client_ip` truncated: IPv4 to /24, IPv6 to /48, and
+anything unparseable to `?`. Every other field is unchanged, so the DuckDB
+queries below still work.
+
+Rewritten objects carry `x-amz-meta-ip-truncated: v1` and are skipped on later
+runs. Each run re-checks the 7 days before the cutoff (`LOOKBACK_DAYS`) to
+cover missed runs. Truncation is idempotent, so re-running is always safe.
+
+Credentials come from a second manually-created secret, a Spaces key scoped
+to `vatusa-api-logs` with read/write:
+
+```bash
+kubectl create secret generic log-ip-truncation-do-spaces \
+  --namespace logging \
+  --from-literal=AWS_ACCESS_KEY_ID=<key> \
+  --from-literal=AWS_SECRET_ACCESS_KEY=<secret>
+```
+
+To backfill, or to catch up after more than a week of failed runs, run a
+one-off Job with `BACKFILL_FROM` set (`DRY_RUN=1` reports without writing):
+
+```bash
+kubectl create job -n logging --from=cronjob/log-ip-truncation log-ip-backfill \
+  --dry-run=client -o yaml \
+  | kubectl set env --local -f - BACKFILL_FROM=2026-06-23 -o yaml \
+  | kubectl apply -f -
+kubectl logs -n logging -f job/log-ip-backfill
+```
+
+Truncated logs are still personal data (the `uri` can contain CIDs), which is
+why the policy says "truncated", not "anonymized".
+
 ## Querying with DuckDB
 
 ```sql

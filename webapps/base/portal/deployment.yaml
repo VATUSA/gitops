@@ -91,8 +91,6 @@ spec:
             - configMapRef:
                 name: webapps-config
       restartPolicy: Always
-      # Explicit rather than relying on the default, because the SIGTERM handler
-      # in instrumentation.ts sizes its Sentry flush and its self-SIGKILL
-      # watchdog against this number. Same value as the default — no behaviour
-      # change, just making the contract visible from both sides.
+      # Explicit rather than relying on the default. Same value as the default —
+      # no behaviour change, just making the value visible.
       terminationGracePeriodSeconds: 30

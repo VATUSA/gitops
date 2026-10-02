@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zan-api-service
+  labels:
+    app: zan-api
+spec:
+  ports:
+    - port: 80
+      targetPort: 4000
+  selector:
+    app: zan-api

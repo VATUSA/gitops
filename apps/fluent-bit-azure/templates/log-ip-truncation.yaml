@@ -1,0 +1,98 @@
+# Daily job that truncates client IPs in the Azure Blob access logs once a
+# day's logs are older than the 90 days of full IPs promised by the privacy
+# policy (www.vatusa.net/info/privacy#data-retention). The Azure counterpart of
+# apps/fluent-bit/templates/log-ip-truncation.yaml, running the same script
+# (files/truncate_log_ips.py is a symlink to apps/fluent-bit's copy) with
+# STORAGE_BACKEND=azure. See the "IP truncation" section of
+# apps/fluent-bit/README.md.
+#
+# Credentials: the storage account key from the manually-created secret
+# "fluent-bit-azure-blob" that fluent-bit itself uses (see values.yaml). The
+# account key can rewrite any blob, which this job needs anyway.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-ip-truncation
+data:
+  truncate_log_ips.py: |
+{{ .Files.Get "files/truncate_log_ips.py" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: log-ip-truncation
+spec:
+  schedule: "30 4 * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 604800
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: truncate
+              image: python:3.13-slim
+              command:
+                - sh
+                - -c
+                - >-
+                  pip install --quiet --no-cache-dir --disable-pip-version-check
+                  --target /tmp/deps 'azure-storage-blob>=12.20,<13'
+                  && exec python /app/truncate_log_ips.py
+              env:
+                - name: PYTHONPATH
+                  value: /tmp/deps
+                - name: PYTHONUNBUFFERED
+                  value: "1"
+                - name: HOME
+                  value: /tmp
+                - name: STORAGE_BACKEND
+                  value: azure
+                - name: AZURE_STORAGE_ACCOUNT
+                  value: {{ .Values.logIpTruncation.storageAccount | quote }}
+                - name: AZURE_CONTAINER
+                  value: {{ .Values.logIpTruncation.container | quote }}
+                - name: AZURE_STORAGE_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: fluent-bit-azure-blob
+                      key: AZURE_BLOB_SHARED_KEY
+                - name: RETENTION_DAYS
+                  value: "90"
+                - name: LOOKBACK_DAYS
+                  value: {{ .Values.logIpTruncation.lookbackDays | quote }}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 384Mi
+              volumeMounts:
+                - name: script
+                  mountPath: /app
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: script
+              configMap:
+                name: log-ip-truncation
+            - name: tmp
+              emptyDir: {}

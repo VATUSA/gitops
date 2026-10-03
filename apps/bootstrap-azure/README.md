@@ -20,6 +20,7 @@ production.
 | `config` | `apps/configs-azure` | thin overlay on `apps/configs`; different ArgoCD Ingress host, no rabbitmq Ingress |
 | `cert-manager` | `apps/cert-manager` | verbatim; shared with DOKS |
 | `ingress-nginx` | `apps/ingress-nginx-azure` | copy of `apps/ingress-nginx` + the static-IP Service annotations |
+| `fluent-bit` | `apps/fluent-bit-azure` | `azure_blob` output instead of DOKS's S3 sink, plus the `log-ip-truncation` CronJob |
 | `valkey-dev` | `apps/valkey/overlays/dev-azure` | |
 | `cobalt-dev` | `cobalt/overlays/dev-azure` | |
 | `current-dev` | `current/overlays/dev-azure` | `base/api` + `base/www` only |
@@ -34,9 +35,6 @@ This is a **subset** of the DOKS bootstrap, not a copy:
   second, competing one.
 - **`metrics-reader`** — supports the DO resource-utilisation analytics work; nothing on
   AKS consumes it.
-- **`fluent-bit`** — its only output is an S3 sink pointed at the DigitalOcean Spaces
-  bucket `vatusa-api-logs` (sfo3). Needs a destination decision before it means anything
-  on Azure; log shipping is not a prerequisite for standing dev up.
 - **`external-secrets`** and **`openbao`** — §3 decided to stay on plain Kubernetes
   Secrets through the whole migration and revisit OpenBao as a post-prod improvement.
   OpenBao's state is Shamir-sealed, file-backed and local to its PVC; it does not

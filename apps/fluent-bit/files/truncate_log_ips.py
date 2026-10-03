@@ -6,13 +6,20 @@ address in `client_ip` truncated: IPv4 to its /24, IPv6 to its /48. Anything
 that is not an IP address (other than an empty value or "-") is replaced
 with "?" so an unexpected format can't leak an address.
 
-Rewritten objects are tagged with x-amz-meta-ip-truncated, so re-running over
-a day that is already done just skips it. Truncation is also idempotent, so
-a partial run is safe to repeat.
+Rewritten objects are tagged in their metadata (x-amz-meta-ip-truncated on S3,
+ip_truncated on Azure Blob, whose metadata names can't contain "-"), so
+re-running over a day that is already done just skips it. Truncation is also
+idempotent, so a partial run is safe to repeat.
 
 Environment:
-  S3_BUCKET, S3_ENDPOINT, S3_REGION   bucket location
-  AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+  STORAGE_BACKEND  "s3" (default; DO Spaces, R2) or "azure" (Azure Blob)
+  For s3:
+    S3_BUCKET, S3_ENDPOINT, S3_REGION   bucket location
+    AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+  For azure:
+    AZURE_STORAGE_ACCOUNT, AZURE_CONTAINER   container location
+    AZURE_STORAGE_KEY                        account key
+    AZURE_BLOB_ENDPOINT   optional; defaults to https://<account>.blob.core.windows.net
   RETENTION_DAYS   days of full IPs to keep (default 90)
   LOOKBACK_DAYS    days before the cutoff to re-check, covering missed runs (default 7)
   BACKFILL_FROM    YYYY-MM-DD; process every day from here to the cutoff instead
@@ -26,7 +33,6 @@ import json
 import os
 import sys
 
-MARKER_KEY = "ip-truncated"
 MARKER_VALUE = "v1"
 
 
@@ -98,59 +104,130 @@ def days_to_process(today: datetime.date) -> list[datetime.date]:
     return days
 
 
-def process_day(s3, bucket: str, day: datetime.date, dry_run: bool) -> dict:
+class S3Store:
+    MARKER_KEY = "ip-truncated"
+
+    def __init__(self):
+        import boto3
+
+        self.bucket = os.environ["S3_BUCKET"]
+        self.client = boto3.client(
+            "s3",
+            endpoint_url=os.environ["S3_ENDPOINT"],
+            region_name=os.environ["S3_REGION"],
+        )
+        self.url = f"s3://{self.bucket}"
+
+    def list(self, prefix: str):
+        """Yields (key, done); done is None when unknown until the object is read."""
+        paginator = self.client.get_paginator("list_objects_v2")
+        for page in paginator.paginate(Bucket=self.bucket, Prefix=prefix):
+            for entry in page.get("Contents", []):
+                yield entry["Key"], None
+
+    def get(self, key: str) -> tuple[bytes, bool, dict]:
+        obj = self.client.get_object(Bucket=self.bucket, Key=key)
+        done = obj.get("Metadata", {}).get(self.MARKER_KEY) == MARKER_VALUE
+        return obj["Body"].read(), done, obj
+
+    def put(self, key: str, body: bytes, original: dict) -> None:
+        self.client.put_object(
+            Bucket=self.bucket,
+            Key=key,
+            Body=body,
+            ContentType=original.get("ContentType", "binary/octet-stream"),
+            ContentEncoding="gzip",
+            Metadata={self.MARKER_KEY: MARKER_VALUE},
+        )
+
+
+class AzureBlobStore:
+    MARKER_KEY = "ip_truncated"
+
+    def __init__(self):
+        from azure.storage.blob import ContainerClient
+
+        account = os.environ["AZURE_STORAGE_ACCOUNT"]
+        container = os.environ["AZURE_CONTAINER"]
+        self.client = ContainerClient(
+            os.environ.get("AZURE_BLOB_ENDPOINT", f"https://{account}.blob.core.windows.net"),
+            container,
+            credential={"account_name": account, "account_key": os.environ["AZURE_STORAGE_KEY"]},
+        )
+        self.url = f"az://{account}/{container}"
+
+    def list(self, prefix: str):
+        # Listing returns metadata, so finished blobs are skipped without a download.
+        for blob in self.client.list_blobs(name_starts_with=prefix, include=["metadata"]):
+            yield blob.name, (blob.metadata or {}).get(self.MARKER_KEY) == MARKER_VALUE
+
+    def get(self, key: str) -> tuple[bytes, bool, dict]:
+        downloader = self.client.download_blob(key)
+        done = (downloader.properties.metadata or {}).get(self.MARKER_KEY) == MARKER_VALUE
+        return downloader.readall(), done, downloader.properties
+
+    def put(self, key: str, body: bytes, original) -> None:
+        from azure.core import MatchConditions
+        from azure.storage.blob import ContentSettings
+
+        # Keep fluent-bit's content settings (it sets no Content-Encoding on .gz
+        # blobs, which DuckDB relies on to read them as gzip).
+        settings = original.content_settings
+        self.client.upload_blob(
+            key,
+            body,
+            overwrite=True,
+            content_settings=ContentSettings(
+                content_type=settings.content_type,
+                content_encoding=settings.content_encoding,
+            ),
+            metadata={self.MARKER_KEY: MARKER_VALUE},
+            # Fail rather than overwrite if fluent-bit or anything else changed
+            # the blob since it was read.
+            etag=original.etag,
+            match_condition=MatchConditions.IfNotModified,
+        )
+
+
+def process_day(store, day: datetime.date, dry_run: bool) -> dict:
     prefix = day.strftime("year=%Y/month=%m/day=%d/")
     stats = {"objects": 0, "skipped": 0, "rewritten": 0, "records": 0, "dropped": 0}
-    paginator = s3.get_paginator("list_objects_v2")
-    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
-        for entry in page.get("Contents", []):
-            key = entry["Key"]
-            stats["objects"] += 1
-            obj = s3.get_object(Bucket=bucket, Key=key)
-            if obj.get("Metadata", {}).get(MARKER_KEY) == MARKER_VALUE:
-                stats["skipped"] += 1
-                continue
-            raw = obj["Body"].read()
-            body = gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw
-            new_body, records, dropped = rewrite(body)
-            stats["records"] += records
-            stats["dropped"] += dropped
-            if dry_run:
-                continue
-            s3.put_object(
-                Bucket=bucket,
-                Key=key,
-                Body=gzip.compress(new_body),
-                ContentType=obj.get("ContentType", "binary/octet-stream"),
-                ContentEncoding="gzip",
-                Metadata={MARKER_KEY: MARKER_VALUE},
-            )
-            stats["rewritten"] += 1
+    for key, done in store.list(prefix):
+        stats["objects"] += 1
+        if done:
+            stats["skipped"] += 1
+            continue
+        raw, done, original = store.get(key)
+        if done:
+            stats["skipped"] += 1
+            continue
+        body = gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw
+        new_body, records, dropped = rewrite(body)
+        stats["records"] += records
+        stats["dropped"] += dropped
+        if dry_run:
+            continue
+        store.put(key, gzip.compress(new_body), original)
+        stats["rewritten"] += 1
     return stats
 
 
 def main() -> int:
-    import boto3
-
-    bucket = os.environ["S3_BUCKET"]
+    backend = os.environ.get("STORAGE_BACKEND", "s3")
+    store = {"s3": S3Store, "azure": AzureBlobStore}[backend]()
     dry_run = os.environ.get("DRY_RUN") == "1"
-    s3 = boto3.client(
-        "s3",
-        endpoint_url=os.environ["S3_ENDPOINT"],
-        region_name=os.environ["S3_REGION"],
-    )
     days = days_to_process(datetime.datetime.now(datetime.timezone.utc).date())
     if not days:
         print("nothing to do", flush=True)
         return 0
     print(
-        f"truncating IPs in s3://{bucket} for {days[0]} .. {days[-1]}"
+        f"truncating IPs in {store.url} for {days[0]} .. {days[-1]}"
         f" ({len(days)} days){' [dry run]' if dry_run else ''}",
         flush=True,
     )
     totals = {}
     for day in days:
-        stats = process_day(s3, bucket, day, dry_run)
+        stats = process_day(store, day, dry_run)
         for name, count in stats.items():
             totals[name] = totals.get(name, 0) + count
         print(f"{day}: {stats}", flush=True)

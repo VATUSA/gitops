@@ -122,10 +122,45 @@ kubectl create job -n logging --from=cronjob/log-ip-truncation log-ip-backfill \
 kubectl logs -n logging -f job/log-ip-backfill
 ```
 
+### On AKS (Azure Blob)
+
+`apps/fluent-bit-azure` runs the same script with `STORAGE_BACKEND=azure`
+(its `files/truncate_log_ips.py` is a symlink to this chart's copy, so there is
+one script). Differences:
+
+- The marker is blob metadata `ip_truncated: v1`; Azure metadata names can't
+  contain `-`. Listings include metadata, so finished blobs are skipped
+  without being downloaded.
+- Writes are conditional on the blob's ETag, so a blob that changed after it
+  was read is never overwritten (the run fails instead).
+- Credentials are the storage account key fluent-bit already uses
+  (`fluent-bit-azure-blob`); no second secret.
+- `LOOKBACK_DAYS` is 60 on dev, because dev AKS is stopped when idle and the
+  CronJob only catches up on its latest missed run when the cluster starts.
+- Leave blob **versioning and soft delete off** on the log container's
+  account. Either would keep each pre-rewrite blob, full IPs included.
+
+The backfill one-liner above works the same way (add `--context`).
+
 Truncated logs are still personal data (the `uri` can contain CIDs), which is
 why the policy says "truncated", not "anonymized".
 
 ## Querying with DuckDB
+
+On AKS the logs are in Azure Blob; DuckDB's `azure` extension reads them with
+your `az login`, no key needed. Fluent-bit's `azure_blob` output turns `$UUID`
+into a folder, so the glob is one level deeper than on Spaces:
+
+```sql
+INSTALL azure;
+LOAD azure;
+SET azure_transport_option_type = 'curl';  -- otherwise "Problem with the SSL CA cert" on Arch
+CREATE SECRET (TYPE azure, PROVIDER credential_chain, CHAIN 'cli', ACCOUNT_NAME 'vatusadevstorage');
+SELECT count(*) FROM read_json_auto('az://vatusa-api-logs/year=*/month=*/day=*/*/*',
+    hive_partitioning = true, format = 'newline_delimited', compression = 'gzip');
+```
+
+The rest of this section is the DOKS (Spaces) setup.
 
 ```sql
 INSTALL httpfs;

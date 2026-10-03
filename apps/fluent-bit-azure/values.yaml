@@ -122,3 +122,14 @@ fluent-bit:
           buffer_dir            /var/fluent-bit/azure-blob-store
           upload_file_size      10M
           upload_timeout        10m
+
+# Daily access-log IP truncation (templates/log-ip-truncation.yaml). Must point
+# at the same account and container as the azure_blob [OUTPUT] above.
+logIpTruncation:
+  storageAccount: vatusadevstorage
+  container: vatusa-api-logs
+  # Days before the 90-day cutoff re-checked on each run. DOKS uses 7. Dev AKS
+  # is stopped when idle, so a missed run can be weeks long; a day not
+  # re-checked before it falls out of this window is never truncated. Azure
+  # listings carry the done-marker, so finished blobs cost nothing to re-check.
+  lookbackDays: 60

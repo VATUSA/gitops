@@ -41,8 +41,10 @@ This is a **subset** of the DOKS bootstrap, not a copy:
   Secrets through the whole migration and revisit OpenBao as a post-prod improvement.
   OpenBao's state is Shamir-sealed, file-backed and local to its PVC; it does not
   replicate, so "moving" it means a from-scratch re-init either way.
-- **`rabbitmq`** — exists on DOKS only for `discord-bot-v3`'s `discord_sync` queue, and
-  `discord-bot-v3` is not part of the `dev-azure` overlay of `current`.
+- **`rabbitmq`** — unused. Its only client was `discord-bot-v3`'s `discord_sync` queue,
+  which the bot replaced with an in-process channel in `5ed810c` (2026-09-14). Nothing
+  connects to the DOKS broker any more; it is a candidate for retirement there, and it
+  should not be built on Azure for prod either.
 - **`schedule-message-bot`** — single-environment (prod-only) app. Stays on DOKS until
   the prod cutover.
 - **`*-prod` Applications and the `zan` tenant** — Phase 1 §7–§9 and §11 respectively.

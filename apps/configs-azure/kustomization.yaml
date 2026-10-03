@@ -11,10 +11,10 @@ resources:
   - ../configs
 
 patches:
-  # rabbitmq is not part of the AKS dev stack. It exists on DOKS solely for
-  # discord-bot-v3's discord_sync queue, and discord-bot-v3 is not in the dev-azure
-  # overlay of `current` (that overlay pulls only base/api and base/www). Drop the
-  # Ingress so ArgoCD doesn't try to create one pointing at a nonexistent Service.
+  # rabbitmq is not part of the AKS stack, and nothing uses it any more: its only
+  # client, discord-bot-v3's discord_sync queue, became an in-process channel in the
+  # bot (5ed810c, 2026-09-14). The base still carries its Ingress for DOKS, so drop it
+  # here rather than point at a nonexistent Service.
   - patch: |
       $patch: delete
       apiVersion: networking.k8s.io/v1

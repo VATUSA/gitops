@@ -11,3 +11,9 @@
 - op: replace
   path: /spec/template/spec/containers/0/resources/requests/cpu
   value: 100m
+# The base's *required* anti-affinity keeps two portal pods off the same node.
+# With one node, a rollout's new pod can never schedule next to the old one, so
+# every portal deploy since the shrink sat Pending (2026-10-03: old image still
+# serving). One replica on one node has nothing to spread anyway.
+- op: remove
+  path: /spec/template/spec/affinity

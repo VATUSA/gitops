@@ -1,4 +1,4 @@
 - op: replace
   path: /spec/dnsNames
   value:
-    - api.azure.vatusa.dev
+    - api.vatusa.dev

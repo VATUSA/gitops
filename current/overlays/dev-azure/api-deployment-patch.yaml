@@ -15,9 +15,9 @@ spec:
             httpGet:
               httpHeaders:
                 - name: Host
-                  value: api.azure.vatusa.dev
+                  value: api.vatusa.dev
           livenessProbe:
             httpGet:
               httpHeaders:
                 - name: Host
-                  value: api.azure.vatusa.dev
+                  value: api.vatusa.dev

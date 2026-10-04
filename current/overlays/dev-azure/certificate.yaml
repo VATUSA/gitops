@@ -4,11 +4,11 @@ metadata:
   name: vatusa-dev-tls
 spec:
   dnsNames:
-    - azure.vatusa.dev
-    - www.azure.vatusa.dev
-    - api.azure.vatusa.dev
-    - login.azure.vatusa.dev
-    - auth.azure.vatusa.dev
+    - vatusa.dev
+    - www.vatusa.dev
+    - api.vatusa.dev
+    - login.vatusa.dev
+    - auth.vatusa.dev
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt

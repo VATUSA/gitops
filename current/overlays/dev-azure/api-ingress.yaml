@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: api.azure.vatusa.dev
+    - host: api.vatusa.dev
       http:
         paths:
           - backend:
@@ -17,7 +17,7 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
-    - host: login.azure.vatusa.dev
+    - host: login.vatusa.dev
       http:
         paths:
           - backend:
@@ -27,7 +27,7 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
-    - host: auth.azure.vatusa.dev
+    - host: auth.vatusa.dev
       http:
         paths:
           - backend:
@@ -39,7 +39,7 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - api.azure.vatusa.dev
-        - login.azure.vatusa.dev
-        - auth.azure.vatusa.dev
+        - api.vatusa.dev
+        - login.vatusa.dev
+        - auth.vatusa.dev
       secretName: vatusa-dev-tls

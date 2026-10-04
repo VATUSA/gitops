@@ -6,11 +6,11 @@ metadata:
     app: cobalt
 data:
   APP_ENV: "staging"
-  APP_BASE_URL: "https://cobalt.azure.vatusa.dev/"
-  POST_LOGIN_URL: "https://www.azure.vatusa.dev/auth/callback"
+  APP_BASE_URL: "https://cobalt.vatusa.dev/"
+  POST_LOGIN_URL: "https://www.vatusa.dev/auth/callback"
   VATSIM_API2_URL: "https://api.vatsim.net/v2"
-  COOKIE_DOMAIN: "azure.vatusa.dev"
-  REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev,www.vatusa.dev,azure.vatusa.dev,www.azure.vatusa.dev"
+  COOKIE_DOMAIN: "vatusa.dev"
+  REDIRECT_ALLOWLIST: "vatusa.net,vatusa.dev,www.vatusa.dev"
   MOODLE_URL: "https://academy-test.vatusa.net"
   # Per pod; dev runs 1 replica. See the prod overlay.
   DB_MAX_OPEN_CONNS: "5"

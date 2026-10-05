@@ -15,7 +15,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: cobalt/overlays/dev-azure
+    path: cobalt/overlays/dev
     repoURL: {{ .Values.repoURL }}
     targetRevision: {{ .Values.targetRevision }}
   syncPolicy:

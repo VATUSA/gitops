@@ -48,8 +48,8 @@ jobs:
           [[ -n "${OVERLAY// /}" ]] || fail "overlay must not be empty"
           for o in $OVERLAY; do
             case "$o" in
-              dev|prod|dev-azure|prod-azure) ;;
-              *) fail "overlay must be one or more of 'dev', 'prod', 'dev-azure', 'prod-azure'; got '$o'" ;;
+              dev|prod|prod-azure) ;;
+              *) fail "overlay must be one or more of 'dev', 'prod', 'prod-azure'; got '$o'" ;;
             esac
           done
           [[ "$TAG" =~ ^[0-9a-f]{40}$ ]] || fail "tag must be a full 40-character lowercase commit SHA"

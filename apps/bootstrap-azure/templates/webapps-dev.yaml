@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: webapps/overlays/dev-azure
+    path: webapps/overlays/dev
     repoURL: {{ .Values.repoURL }}
     targetRevision: {{ .Values.targetRevision }}
   syncPolicy:

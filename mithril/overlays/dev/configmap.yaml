@@ -8,7 +8,7 @@ data:
   DISABLE_ROSTER_POLLER: "true"
   # Per-pool; dev runs 1 replica x 2 pools = 4 connections. See prod overlay.
   DB_MAX_CONNECTIONS: "2"
-  # Object storage: Cloudflare R2, shared with cobalt (see cobalt's dev-azure
+  # Object storage: Cloudflare R2, shared with cobalt (see cobalt's dev
   # configmap.yaml): same bucket, same R2 token in mithril-secrets, objects under
   # event-banners/<facility>/... Endpoint WITHOUT the bucket here: rust-s3 adds it,
   # path-style when DO_SPACES_PATH_STYLE is true.

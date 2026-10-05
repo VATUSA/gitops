@@ -14,7 +14,7 @@
 # src/main.rs), but SIGTERM arrives before ingress-nginx has dropped the pod from its
 # endpoints, so a request or two still reach a pod that has stopped accepting. Holding
 # SIGTERM back for 5s closes that race. Uses the native sleep action (no binary needed
-# in the image). dev-azure only for now; carry to prod with the AKS move.
+# in the image). dev only for now; carry to prod with the AKS move.
 - op: add
   path: /spec/template/spec/containers/0/lifecycle
   value:

@@ -21,7 +21,7 @@ ingress-nginx:
     # --- Azure-specific: keep dev out of search indexes ------------------------
     # www.azure.vatusa.dev (dev's hostname until 2026-10-04, now www.vatusa.dev) was
     # being crawled as a duplicate of the real site. Stamped on every response from
-    # this controller, i.e. every dev-azure host.
+    # this controller, i.e. every dev host.
     #
     # Deliberately NOT a disallow-all robots.txt: a crawler that is disallowed never
     # fetches the page, so never sees the noindex, and URLs it already knows stay in

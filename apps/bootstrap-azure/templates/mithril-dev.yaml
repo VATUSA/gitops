@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: mithril/overlays/dev-azure
+    path: mithril/overlays/dev
     repoURL: {{ .Values.repoURL }}
     targetRevision: {{ .Values.targetRevision }}
   syncPolicy:

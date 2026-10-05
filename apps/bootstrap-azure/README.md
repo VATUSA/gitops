@@ -9,8 +9,8 @@ conflict.
 This is a **sibling chart, not a parameterisation** of `apps/bootstrap`. That chart's
 templates hardcode DigitalOcean-flavoured overlay paths (`mithril/overlays/prod`,
 `apps/valkey/overlays/prod`, …); syncing it against AKS would deploy the DO overlays onto
-Azure. (DOKS dev and its `overlays/dev` paths were removed 2026-10-04; AKS dev now serves
-`vatusa.dev`.) Keeping them separate means a change here cannot reach the cluster still serving
+Azure. Since 2026-10-04 there is no DOKS dev: `overlays/dev` (formerly `overlays/dev-azure`)
+is AKS's, and AKS dev serves `vatusa.dev`. Keeping them separate means a change here cannot reach the cluster still serving
 production.
 
 ## What it deploys
@@ -22,11 +22,11 @@ production.
 | `cert-manager` | `apps/cert-manager` | verbatim; shared with DOKS |
 | `ingress-nginx` | `apps/ingress-nginx-azure` | copy of `apps/ingress-nginx` + the static-IP Service annotations |
 | `fluent-bit` | `apps/fluent-bit-azure` | `azure_blob` output instead of DOKS's S3 sink, plus the `log-ip-truncation` CronJob |
-| `valkey-dev` | `apps/valkey/overlays/dev-azure` | |
-| `cobalt-dev` | `cobalt/overlays/dev-azure` | |
-| `current-dev` | `current/overlays/dev-azure` | `base/api` + `base/www` only |
-| `mithril-dev` | `mithril/overlays/dev-azure` | |
-| `webapps-dev` | `webapps/overlays/dev-azure` | |
+| `valkey-dev` | `apps/valkey/overlays/dev` | |
+| `cobalt-dev` | `cobalt/overlays/dev` | |
+| `current-dev` | `current/overlays/dev` | `base/api` + `base/www` only |
+| `mithril-dev` | `mithril/overlays/dev` | |
+| `webapps-dev` | `webapps/overlays/dev` | |
 
 ## What it deliberately omits, and why
 

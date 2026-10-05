@@ -19,10 +19,8 @@ jobs:
     with:
       image-name: ${{ inputs.image-name }}
       kustomization-folder: ${{ inputs.kustomization-folder }}
-      # AKS dev (vatusa.dev) is the only dev cluster since 2026-10-04; DOKS dev and
-      # overlays/dev were deleted. The bump step skips an overlay directory that
-      # doesn't exist, so a stale "dev" here would only log a notice — but keep
-      # this list matching the overlays that are actually deployed.
-      overlay: dev-azure
+      # AKS dev (vatusa.dev) is the only dev cluster since 2026-10-04. DOKS dev's
+      # overlays/dev was deleted and overlays/dev-azure renamed to overlays/dev.
+      overlay: dev
       tag: ${{ github.sha }}
     secrets: inherit

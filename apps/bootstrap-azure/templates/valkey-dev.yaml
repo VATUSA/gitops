@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: apps/valkey/overlays/dev-azure
+    path: apps/valkey/overlays/dev
     repoURL: {{ .Values.repoURL }}
     targetRevision: {{ .Values.targetRevision }}
   syncPolicy:

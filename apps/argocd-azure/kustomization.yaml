@@ -18,16 +18,17 @@ resources:
 
 patches:
   # 1. Base URL. Only used for generated links and as the OAuth callback origin; with
-  #    Dex off and the Ingress removed (apps/configs-azure) the UI is reached via
-  #    port-forward, so this is inert until SSO or a public Ingress comes back — keep it
-  #    matching that hostname if either does.
+  #    Dex off and the Ingress removed (apps/configs-azure) the UI is reached via the
+  #    port-forward documented there, so this points at that. Change it to the public
+  #    hostname if SSO or a public Ingress comes back. (Not argocd.vatusa.dev: that is
+  #    the DOKS prod ArgoCD.)
   - target:
       kind: ConfigMap
       name: argocd-cm
     patch: |
       - op: replace
         path: /data/url
-        value: https://argocd.azure.vatusa.dev
+        value: https://localhost:8080
 
   # 2. Drop Dex/GitHub SSO on this instance. The GitHub OAuth app behind
   #    dex.github.clientID is registered against argocd.vatusa.dev's callback URL and
@@ -37,7 +38,7 @@ patches:
   #    deleted from the render by apps/argocd, so nothing overwrites it).
   #
   #    If AKS ArgoCD should later have SSO, register a separate GitHub OAuth app for
-  #    argocd.azure.vatusa.dev, put its credentials in this cluster's argocd-secret, and
+  #    its own public hostname, put its credentials in this cluster's argocd-secret, and
   #    delete this patch.
   - target:
       kind: ConfigMap

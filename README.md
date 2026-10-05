@@ -39,7 +39,6 @@ Current infra charts include:
 - `apps/ingress-nginx/`
 - `apps/cert-manager/`
 - `apps/postgresql/`
-- `apps/rabbitmq/`
 
 These are local wrapper charts that depend on upstream Helm charts and are deployed by ArgoCD Applications rendered from `apps/bootstrap/`.
 
@@ -53,7 +52,6 @@ Cluster-wide infrastructure and ArgoCD bootstrap resources.
 - `ingress-nginx/`: Helm chart wrapper for the ingress controller
 - `cert-manager/`: Helm chart wrapper for certificate management
 - `postgresql/`: Helm chart wrapper for PostgreSQL
-- `rabbitmq/`: Helm chart wrapper for RabbitMQ
 - `configs/`: cluster config manifests managed with Kustomize
 
 ### `current/`

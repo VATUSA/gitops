@@ -7,9 +7,10 @@ credentials for the other. Both read this same repository read-only, which canno
 conflict.
 
 This is a **sibling chart, not a parameterisation** of `apps/bootstrap`. That chart's
-templates hardcode DigitalOcean-flavoured overlay paths (`mithril/overlays/dev`,
-`apps/valkey/overlays/dev`, …); syncing it against AKS would deploy the DO overlays onto
-Azure. Keeping them separate means a change here cannot reach the cluster still serving
+templates hardcode DigitalOcean-flavoured overlay paths (`mithril/overlays/prod`,
+`apps/valkey/overlays/prod`, …); syncing it against AKS would deploy the DO overlays onto
+Azure. (DOKS dev and its `overlays/dev` paths were removed 2026-10-04; AKS dev now serves
+`vatusa.dev`.) Keeping them separate means a change here cannot reach the cluster still serving
 production.
 
 ## What it deploys
@@ -17,7 +18,7 @@ production.
 | Application | Source path | Notes |
 |---|---|---|
 | `argocd` | `apps/argocd-azure` | thin overlay on `apps/argocd`; different `url`, no Dex |
-| `config` | `apps/configs-azure` | thin overlay on `apps/configs`; different ArgoCD Ingress host, no rabbitmq Ingress |
+| `config` | `apps/configs-azure` | thin overlay on `apps/configs`; no ArgoCD Ingress |
 | `cert-manager` | `apps/cert-manager` | verbatim; shared with DOKS |
 | `ingress-nginx` | `apps/ingress-nginx-azure` | copy of `apps/ingress-nginx` + the static-IP Service annotations |
 | `fluent-bit` | `apps/fluent-bit-azure` | `azure_blob` output instead of DOKS's S3 sink, plus the `log-ip-truncation` CronJob |
@@ -37,12 +38,11 @@ This is a **subset** of the DOKS bootstrap, not a copy:
   AKS consumes it.
 - **`external-secrets`** and **`openbao`** — §3 decided to stay on plain Kubernetes
   Secrets through the whole migration and revisit OpenBao as a post-prod improvement.
-  OpenBao's state is Shamir-sealed, file-backed and local to its PVC; it does not
-  replicate, so "moving" it means a from-scratch re-init either way.
-- **`rabbitmq`** — unused. Its only client was `discord-bot-v3`'s `discord_sync` queue,
-  which the bot replaced with an in-process channel in `5ed810c` (2026-09-14). Nothing
-  connects to the DOKS broker any more; it is a candidate for retirement there, and it
-  should not be built on Azure for prod either.
+  Both were retired from DOKS on 2026-10-04 (gitops `f328630`) and their charts deleted,
+  so a future OpenBao is a fresh install.
+- **`rabbitmq`** — unused since `discord-bot-v3` replaced its `discord_sync` queue with an
+  in-process channel in `5ed810c` (2026-09-14). Retired from DOKS on 2026-10-04
+  (`dd60166`) and its manifests deleted; not to be built on Azure.
 - **`schedule-message-bot`** — single-environment (prod-only) app. Stays on DOKS until
   the prod cutover.
 - **`*-prod` Applications and the `zan` tenant** — Phase 1 §7–§9 and §11 respectively.

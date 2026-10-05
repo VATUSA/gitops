@@ -19,14 +19,10 @@ jobs:
     with:
       image-name: ${{ inputs.image-name }}
       kustomization-folder: ${{ inputs.kustomization-folder }}
-      # Both dev clusters at once. DOKS reads overlays/dev, AKS reads
-      # overlays/dev-azure; bumping only the former is what let AKS drift five
-      # commits behind and silently stop being an arm64 canary. They move in one
-      # commit, so the two clusters cannot disagree between runs.
-      #
-      # This does mean every merge to a default branch now deploys to BOTH dev
-      # clusters. If AKS is ever wanted as an independent staging surface again,
-      # drop "dev-azure" from this line — nothing else needs to change.
-      overlay: dev dev-azure
+      # AKS dev (vatusa.dev) is the only dev cluster since 2026-10-04; DOKS dev and
+      # overlays/dev were deleted. The bump step skips an overlay directory that
+      # doesn't exist, so a stale "dev" here would only log a notice — but keep
+      # this list matching the overlays that are actually deployed.
+      overlay: dev-azure
       tag: ${{ github.sha }}
     secrets: inherit

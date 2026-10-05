@@ -5,36 +5,24 @@ metadata:
 
 # Cluster-scoped configuration for AKS. Overlays apps/configs so the ClusterIssuer and
 # the ArgoCD RBAC policy stay single-sourced — those are identical on both clusters and
-# must not fork. Only the ArgoCD Ingress hostname differs, and rabbitmq is not deployed
-# here at all.
+# must not fork. The only difference is that AKS has no public ArgoCD Ingress.
 resources:
   - ../configs
 
 patches:
-  # rabbitmq is not part of the AKS stack, and nothing uses it any more: its only
-  # client, discord-bot-v3's discord_sync queue, became an in-process channel in the
-  # bot (5ed810c, 2026-09-14). The base still carries its Ingress for DOKS, so drop it
-  # here rather than point at a nonexistent Service.
-  - patch: |
-      $patch: delete
-      apiVersion: networking.k8s.io/v1
-      kind: Ingress
-      metadata:
-        name: rabbitmq
-        namespace: rabbitmq
-
   # No public ArgoCD UI on AKS. The base Ingress would expose the local `admin`
-  # password login to the internet with nothing in front of it: the azure.* names are
-  # DNS-only (no Cloudflare), and Dex/SSO is off on this instance (see
+  # password login to the internet with nothing in front of it: no Cloudflare Access,
+  # and Dex/SSO is off on this instance (see
   # apps/argocd-azure). Nothing needs inbound HTTP to argocd-server here — there are no
   # GitHub webhooks, the repo is polled — so reach the UI/API over the tunnel instead:
   #
   #   kubectl --context vatusa-dev-aks-wus2 -n argocd port-forward svc/argocd-server 8080:443
   #   # then https://localhost:8080, or: argocd login localhost:8080 --insecure
   #
-  # To restore a public UI, replace this delete with a host patch to
-  # argocd.azure.vatusa.dev plus an nginx.ingress.kubernetes.io/whitelist-source-range
-  # annotation, or register an SSO client first.
+  # To restore a public UI, replace this delete with a host patch to a new hostname
+  # (argocd.vatusa.dev is the DOKS prod ArgoCD) plus an
+  # nginx.ingress.kubernetes.io/whitelist-source-range annotation, or register an SSO
+  # client first.
   - patch: |
       $patch: delete
       apiVersion: networking.k8s.io/v1

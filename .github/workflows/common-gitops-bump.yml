@@ -20,7 +20,7 @@ on:
         required: true
         type: string
       overlay:
-        description: 'One overlay name, or several separated by spaces (e.g. "dev dev-azure").'
+        description: 'One overlay name, or several separated by spaces (e.g. "prod prod-azure").'
         required: true
         type: string
       tag:

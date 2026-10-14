@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mithril-config
-data:
-  DISABLE_ROSTER_POLLER: "true"

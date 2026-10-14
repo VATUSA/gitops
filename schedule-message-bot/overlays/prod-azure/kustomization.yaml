@@ -5,8 +5,3 @@ kind: Kustomization
 resources:
 - ../prod
 patches:
-# Cutover hold: 0 replicas until the cutover commit deletes this patch, so the bot
-# never posts from both clusters (docs/prod-cutover-playbook.md §1.3).
-- path: cutover-hold.yaml
-  target:
-    kind: Deployment

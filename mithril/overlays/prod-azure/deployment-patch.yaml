@@ -1,0 +1,8 @@
+# Hold SIGTERM back 5s so ingress-nginx drops the pod from its endpoints before
+# mithril stops accepting; see mithril/overlays/dev/deployment-patch.yaml.
+- op: add
+  path: /spec/template/spec/containers/0/lifecycle
+  value:
+    preStop:
+      sleep:
+        seconds: 5

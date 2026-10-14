@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Prod on AKS (West US 2). Built on ../prod so it inherits prod's image tags (CI's
+# prod release bumps ../prod only) and carries only the Azure differences:
+#   - TLS to Azure MySQL (DB_SSL_CA, as on dev)
+#   - TLS to the `moodle` schema, which stays on DigitalOcean (ngws) and is now
+#     reached over the public internet: DO's CA mounted from a ConfigMap and
+#     DB_MOODLE_SSL_CA pointed at it. DB_MOODLE_HOST in api-secrets/www-secrets
+#     must be the PUBLIC ngws hostname, port 25060.
+#   - object storage on Cloudflare R2 for www (policy documents)
+#   - the cutover hold (cutover-hold.yaml)
+# See docs/prod-cutover-playbook.md §2.3.
+resources:
+- ../prod
+configMapGenerator:
+# DigitalOcean's managed-database CA certificate (public, not a secret).
+- name: do-db-ca
+  files:
+  - ca.crt=do-ca.crt
+patches:
+- path: api-configmap-patch.yaml
+- path: www-configmap-patch.yaml
+- path: moodle-ca-mount-patch.yaml
+  target:
+    kind: Deployment
+    name: ^(api|api-queue|api-worker|www|www-worker)$
+# Cutover hold: every single-runner workload at 0 replicas until the cutover
+# commit deletes this patch, so AKS and DOKS never both run schedulers, queues
+# or bots (docs/prod-cutover-playbook.md §1.3).
+- path: cutover-hold.yaml
+  target:
+    kind: Deployment
+    name: ^(api-queue|api-worker|www-worker|gsuite|discord-bot-v3)$

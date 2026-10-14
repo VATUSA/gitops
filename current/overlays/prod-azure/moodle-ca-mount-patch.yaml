@@ -1,0 +1,12 @@
+- op: add
+  path: /spec/template/spec/volumes
+  value:
+  - name: do-db-ca
+    configMap:
+      name: do-db-ca
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+  - name: do-db-ca
+    mountPath: /etc/ssl/do-db
+    readOnly: true

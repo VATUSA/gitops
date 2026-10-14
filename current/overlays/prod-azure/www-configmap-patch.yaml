@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: www-config
+data:
+  # Azure Database for MySQL requires TLS; the image's CA bundle verifies Azure's
+  # certificate. The email connection inherits it; moodle does not (below).
+  DB_SSL_CA: "/etc/ssl/certs/ca-certificates.crt"
+  # The moodle schema stays on DigitalOcean and is reached over the internet from
+  # AKS, so encrypt and verify it against DO's CA (mounted by
+  # moodle-ca-mount-patch.yaml).
+  DB_MOODLE_SSL_CA: "/etc/ssl/do-db/ca.crt"
+  # Object storage (policy documents, docs/...): Cloudflare R2, the one prod bucket
+  # shared with cobalt (decision C2). The R2 token is in www-secrets as
+  # DO_SPACES_KEY/DO_SPACES_SECRET.
+  DO_SPACES_ENDPOINT: "https://11976c0a4f2b9d3e1176dba5177bf32c.r2.cloudflarestorage.com"
+  DO_SPACES_REGION: "auto"
+  DO_SPACES_BUCKET: "vatusa-prod"

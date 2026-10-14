@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Prod on AKS. The PVC names no storage class, so it gets AKS's default
+# (managed-csi). The bot's SQLite state is copied from DOKS at cutover.
+resources:
+- ../prod
+patches:
+# Cutover hold: 0 replicas until the cutover commit deletes this patch, so the bot
+# never posts from both clusters (docs/prod-cutover-playbook.md §1.3).
+- path: cutover-hold.yaml
+  target:
+    kind: Deployment

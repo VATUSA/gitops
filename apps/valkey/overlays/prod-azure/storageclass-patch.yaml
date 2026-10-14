@@ -1,0 +1,5 @@
+# Azure Disk (managed-csi) replaces DigitalOcean block storage. Must be JSON6902;
+# see ../dev/storageclass-patch.yaml for why.
+- op: replace
+  path: /spec/volumeClaimTemplates/0/spec/storageClassName
+  value: managed-csi

@@ -1,0 +1,31 @@
+# Root Application for the AKS PROD cluster (vatusa-prod-aks). Apply ONCE by hand,
+# against that cluster only, after ArgoCD itself is installed:
+#
+#   kubectl --kubeconfig ~/.kube/vatusa-prod-aks apply -f apps/bootstrap-prod-azure/Application.yaml
+#
+# Same shape and traps as apps/bootstrap-azure (read its README first). The root app
+# auto-syncs the platform children; the five prod APP children are MANUAL sync until a
+# week after the cutover (docs/prod-cutover-playbook.md §2.3), so a `kubectl scale`
+# during the cutover isn't reverted and nothing deploys by surprise.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps-prod-azure
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: apps/bootstrap-prod-azure
+    repoURL: https://github.com/vatusa/gitops
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

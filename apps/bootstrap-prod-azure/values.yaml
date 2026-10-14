@@ -1,0 +1,5 @@
+# Source coordinates for every child Application, templated so the whole AKS prod
+# stack can be repointed at a branch by changing one value. Application.yaml is NOT
+# templated by this chart; repoint the live root app by hand if you change these.
+repoURL: https://github.com/vatusa/gitops
+targetRevision: HEAD

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mithril-config
+data:
+  # Object storage: Cloudflare R2, shared with cobalt (one bucket, decision C2).
+  # Endpoint WITHOUT the bucket: rust-s3 adds it, path-style when
+  # DO_SPACES_PATH_STYLE is true.
+  DO_SPACES_REGION: "auto"
+  DO_SPACES_BUCKET: "vatusa-prod"
+  DO_SPACES_ENDPOINT: "https://11976c0a4f2b9d3e1176dba5177bf32c.r2.cloudflarestorage.com"
+  DO_SPACES_PATH_STYLE: "true"
+  DO_SPACES_PUBLIC_BASE_URL: "https://cdn.vatusa.net"

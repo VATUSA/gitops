@@ -1,0 +1,22 @@
+# MANUAL sync until a week after the cutover (docs/prod-cutover-playbook.md §5), then
+# switch to automated prune + selfHeal, matching DOKS prod. Namespace matches DOKS so
+# in-cluster addresses copied in Secrets work unchanged.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mithril-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: mithril-prod
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: mithril/overlays/prod-azure
+    repoURL: {{ .Values.repoURL }}
+    targetRevision: {{ .Values.targetRevision }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

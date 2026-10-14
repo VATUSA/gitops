@@ -1,0 +1,37 @@
+# AKS PROD flavour of apps/ingress-nginx (sibling of apps/ingress-nginx-azure, which is
+# dev). Unlike dev it has NO X-Robots-Tag noindex header: carrying that over would
+# de-index www.vatusa.net.
+#
+# AKS flavour of apps/ingress-nginx. A separate chart rather than an overlay because the
+# DOKS copy is a Helm chart, not a kustomization — there is no overlay mechanism to hang
+# a patch on. Everything outside the `service:` block is a verbatim copy and MUST be kept
+# in step with apps/ingress-nginx/values.yaml.
+ingress-nginx:
+  controller:
+    kind: DaemonSet
+    # DaemonSet; requests anchored to observed usage (~114-118Mi per node).
+    resources:
+      requests:
+        cpu: 50m
+        memory: 192Mi
+      limits:
+        cpu: 300m
+        memory: 384Mi
+    config:
+      proxy-body-size: 128m
+      use-forwarded-headers: "true"
+      log-format-escape-json: "true"
+      log-format-upstream: '{"time":"$time_iso8601","host":"$host","method":"$request_method","uri":"$uri","status":"$status","request_time":"$request_time","bytes_sent":"$bytes_sent","user_agent":"$http_user_agent","client_ip":"$http_x_forwarded_for","upstream":"$proxy_upstream_name"}'
+    service:
+      externalTrafficPolicy: Local
+      ipFamilies:
+      - IPv4
+      # --- Azure-specific: claim the pre-reserved static IP ---------------------
+      # vatusa-prod-ingress-ip / 20.230.189.224 was created up front (azure-changelog.md,
+      # 2026-10-14) in resource group `vatusa-prod`, NOT in the AKS-managed node group,
+      # so both annotations are required. The cluster's control-plane identity holds
+      # Network Contributor on `vatusa-prod` for this. See apps/ingress-nginx-azure
+      # for the rest of the reasoning.
+      annotations:
+        service.beta.kubernetes.io/azure-pip-name: vatusa-prod-ingress-ip
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: vatusa-prod

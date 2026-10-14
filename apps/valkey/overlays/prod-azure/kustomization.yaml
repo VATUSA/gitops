@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Prod on AKS: prod plus Azure Disk storage (see storageclass-patch.yaml for
+# why it must be a JSON6902 patch).
+resources:
+- ../prod
+patches:
+- path: storageclass-patch.yaml
+  target:
+    kind: StatefulSet
+    name: valkey

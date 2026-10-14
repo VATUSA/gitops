@@ -1,0 +1,1 @@
+../../fluent-bit/files/truncate_log_ips.py

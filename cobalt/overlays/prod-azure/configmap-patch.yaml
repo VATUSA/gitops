@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cobalt-config
+data:
+  # Azure Database for MySQL requires TLS; see the dev overlay for why no CA file
+  # is needed.
+  DB_TLS: "true"
+
+  # Object storage: Cloudflare R2, ONE bucket for banners and policy documents
+  # (cutover decision C2): an R2 custom domain maps to exactly one bucket, and the
+  # keys don't collide (event-banners/... vs docs/...). Endpoints are path-style
+  # and include the bucket; see the dev overlay. DO_SPACES_KEY/DO_SPACES_SECRET in
+  # cobalt-secrets hold the R2 token for this bucket.
+  DO_SPACES_REGION: "auto"
+  DO_SPACES_BUCKET: "vatusa-prod"
+  DO_SPACES_ENDPOINT: "https://11976c0a4f2b9d3e1176dba5177bf32c.r2.cloudflarestorage.com/vatusa-prod"
+  DO_SPACES_PUBLIC_BASE_URL: "https://cdn.vatusa.net"
+
+  DO_SPACES_DOCS_REGION: "auto"
+  DO_SPACES_DOCS_BUCKET: "vatusa-prod"
+  DO_SPACES_DOCS_ENDPOINT: "https://11976c0a4f2b9d3e1176dba5177bf32c.r2.cloudflarestorage.com/vatusa-prod"
+  DO_SPACES_DOCS_PUBLIC_BASE_URL: "https://cdn.vatusa.net"

@@ -24,6 +24,10 @@ patches:
   target:
     kind: Deployment
     name: ^(api|api-queue|api-worker|www|www-worker)$
+- path: gsuite-tls-patch.yaml
+  target:
+    kind: Deployment
+    name: gsuite
 # Cutover hold: every single-runner workload at 0 replicas until the cutover
 # commit deletes this patch, so AKS and DOKS never both run schedulers, queues
 # or bots (docs/prod-cutover-playbook.md §1.3).

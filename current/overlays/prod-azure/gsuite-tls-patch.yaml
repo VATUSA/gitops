@@ -1,0 +1,7 @@
+# Azure MySQL requires TLS. DB_TLS needs google-workspace-integration >= 1.1.39
+# (PR #12); older images ignore it.
+- op: add
+  path: /spec/template/spec/containers/0/env
+  value:
+  - name: DB_TLS
+    value: "true"

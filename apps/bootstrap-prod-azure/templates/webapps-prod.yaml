@@ -1,5 +1,4 @@
-# MANUAL sync until a week after the cutover (docs/prod-cutover-playbook.md §5), then
-# switch to automated prune + selfHeal, matching DOKS prod. Namespace matches DOKS so
+# Automated sync (prune + selfHeal) since 2026-10-15, a day after the cutover. Namespace matches DOKS so
 # in-cluster addresses copied in Secrets work unchanged.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -18,5 +17,15 @@ spec:
     repoURL: {{ .Values.repoURL }}
     targetRevision: {{ .Values.targetRevision }}
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

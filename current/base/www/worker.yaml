@@ -32,7 +32,12 @@ spec:
             limits:
               cpu: 500m
               memory: 300Mi
+          # Same env as www. Without www-config the worker had no DB_SSL_CA, so on
+          # Azure MySQL (REQUIRE SSL) every DB call was refused and vatsim:sync failed
+          # hourly from the 2026-10-15 cutover.
           envFrom:
             - secretRef:
                 name: www-secrets
+            - configMapRef:
+                name: www-config
       restartPolicy: Always

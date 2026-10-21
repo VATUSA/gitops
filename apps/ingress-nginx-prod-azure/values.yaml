@@ -24,6 +24,25 @@ ingress-nginx:
       log-format-upstream: '{"time":"$time_iso8601","host":"$host","method":"$request_method","uri":"$uri","status":"$status","request_time":"$request_time","bytes_sent":"$bytes_sent","user_agent":"$http_user_agent","client_ip":"$http_x_forwarded_for","upstream":"$proxy_upstream_name"}'
     service:
       externalTrafficPolicy: Local
+      # Only Cloudflare may reach the origin (PHP2Shell mitigation, 2026-10-21). AKS turns
+      # this into the node NSG allow rule; everything else hits DenyAllInBound. Keep in
+      # sync with https://www.cloudflare.com/ips-v4 -- a missing range shows up as CF 522s.
+      loadBalancerSourceRanges:
+        - 173.245.48.0/20
+        - 103.21.244.0/22
+        - 103.22.200.0/22
+        - 103.31.4.0/22
+        - 141.101.64.0/18
+        - 108.162.192.0/18
+        - 190.93.240.0/20
+        - 188.114.96.0/20
+        - 197.234.240.0/22
+        - 198.41.128.0/17
+        - 162.158.0.0/15
+        - 104.16.0.0/13
+        - 104.24.0.0/14
+        - 172.64.0.0/13
+        - 131.0.72.0/22
       ipFamilies:
       - IPv4
       # --- Azure-specific: claim the pre-reserved static IP ---------------------

@@ -5,7 +5,9 @@ metadata:
   labels:
     app: zan-api
 data:
-  NODE_ENV: "development"
+  # production: secure cookies on, dev-login off. Dev is public over https, so it must not
+  # run with development. Login still uses the VATSIM sandbox (VATSIM_TOKEN_URL below).
+  NODE_ENV: "production"
   # Must be the same VATSIM Connect environment as the site's VITE_VATSIM_AUTH_URL below.
   VATSIM_TOKEN_URL: "https://auth-dev.vatsim.net/oauth/token"
   # The site and api share one origin (the ingress routes /api to the api), so CORS and the

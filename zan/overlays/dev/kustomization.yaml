@@ -10,7 +10,7 @@ resources:
 images:
 - name: vatusa/zan-api
   newName: vatusa/zan-api
-  newTag: latest
+  newTag: 87b1f922d9d3c186eb964272a8091bb6f25bbc53
 - name: vatusa/zan-site
   newName: vatusa/zan-site
   newTag: latest

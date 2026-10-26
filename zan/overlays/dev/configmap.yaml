@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zan-api-config
+  labels:
+    app: zan-api
+data:
+  NODE_ENV: "development"
+  # Must be the same VATSIM Connect environment as the site's VITE_VATSIM_AUTH_URL below.
+  VATSIM_TOKEN_URL: "https://auth-dev.vatsim.net/oauth/token"
+  # The site and api share one origin (the ingress routes /api to the api), so CORS and the
+  # OAuth redirect both use the site's URL.
+  FRONTEND_URL: "https://zan.vatusa.dev"
+  FRONTEND_REDIRECT_URI: "https://zan.vatusa.dev/"
+  PORT: "4000"
+  # zan.vatusa.dev is proxied by Cloudflare, then ingress-nginx: two hops append to
+  # X-Forwarded-For before the api sees it.
+  TRUST_PROXY_HOPS: "2"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zan-site-config
+  labels:
+    app: zan-site
+data:
+  VITE_API_URL: "https://zan.vatusa.dev"
+  VITE_VATSIM_AUTH_URL: "https://auth-dev.vatsim.net/oauth/authorize"
+  # Unset: the site falls back to its own origin + "/", which matches FRONTEND_REDIRECT_URI.
+  VITE_VATSIM_REDIRECT_URI: ""

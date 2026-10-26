@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zan-api-config
+  labels:
+    app: zan-api
+data:
+  NODE_ENV: "production"
+  # Must be the same VATSIM Connect environment as the site's VITE_VATSIM_AUTH_URL below.
+  VATSIM_TOKEN_URL: "https://auth.vatsim.net/oauth/token"
+  # The site and api share one origin (the ingress routes /api to the api), so CORS and the
+  # OAuth redirect both use the site's URL.
+  FRONTEND_URL: "https://www.zanartcc.org"
+  FRONTEND_REDIRECT_URI: "https://www.zanartcc.org/"
+  PORT: "4000"
+  # ingress-nginx is the one proxy that sets X-Forwarded-For. Raise this if the hostname is
+  # put behind Cloudflare's proxy.
+  TRUST_PROXY_HOPS: "1"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zan-site-config
+  labels:
+    app: zan-site
+data:
+  VITE_API_URL: "https://www.zanartcc.org"
+  VITE_VATSIM_AUTH_URL: "https://auth.vatsim.net/oauth/authorize"
+  # Unset: the site falls back to its own origin + "/", which matches FRONTEND_REDIRECT_URI.
+  VITE_VATSIM_REDIRECT_URI: ""

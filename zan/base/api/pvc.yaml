@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zan-api-data
+  labels:
+    app: zan-api
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      # Holds zan.db and uploads/ (files.js caps each upload at 20MB).
+      storage: 5Gi

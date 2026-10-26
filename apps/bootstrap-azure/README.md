@@ -45,12 +45,13 @@ This is a **subset** of the DOKS bootstrap, not a copy:
   (`dd60166`) and its manifests deleted; not to be built on Azure.
 - **`schedule-message-bot`** — single-environment (prod-only) app. Stays on DOKS until
   the prod cutover.
-- **`*-prod` Applications and the `zan` tenant** — Phase 1 §7–§9 and §11 respectively.
+- **`*-prod` Applications** — Phase 1 §7–§9. (The old ADH `zan` tenant is not ported;
+  the new ZAN apps are `zan-dev` here and `zan/overlays/prod` is ready for AKS prod but has no Application yet.)
 
 ## AppProjects
 
 Every Application here uses `project: default`. DOKS additionally defines `cobalt`,
-`current`, `webapps`, `ngws` and `zan` AppProjects (with ResourceQuotas and
+`current`, `webapps` and `ngws` AppProjects (with ResourceQuotas and
 NetworkPolicies under `projects/`). Those exist to fence off facility tenants and
 per-team RBAC on a shared production cluster — neither applies to a single-operator dev
 cluster with no SSO configured. Port them when prod moves, not before.

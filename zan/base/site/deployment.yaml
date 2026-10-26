@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zan-site
+  labels:
+    app: zan-site
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: zan-site
+  template:
+    metadata:
+      name: zan-site
+      labels:
+        app: zan-site
+    spec:
+      containers:
+        - name: zan-site
+          image: vatusa/zan-site
+          imagePullPolicy: Always
+          # Static files from nginx.
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          # Read at container start by docker-entrypoint.d/40-env-config.sh into env-config.js.
+          envFrom:
+            - configMapRef:
+                name: zan-site-config
+          env:
+            # The site and api share one VATSIM Connect client.
+            - name: VITE_VATSIM_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: zan-secrets
+                  key: VATSIM_CLIENT_ID
+      restartPolicy: Always

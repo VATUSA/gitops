@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zan-ingress
+  annotations:
+    # Uploads are capped at 20MB by the api (routes/files.js).
+    nginx.ingress.kubernetes.io/proxy-body-size: "25m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: zan.vatusa.dev
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: zan-api-service
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: zan-site-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - zan.vatusa.dev
+      secretName: zan-tls

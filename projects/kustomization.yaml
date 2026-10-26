@@ -5,6 +5,3 @@ metadata:
 resources:
   - ngws/Project.yaml
   - current/Project.yaml
-  - zan/Project.yaml
-  - zan/resource-quota.yaml
-  - zan/allow-db.yaml

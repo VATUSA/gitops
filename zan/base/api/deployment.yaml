@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zan-api
+  labels:
+    app: zan-api
+spec:
+  # Single replica: zan.db is SQLite on a ReadWriteOnce volume. Recreate keeps a rollout's
+  # new pod from contending with the old one for the volume and the database.
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zan-api
+  template:
+    metadata:
+      name: zan-api
+      labels:
+        app: zan-api
+    spec:
+      # The image runs as the node user (uid/gid 1000). fsGroup makes the PVC writable.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: zan-api
+          image: vatusa/zan-api
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 4000
+          # GET / is a static "API is running" response with no dependencies.
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          envFrom:
+            - secretRef:
+                name: zan-secrets
+            - configMapRef:
+                name: zan-api-config
+          # The app opens ./zan.db and writes ./uploads/ relative to /app (db.js, routes/files.js),
+          # so both come from one PVC via subPath. The image ships an empty zan.db file so the
+          # subPath mount lands on a file, not a directory.
+          volumeMounts:
+            - name: data
+              mountPath: /app/zan.db
+              subPath: zan.db
+            - name: data
+              mountPath: /app/uploads
+              subPath: uploads
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: zan-api-data
+      restartPolicy: Always

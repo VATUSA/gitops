@@ -65,13 +65,16 @@ spec:
                 name: zan-secrets
             - configMapRef:
                 name: zan-api-config
-          # The app opens ./zan.db and writes ./uploads/ relative to /app (db.js, routes/files.js),
-          # so both come from one PVC via subPath. The image ships an empty zan.db file so the
-          # subPath mount lands on a file, not a directory.
+          env:
+            - name: DB_PATH
+              value: /app/data/zan.db
+          # Both are directories on the one PVC. The database gets a directory, not a single-file
+          # subPath: subPath creates a directory when the file doesn't exist on the volume yet,
+          # and SQLite also writes its -journal file next to the database.
           volumeMounts:
             - name: data
-              mountPath: /app/zan.db
-              subPath: zan.db
+              mountPath: /app/data
+              subPath: data
             - name: data
               mountPath: /app/uploads
               subPath: uploads

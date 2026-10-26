@@ -10,5 +10,5 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      # Holds zan.db and uploads/ (files.js caps each upload at 20MB).
+      # Holds data/zan.db and uploads/ (files.js caps each upload at 20MB).
       storage: 5Gi

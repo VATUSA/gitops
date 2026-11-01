@@ -1,0 +1,124 @@
+# Nightly copy of zan.db and uploads/ to Azure Blob: storage account vatusaprodbackups, container
+# zan. A lifecycle rule on the account deletes blobs after 14 days.
+#
+# Secret zan-backup is created by hand and holds RCLONE_CONFIG_BACKUP_SAS_URL, a container-scoped
+# SAS URL with no delete permission. It expires 2031-11-01.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: zan-backup
+  labels:
+    app: zan-backup
+spec:
+  schedule: "15 5 * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 900
+      ttlSecondsAfterFinished: 604800
+      template:
+        metadata:
+          labels:
+            app: zan-backup
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          # The volume is ReadWriteOnce, so this pod has to share a node with zan-api.
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app: zan-api
+          # The api image provides better-sqlite3. Its backup API takes a consistent copy of a
+          # live database, which copying the file would not.
+          initContainers:
+            - name: snapshot
+              image: vatusa/zan-api
+              workingDir: /app
+              command:
+                - sh
+                - -ec
+                - |
+                  stamp=$(date -u +%Y-%m-%d)
+                  OUT="/backup/$stamp-zan.db" node -e '
+                    const Database = require("better-sqlite3");
+                    const out = process.env.OUT;
+                    new Database("/app/data/zan.db").backup(out).then(() => {
+                      const check = new Database(out, { readonly: true }).pragma("integrity_check", { simple: true });
+                      if (check !== "ok") throw new Error("integrity check failed: " + check);
+                      console.log("snapshot ok: " + out);
+                    }).catch((err) => { console.error(err); process.exit(1); });
+                  '
+                  tar -C /app/uploads -czf "/backup/$stamp-uploads.tar.gz" .
+                  ls -l /backup
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
+                limits:
+                  cpu: 250m
+                  memory: 256Mi
+              volumeMounts:
+                - name: data
+                  mountPath: /app/data
+                  subPath: data
+                - name: data
+                  mountPath: /app/uploads
+                  subPath: uploads
+                  readOnly: true
+                - name: backup
+                  mountPath: /backup
+          containers:
+            - name: upload
+              image: rclone/rclone:1.71.2
+              args:
+                - copy
+                - /backup
+                - backup:zan
+                - --azureblob-no-check-container
+                - --stats-one-line
+                - -v
+              env:
+                - name: RCLONE_CONFIG_BACKUP_TYPE
+                  value: azureblob
+                - name: RCLONE_CONFIG
+                  value: /tmp/rclone.conf
+                - name: HOME
+                  value: /tmp
+              envFrom:
+                - secretRef:
+                    name: zan-backup
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 250m
+                  memory: 128Mi
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: zan-api-data
+            - name: backup
+              emptyDir:
+                sizeLimit: 2Gi
+            - name: tmp
+              emptyDir: {}

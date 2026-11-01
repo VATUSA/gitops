@@ -46,7 +46,7 @@ This is a **subset** of the DOKS bootstrap, not a copy:
 - **`schedule-message-bot`** — single-environment (prod-only) app. Stays on DOKS until
   the prod cutover.
 - **`*-prod` Applications** — Phase 1 §7–§9. (The old ADH `zan` tenant is not ported;
-  the new ZAN apps are `zan-dev` here and `zan/overlays/prod` is ready for AKS prod but has no Application yet.)
+  the new ZAN apps are `zan-dev` here and `zan-prod` in `apps/bootstrap-prod-azure`.)
 
 ## AppProjects
 

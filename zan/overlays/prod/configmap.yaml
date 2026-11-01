@@ -13,9 +13,9 @@ data:
   FRONTEND_URL: "https://www.zanartcc.org"
   FRONTEND_REDIRECT_URI: "https://www.zanartcc.org/"
   PORT: "4000"
-  # ingress-nginx is the one proxy that sets X-Forwarded-For. Raise this if the hostname is
-  # put behind Cloudflare's proxy.
-  TRUST_PROXY_HOPS: "1"
+  # www.zanartcc.org is proxied by Cloudflare, then ingress-nginx: two hops append to
+  # X-Forwarded-For before the api sees it.
+  TRUST_PROXY_HOPS: "2"
 ---
 apiVersion: v1
 kind: ConfigMap

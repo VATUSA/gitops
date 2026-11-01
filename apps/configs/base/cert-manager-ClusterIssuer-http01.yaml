@@ -1,0 +1,16 @@
+# For hostnames in DNS zones the `letsencrypt` issuer's Cloudflare token can't edit, such as
+# tenant-owned zanartcc.org. The hostname must already resolve to this cluster's ingress.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-http01
+spec:
+  acme:
+    email: "vatusa6@vatusa.net"
+    server: "https://acme-v02.api.letsencrypt.org/directory"
+    privateKeySecretRef:
+      name: letsencrypt-http01
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx

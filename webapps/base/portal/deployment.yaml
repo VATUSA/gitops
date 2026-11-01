@@ -38,13 +38,15 @@ spec:
           # CPU request/limit tracks observed 341-407m under real traffic
           # (previously 100m/500m caused throttling -> probe timeouts -> restarts -> 502/503).
           # Do not lower cpu request/limit below this - see incident note above.
+          # Memory bumped 2026-11-01: observed usage (404-448Mi) was at/over the
+          # 420Mi request, leaving no headroom before eviction risk.
           resources:
             requests:
               cpu: 400m
-              memory: 420Mi
+              memory: 512Mi
             limits:
               cpu: 1000m
-              memory: 640Mi
+              memory: 896Mi
           ports:
             # The app listens on 3000 (Dockerfile ENV PORT=3000); portal-service
             # already targets 3000. This was declared as 80 and is informational

@@ -1,5 +1,11 @@
 cert-manager:
   installCRDs: true
+  # Gateway API support for the letsencrypt-http01 issuer's gatewayHTTPRoute solver
+  # (Envoy Gateway, apps/envoy-gateway-prod-azure). Needs the Gateway API CRDs present.
+  config:
+    apiVersion: controller.config.cert-manager.io/v1alpha1
+    kind: ControllerConfiguration
+    enableGatewayAPI: true
   prometheus:
     enabled: false
   # Requests anchored to observed usage (controller ~62Mi, webhook ~24Mi,

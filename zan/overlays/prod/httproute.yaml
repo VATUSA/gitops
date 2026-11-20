@@ -10,6 +10,8 @@ spec:
       kind: Gateway
       name: vatusa
       namespace: envoy-gateway-system
+      # Pinned: zan-prod may also attach to the :80 listener (ACME HTTP-01).
+      sectionName: www-zanartcc-org
   hostnames: [www.zanartcc.org]
   rules:
     - matches: [{ path: { type: PathPrefix, value: /api } }]
@@ -38,6 +40,7 @@ spec:
       kind: Gateway
       name: vatusa
       namespace: envoy-gateway-system
+      sectionName: zanartcc-org
   hostnames: [zanartcc.org]
   rules:
     - matches: [{ path: { type: PathPrefix, value: / } }]

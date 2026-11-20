@@ -11,6 +11,13 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-http01
     solvers:
+      # Envoy Gateway (ingress-nginx retired 2026-11-20). The solver's HTTPRoute is created
+      # in the Certificate's namespace; the Gateway's :80 listener admits it via
+      # allowedRoutes (apps/envoy-gateway-prod-azure/templates/gateway.yaml).
       - http01:
-          ingress:
-            ingressClassName: nginx
+          gatewayHTTPRoute:
+            parentRefs:
+              - group: gateway.networking.k8s.io
+                kind: Gateway
+                name: vatusa
+                namespace: envoy-gateway-system

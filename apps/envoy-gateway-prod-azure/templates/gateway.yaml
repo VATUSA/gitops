@@ -66,12 +66,20 @@ spec:
       kind: EnvoyProxy
       name: vatusa
   listeners:
-    # Plain HTTP only redirects (see http-redirect below); app routes can't attach here.
+    # Plain HTTP only redirects (see http-redirect below). Besides this namespace, only
+    # namespaces with HTTP-01 certs (letsencrypt-http01) may attach, for cert-manager's
+    # ACME solver routes; app routes there must pin sectionName to their HTTPS listener.
     - name: http
       port: 80
       protocol: HTTP
       allowedRoutes:
-        namespaces: { from: Same }
+        namespaces:
+          from: Selector
+          selector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [envoy-gateway-system, zan-prod]
     {{- range .Values.listeners }}
     - name: {{ .name }}
       hostname: {{ .hostname }}

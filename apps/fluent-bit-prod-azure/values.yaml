@@ -77,10 +77,21 @@ fluent-bit:
           # Tracks file positions so we don't re-ship on pod restart.
           DB                /var/fluent-bit/ingress-nginx-pos.db
 
+      [INPUT]
+          Name              tail
+          # Envoy Gateway proxy access logs (replacement for ingress-nginx; same JSON
+          # keys, see apps/envoy-gateway-prod-azure). Only the `envoy` container.
+          Path              /var/log/containers/envoy-*_envoy-gateway-system_envoy-*.log
+          multiline.parser  cri
+          Tag               ingress.envoy.*
+          Mem_Buf_Limit     5MB
+          Skip_Long_Lines   On
+          DB                /var/fluent-bit/envoy-gateway-pos.db
+
     filters: |
       [FILTER]
           Name                kubernetes
-          Match               ingress.nginx.*
+          Match               ingress.*
           # Merges the JSON log line into the top-level record fields.
           Merge_Log           On
           Keep_Log            Off
@@ -93,13 +104,13 @@ fluent-bit:
           # apps/ingress-nginx-azure sets the same log-format-upstream as DOKS,
           # so this filter is identical on both clusters.
           Name    grep
-          Match   ingress.nginx.*
+          Match   ingress.*
           Regex   method .+
 
     outputs: |
       [OUTPUT]
           Name                  azure_blob
-          Match                 ingress.nginx.*
+          Match                 ingress.*
           account_name          vatusaprodlogs
           auth_type             key
           shared_key            ${AZURE_BLOB_SHARED_KEY}

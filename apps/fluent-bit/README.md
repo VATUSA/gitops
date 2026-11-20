@@ -195,7 +195,8 @@ SELECT
     host,
     regexp_replace(uri, '/[0-9]+', '/:id') AS route_pattern,
     count(*)                                AS hits,
-    round(avg(CAST(request_time AS DOUBLE)) * 1000, 1) AS avg_ms,
+    -- ingress-nginx logged request_time (seconds); Envoy Gateway logs request_time_ms.
+    round(avg(coalesce(CAST(request_time AS DOUBLE) * 1000, CAST(request_time_ms AS DOUBLE))), 1) AS avg_ms,
     count_if(CAST(status AS INT) >= 500)    AS errors
 FROM read_json_auto(
     's3://vatusa-api-logs/year=*/month=*/day=*/**',

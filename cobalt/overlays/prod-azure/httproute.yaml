@@ -1,0 +1,60 @@
+# Gateway API equivalent of base/ingress.yaml + base/ingress-inline.yaml.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: cobalt
+  namespace: cobalt-prod
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+      namespace: envoy-gateway-system
+  hostnames: [cobalt.vatusa.net]
+  rules:
+    - matches: [{ path: { type: PathPrefix, value: / } }]
+      backendRefs: [{ group: "", kind: Service, name: cobalt-service, port: 80, weight: 1 }]
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: cobalt-inline
+  namespace: cobalt-prod
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+      namespace: envoy-gateway-system
+  hostnames: [vatusa.net, www.vatusa.net]
+  rules:
+    # /cobalt/(.*) -> /$1
+    - matches: [{ path: { type: PathPrefix, value: /cobalt } }]
+      backendRefs: [{ group: "", kind: Service, name: cobalt-service, port: 80, weight: 1 }]
+      filters:
+        - type: URLRewrite
+          urlRewrite: { path: { type: ReplacePrefixMatch, replacePrefixMatch: / } }
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }
+---
+# Lets the shared Gateway (envoy-gateway-system) use this namespace's cert Secrets.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: envoy-gateway-certs
+  namespace: cobalt-prod
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: envoy-gateway-system
+  to:
+    - group: ""
+      kind: Secret

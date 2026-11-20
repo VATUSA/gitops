@@ -11,6 +11,7 @@ kind: Kustomization
 # See docs/prod-cutover-playbook.md §2.3.
 resources:
 - ../prod
+- httproute.yaml
 configMapGenerator:
 # DigitalOcean's managed-database CA certificate (public, not a secret).
 - name: do-db-ca

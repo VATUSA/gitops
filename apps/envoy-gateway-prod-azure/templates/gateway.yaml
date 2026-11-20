@@ -80,7 +80,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ""
+            kind: Secret
             name: {{ .secret }}
             namespace: {{ .namespace }}
       allowedRoutes:
@@ -94,10 +95,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   parentRefs:
-    - name: vatusa
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
       sectionName: http
   rules:
-    - filters:
+    - matches: [{ path: { type: PathPrefix, value: / } }]
+      filters:
         - type: RequestRedirect
           requestRedirect:
             scheme: https

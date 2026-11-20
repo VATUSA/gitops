@@ -1,0 +1,84 @@
+# Gateway API equivalent of the api, www (/legacy) and discord-bot-v3 web-shim Ingresses.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: api
+  namespace: current
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+      namespace: envoy-gateway-system
+  hostnames: [api.vatusa.net, auth.vatusa.net, login.vatusa.net]
+  rules:
+    - matches: [{ path: { type: PathPrefix, value: / } }]
+      backendRefs: [{ group: "", kind: Service, name: api-service, port: 80, weight: 1 }]
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: www-legacy
+  namespace: current
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+      namespace: envoy-gateway-system
+  hostnames: [vatusa.net, www.vatusa.net]
+  rules:
+    # /legacy/(.*) -> /$1
+    - matches: [{ path: { type: PathPrefix, value: /legacy } }]
+      backendRefs: [{ group: "", kind: Service, name: www-service, port: 80, weight: 1 }]
+      filters:
+        - type: URLRewrite
+          urlRewrite: { path: { type: ReplacePrefixMatch, replacePrefixMatch: / } }
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: discord-bot-web-shim
+  namespace: current
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+      namespace: envoy-gateway-system
+  hostnames: [bot.vatusa.net]
+  rules:
+    # nginx rewrite-target "/" on path "/" sent every request to "/".
+    - matches: [{ path: { type: PathPrefix, value: / } }]
+      backendRefs: [{ group: "", kind: Service, name: discord-bot-v3-web-shim, port: 9002, weight: 1 }]
+      filters:
+        - type: URLRewrite
+          urlRewrite: { path: { type: ReplaceFullPath, replaceFullPath: / } }
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }
+---
+# Lets the shared Gateway (envoy-gateway-system) use this namespace's cert Secrets.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: envoy-gateway-certs
+  namespace: current
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: envoy-gateway-system
+  to:
+    - group: ""
+      kind: Secret

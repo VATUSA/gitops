@@ -4,3 +4,4 @@ kind: Kustomization
 # and can diverge without touching DOKS.
 resources:
 - ../prod
+- httproute.yaml

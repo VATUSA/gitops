@@ -4,5 +4,6 @@ kind: Kustomization
 # prod release bumps ../prod only) and carries only the Azure differences.
 resources:
 - ../prod
+- httproute.yaml
 patches:
 - path: configmap-patch.yaml

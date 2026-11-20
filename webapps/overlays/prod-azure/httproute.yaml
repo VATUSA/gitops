@@ -1,0 +1,30 @@
+# Gateway API equivalent of overlays/prod portal-ingress.yaml + staff-ingress.yaml.
+# /cobalt and /legacy on the same host are routed by cobalt-prod and current
+# (longest prefix wins across HTTPRoutes).
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: webapps
+  namespace: webapps-prod
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+      namespace: envoy-gateway-system
+  hostnames: [www.vatusa.net]
+  rules:
+    - matches: [{ path: { type: PathPrefix, value: /staff } }]
+      backendRefs: [{ group: "", kind: Service, name: staff-service, port: 80, weight: 1 }]
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }
+    - matches: [{ path: { type: PathPrefix, value: / } }]
+      backendRefs: [{ group: "", kind: Service, name: portal-service, port: 80, weight: 1 }]
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            set:
+              - { name: Strict-Transport-Security, value: "max-age=31536000; includeSubDomains" }

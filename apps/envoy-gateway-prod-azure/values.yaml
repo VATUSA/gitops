@@ -1,0 +1,47 @@
+# Envoy Gateway replaces ingress-nginx (upstream retired March 2026; CVE-2026-123633 /
+# CVE-2026-123007 can't be patched there). Controller + Gateway API CRDs come from the
+# gateway-helm subchart; the Gateway, its proxy settings and policies are in templates/.
+gateway-helm:
+  config:
+    envoyGateway:
+      rateLimit:
+        backend:
+          type: Redis
+          redis:
+            url: envoy-ratelimit-redis.envoy-gateway-system.svc.cluster.local:6379
+
+# Static IP for the Envoy LoadBalancer. Created by hand (az network public-ip create,
+# resource group vatusa-prod) like vatusa-prod-ingress-ip; see apps/ingress-nginx-prod-azure.
+publicIpName: vatusa-prod-gateway-ip
+
+# Only Cloudflare may reach the origin (PHP2Shell mitigation, 2026-10-21). Same list as
+# apps/ingress-nginx-prod-azure; keep in sync with https://www.cloudflare.com/ips-v4.
+cloudflareRanges:
+  - 173.245.48.0/20
+  - 103.21.244.0/22
+  - 103.22.200.0/22
+  - 103.31.4.0/22
+  - 141.101.64.0/18
+  - 108.162.192.0/18
+  - 190.93.240.0/20
+  - 188.114.96.0/20
+  - 197.234.240.0/22
+  - 198.41.128.0/17
+  - 162.158.0.0/15
+  - 104.16.0.0/13
+  - 104.24.0.0/14
+  - 172.64.0.0/13
+  - 131.0.72.0/22
+
+# One HTTPS listener per hostname. The cert Secrets stay where cert-manager writes them
+# (app namespaces); each of those namespaces carries a ReferenceGrant for the Gateway.
+listeners:
+  - { name: vatusa-net,      hostname: vatusa.net,        namespace: current,  secret: vatusa-net-tls }
+  - { name: www-vatusa-net,  hostname: www.vatusa.net,    namespace: current,  secret: vatusa-net-tls }
+  - { name: api-vatusa-net,  hostname: api.vatusa.net,    namespace: current,  secret: vatusa-net-tls }
+  - { name: auth-vatusa-net, hostname: auth.vatusa.net,   namespace: current,  secret: vatusa-net-tls }
+  - { name: login-vatusa-net, hostname: login.vatusa.net, namespace: current,  secret: vatusa-net-tls }
+  - { name: bot-vatusa-net,  hostname: bot.vatusa.net,    namespace: current,  secret: bot-vatusa-net-tls }
+  - { name: cobalt-vatusa-net, hostname: cobalt.vatusa.net, namespace: cobalt-prod, secret: cobalt-tls }
+  - { name: www-zanartcc-org, hostname: www.zanartcc.org, namespace: zan-prod, secret: zan-tls }
+  - { name: zanartcc-org,    hostname: zanartcc.org,      namespace: zan-prod, secret: zan-tls }

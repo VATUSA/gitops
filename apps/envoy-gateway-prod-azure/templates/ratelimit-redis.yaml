@@ -1,0 +1,32 @@
+# Backing store for Envoy Gateway global rate limiting (per-client-IP limits, e.g.
+# mithril). Counters only; nothing persistent, so no PVC.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-ratelimit-redis
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: envoy-ratelimit-redis }
+  template:
+    metadata:
+      labels: { app: envoy-ratelimit-redis }
+    spec:
+      containers:
+        - name: redis
+          image: public.ecr.aws/docker/library/redis:8.2.3-alpine
+          args: ["--save", "", "--appendonly", "no"]
+          ports: [{ containerPort: 6379 }]
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy-ratelimit-redis
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector: { app: envoy-ratelimit-redis }
+  ports: [{ port: 6379 }]

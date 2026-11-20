@@ -1,0 +1,139 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: vatusa
+  namespace: {{ .Release.Namespace }}
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        replicas: 2
+        container:
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { memory: 512Mi }
+      envoyService:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        loadBalancerSourceRanges:
+          {{- toYaml .Values.cloudflareRanges | nindent 10 }}
+        annotations:
+          service.beta.kubernetes.io/azure-pip-name: {{ .Values.publicIpName }}
+          service.beta.kubernetes.io/azure-load-balancer-resource-group: vatusa-prod
+  telemetry:
+    accessLog:
+      settings:
+        # Same keys as ingress-nginx's log-format-upstream so fluent-bit, the GDPR
+        # log-ip-truncation job (rewrites `client_ip`) and the DuckDB queries keep
+        # working. Differences: request_time_ms (Envoy can't emit seconds) instead of
+        # request_time, and client_ip is the single detected client address.
+        - format:
+            type: JSON
+            json:
+              time: "%START_TIME%"
+              host: "%REQ(:AUTHORITY)%"
+              method: "%REQ(:METHOD)%"
+              uri: "%REQ_WITHOUT_QUERY(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+              status: "%RESPONSE_CODE%"
+              request_time_ms: "%DURATION%"
+              bytes_sent: "%BYTES_SENT%"
+              user_agent: "%REQ(USER-AGENT)%"
+              client_ip: "%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%"
+              upstream: "%UPSTREAM_CLUSTER%"
+          sinks:
+            - type: File
+              file:
+                path: /dev/stdout
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: vatusa
+  namespace: {{ .Release.Namespace }}
+spec:
+  gatewayClassName: envoy
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: vatusa
+  listeners:
+    # Plain HTTP only redirects (see http-redirect below); app routes can't attach here.
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces: { from: Same }
+    {{- range .Values.listeners }}
+    - name: {{ .name }}
+      hostname: {{ .hostname }}
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: {{ .secret }}
+            namespace: {{ .namespace }}
+      allowedRoutes:
+        namespaces: { from: All }
+    {{- end }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-redirect
+  namespace: {{ .Release.Namespace }}
+spec:
+  parentRefs:
+    - name: vatusa
+      sectionName: http
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+---
+# Real client IP. The NSG only admits Cloudflare, so CF-Connecting-IP is trustworthy
+# (equivalent of ingress-nginx use-forwarded-headers). Feeds rate limits and logs.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: vatusa
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+  clientIPDetection:
+    customHeader:
+      name: CF-Connecting-IP
+      failClosed: false
+  # CVE-2026-123633 / CVE-2026-123007 posture: HTTP/1.1 only to clients, as on nginx.
+  tls:
+    alpnProtocols: ["http/1.1"]
+---
+# ingress-nginx default 60s upstream timeout (Envoy's is 15s). HSTS is set per route.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: vatusa-defaults
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: vatusa
+  timeout:
+    http:
+      requestTimeout: 60s

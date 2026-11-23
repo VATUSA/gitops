@@ -34,6 +34,7 @@ data:
   DO_SPACES_ENDPOINT: "https://11976c0a4f2b9d3e1176dba5177bf32c.r2.cloudflarestorage.com"
   DO_SPACES_REGION: "auto"
   DO_SPACES_BUCKET: "vatusa-azure-dev"
+  DO_SPACES_PUBLIC_BASE_URL: "https://cdn.vatusa.dev"
   EXAMS_BASIC: "7"
   EXAMS_BASIC_ENROLID: "311"
   EXAMS_BASIC_LEGACY: ""
